@@ -43,7 +43,7 @@
             --border: #1a3a1a;
         }
 
-        /* Video de Fondo - URL PÚBLICA */
+        /* Video de Fondo */
         .video-background {
             position: fixed;
             top: 0;
@@ -335,83 +335,15 @@
             50% { transform: scale(1.25); }
         }
 
-        /* Tooltip para badges */
-        .badge {
-            position: relative;
-        }
-
-        .badge-tooltip {
-            position: absolute;
-            bottom: calc(100% + 12px);
-            left: 50%;
-            transform: translateX(-50%) scale(0.9);
-            background: #1f2937;
-            color: white;
-            padding: 16px 20px;
-            border-radius: 14px;
-            font-size: 0.85em;
-            pointer-events: none;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 9999;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.5);
-            min-width: 240px;
-            max-width: 280px;
-            white-space: normal;
-            text-align: center;
-            line-height: 1.6;
-        }
-
-        .badge-tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 10px solid transparent;
-            border-top-color: #1f2937;
-        }
-
-        .badge:hover {
-            transform: scale(1.15) rotate(5deg);
-            z-index: 10;
-        }
-
-        .badge:hover .badge-tooltip {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(-5px) scale(1);
-        }
-
-        .badge-progress {
-            display: block;
-            font-size: 1em;
-            margin-top: 10px;
-            opacity: 1;
-            font-weight: 700;
-            color: #34d399;
-        }
-
-        body.dark-mode .badge-tooltip {
-            background: #0f172a;
-            border: 2px solid var(--primary);
-            color: #f1f5f9;
-        }
-
-        body.dark-mode .badge-tooltip::after {
-            border-top-color: #0f172a;
-        }
-
         /* Tabs */
         .tabs {
             display: flex;
-            background: var(--bg-card);
+            background: rgba(26, 58, 26, 0.8);
             border-radius: 16px;
             padding: 6px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 255, 0, 0.15);
+            border: 2px solid rgba(0, 255, 0, 0.3);
             gap: 6px;
             backdrop-filter: blur(10px);
         }
@@ -435,12 +367,13 @@
 
         .tab.active {
             background: var(--primary);
-            color: white;
-            box-shadow: 0 2px 8px rgba(52, 211, 153, 0.3);
+            color: #0a1f0a;
+            box-shadow: 0 4px 15px rgba(0, 255, 0, 0.5);
         }
 
         .tab:hover:not(.active) {
-            background: var(--bg-light);
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--primary);
         }
 
         /* Content Card */
@@ -580,33 +513,36 @@
         }
 
         .detection-type.organico {
-            background: #34d399;
+            background: #00ff00;
+            color: #0a1f0a;
             animation: pulseGreen 2s ease-in-out infinite;
         }
 
         .detection-type.reciclable {
-            background: #60a5fa;
+            background: #00c8ff;
+            color: #0a1f1f;
             animation: pulseBlue 2s ease-in-out infinite;
         }
 
         .detection-type.no-reciclable {
-            background: #f87171;
+            background: #ff3333;
+            color: #1f0a0a;
             animation: pulseRed 2s ease-in-out infinite;
         }
 
         @keyframes pulseGreen {
-            0%, 100% { box-shadow: 0 0 10px rgba(52, 211, 153, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(52, 211, 153, 0.8); }
+            0%, 100% { box-shadow: 0 0 15px rgba(0, 255, 0, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 0, 1); }
         }
 
         @keyframes pulseBlue {
-            0%, 100% { box-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(96, 165, 250, 0.8); }
+            0%, 100% { box-shadow: 0 0 15px rgba(0, 200, 255, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(0, 200, 255, 1); }
         }
 
         @keyframes pulseRed {
-            0%, 100% { box-shadow: 0 0 10px rgba(248, 113, 113, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(248, 113, 113, 0.8); }
+            0%, 100% { box-shadow: 0 0 15px rgba(255, 51, 51, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(255, 51, 51, 1); }
         }
 
         /* Loading */
@@ -919,22 +855,23 @@
 
         /* Info Message */
         .info-message {
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.2), rgba(0, 150, 255, 0.3));
             padding: 16px 20px;
             border-radius: 14px;
             text-align: center;
-            color: #1e40af;
+            color: #00c8ff;
             font-size: 0.95em;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             margin: 20px 0;
+            border: 2px solid rgba(0, 200, 255, 0.3);
         }
 
         body.dark-mode .info-message {
-            background: linear-gradient(135deg, #1e3a5f, #2d4a6f);
-            color: #93c5fd;
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.15), rgba(0, 150, 255, 0.2));
+            color: #00c8ff;
         }
 
         /* Responsive */
@@ -981,13 +918,8 @@
     <!-- Video de Fondo -->
     <div class="video-background">
         <video autoplay muted loop playsinline>
-            <!-- Tu video local (debe estar en la MISMA carpeta que el HTML) -->
             <source src="Fondo.mp4" type="video/mp4">
-            
-            <!-- Respaldo automático si el video local no carga -->
             <source src="https://cdn.pixabay.com/vimeo/665175468/particles-76048.mp4?width=1280" type="video/mp4">
-            
-            <!-- Segundo respaldo -->
             <source src="https://cdn.pixabay.com/vimeo/531878502/technology-55864.mp4?width=1280" type="video/mp4">
         </video>
     </div>
@@ -1002,24 +934,24 @@
         <div class="welcome-content">
             <button class="skip-welcome" onclick="closeWelcome()">✕</button>
             
-            <div class="welcome-icon">🌿🤖</div>
+            <div class="welcome-icon">🔋⚡</div>
             <h2>¡Bienvenido a Nova!</h2>
-            <p>Tu asistente inteligente para reciclar correctamente usando Inteligencia Artificial</p>
+            <p>Tu asistente inteligente para ahorrar energía a través del reciclaje correcto</p>
             
             <div class="welcome-features">
-                <h3>🧠 ¿Qué es Nova?</h3>
+                <h3>⚡ ¿Qué es Nova?</h3>
                 <ul>
                     <li><strong>🎯 Detección en Tiempo Real:</strong> Apunta tu cámara y detecta objetos al instante</li>
                     <li><strong>🤖 IA MobileNet:</strong> Red neuronal con +90% de precisión</li>
-                    <li><strong>♻️ Clasificación Automática:</strong> Te dice dónde reciclar cada objeto</li>
-                    <li><strong>🏆 Sistema de Logros:</strong> Gana puntos y sube de nivel</li>
+                    <li><strong>♻️ Clasificación Energética:</strong> Te muestra cuánta energía ahorras reciclando</li>
+                    <li><strong>⚡ Ahorro Real:</strong> Cada objeto reciclado = energía conservada</li>
                     <li><strong>🔒 100% Privado:</strong> Todo se procesa en tu dispositivo</li>
                 </ul>
             </div>
 
             <div style="background: #d1fae5; padding: 15px; border-radius: 12px; margin: 15px 0;">
                 <p style="color: #065f46; margin: 0; font-size: 0.95em;">
-                    <strong>💡 Tip:</strong> Para mejores resultados, usa buena iluminación y centra el objeto en la cámara
+                    <strong>💡 Sabías que:</strong> Reciclar 1 lata de aluminio ahorra suficiente energía para alimentar un TV durante 3 horas
                 </p>
             </div>
 
@@ -1044,15 +976,11 @@
         <!-- Header -->
         <div class="header">
             <div class="logo-icon">
-                <!-- IMPORTANTE: Reemplaza "nova-logo.png" con tu imagen PNG -->
-                <!-- La imagen debe estar en la misma carpeta que el HTML -->
-                <img src="nova-logo.png" alt="Nova Logo - Colisión de Estrellas" style="display: none;" id="logoImage">
-                
-                <!-- Placeholder temporal (se oculta cuando cargas tu logo) -->
+                <img src="nova-logo.png" alt="Nova Logo" style="display: none;" id="logoImage">
                 <div class="logo-icon-placeholder" id="logoPlaceholder">⭐💥⭐</div>
             </div>
             <h1>Nova</h1>
-            <p>Detector de Residuos en Tiempo Real con IA</p>
+            <p>Ahorra Energía Reciclando Inteligentemente con IA</p>
         </div>
 
         <!-- Stats Grid -->
@@ -1090,9 +1018,9 @@
             <div class="stat-card">
                 <div class="stat-header">
                     <div class="stat-icon co2">🌱</div>
-                    <span>CO₂ Ahorrado</span>
+                    <span>Energía Ahorrada</span>
                 </div>
-                <div class="stat-value" id="co2Display">0.0 kg</div>
+                <div class="stat-value" id="co2Display">0.0 kWh</div>
             </div>
         </div>
 
@@ -1127,8 +1055,8 @@
             <div class="content-section active" id="realtimeSection">
                 <h2 style="margin-bottom: 15px; color: var(--text-dark);">⚡ Detección en Tiempo Real</h2>
                 <div class="info-message">
-                    <span>🎥</span>
-                    <span>La IA analizará automáticamente lo que vea la cámara - Sin necesidad de capturar foto</span>
+                    <span>🔋</span>
+                    <span>La IA analizará automáticamente lo que vea la cámara - Cada reciclaje ahorra energía</span>
                 </div>
                 
                 <button class="camera-btn-large" id="startRealtimeBtn" onclick="startRealtime()">
@@ -1157,8 +1085,8 @@
             <div class="content-section" id="uploadSection">
                 <h2 style="margin-bottom: 20px; color: var(--text-dark);">📁 Subir Imagen</h2>
                 <div class="info-message">
-                    <span>✨</span>
-                    <span>Análisis preciso con MobileNet ImageNet</span>
+                    <span>⚡</span>
+                    <span>Análisis preciso con MobileNet - Descubre cuánta energía ahorras</span>
                 </div>
                 <input type="file" id="imageInput" accept="image/*">
                 <button class="camera-btn-large" onclick="document.getElementById('imageInput').click()">
@@ -1180,13 +1108,14 @@
 
             <!-- Guide Section -->
             <div class="content-section" id="guideSection">
-                <h2 style="margin-bottom: 20px; color: var(--text-dark);">📖 Guía de Reciclaje</h2>
+                <h2 style="margin-bottom: 20px; color: var(--text-dark);">📖 Guía de Reciclaje Energético</h2>
                 
                 <div style="margin-bottom: 20px;">
                     <div class="stat-card" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
                         <h3 style="color: #065f46; margin-bottom: 15px;">🟢 Residuos Orgánicos</h3>
                         <p style="color: #047857; margin-bottom: 10px;"><strong>Contenedor:</strong> Verde</p>
-                        <p style="color: #047857;">Frutas, verduras, cáscaras, restos de comida, café, té, hojas, flores</p>
+                        <p style="color: #047857; margin-bottom: 10px;">Frutas, verduras, cáscaras, restos de comida, café, té, hojas, flores</p>
+                        <p style="color: #065f46; font-weight: 600;">⚡ Ahorro: El compostaje reduce metano y ahorra energía de tratamiento</p>
                     </div>
                 </div>
 
@@ -1194,7 +1123,8 @@
                     <div class="stat-card" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">
                         <h3 style="color: #1e40af; margin-bottom: 15px;">🔵 Residuos Reciclables</h3>
                         <p style="color: #1e3a8a; margin-bottom: 10px;"><strong>Contenedor:</strong> Azul/Amarillo</p>
-                        <p style="color: #1e3a8a;">Plásticos, vidrio, papel, cartón, metales, latas, botellas, envases</p>
+                        <p style="color: #1e3a8a; margin-bottom: 10px;">Plásticos, vidrio, papel, cartón, metales, latas, botellas, envases</p>
+                        <p style="color: #1e40af; font-weight: 600;">⚡ Ahorro: Reciclar aluminio ahorra 95% de energía vs. fabricar nuevo</p>
                     </div>
                 </div>
 
@@ -1202,13 +1132,14 @@
                     <div class="stat-card" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
                         <h3 style="color: #991b1b; margin-bottom: 15px;">🔴 Residuos No Reciclables</h3>
                         <p style="color: #7f1d1d; margin-bottom: 10px;"><strong>Contenedor:</strong> Gris/Negro</p>
-                        <p style="color: #7f1d1d;">Papel higiénico, pañales, colillas, chicles, unicel, empaques mixtos</p>
+                        <p style="color: #7f1d1d; margin-bottom: 10px;">Papel higiénico, pañales, colillas, chicles, unicel, empaques mixtos</p>
+                        <p style="color: #991b1b; font-weight: 600;">⚡ Impacto: Reducir estos residuos ahorra energía de disposición</p>
                     </div>
                 </div>
 
                 <div class="info-message">
-                    <span>🌍</span>
-                    <span>Nova detecta objetos con precisión de hasta 98% usando MobileNet ImageNet</span>
+                    <span>⚡</span>
+                    <span>Reciclar correctamente ahorra millones de kWh anuales • Nova detecta con 98% de precisión</span>
                 </div>
             </div>
         </div>
@@ -1247,7 +1178,33 @@
             { id: 'eco100', name: 'Eco Warrior', icon: '🌍', requirement: 100, type: 'impact', points: 300 }
         ];
 
-        // Sonidos (usando Web Audio API)
+        // Clasificación de residuos
+        const clasificacionMejorada = {
+            'banana': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'cáscaras de frutas, restos de verduras' },
+            'apple': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'frutas, cáscaras, semillas' },
+            'orange': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'cítricos, cáscaras de naranja' },
+            'lemon': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'cítricos, cáscaras' },
+            'pineapple': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'frutas tropicales, cáscaras' },
+            'strawberry': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'fresas, bayas, frutas pequeñas' },
+            'broccoli': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'verduras, restos vegetales' },
+            'mushroom': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'hongos, vegetales' },
+            'corn': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'maíz, vegetales' },
+            'bottle': { tipo: 'inorganico-reciclable', contenedor: 'Azul (Reciclable)', ejemplos: 'botellas PET, envases de plástico' },
+            'water bottle': { tipo: 'inorganico-reciclable', contenedor: 'Azul (Reciclable)', ejemplos: 'botellas de agua, PET' },
+            'wine bottle': { tipo: 'inorganico-reciclable', contenedor: 'Contenedor de Vidrio', ejemplos: 'botellas de vidrio, frascos' },
+            'beer bottle': { tipo: 'inorganico-reciclable', contenedor: 'Contenedor de Vidrio', ejemplos: 'botellas de cerveza, vidrio' },
+            'pop bottle': { tipo: 'inorganico-reciclable', contenedor: 'Azul (Reciclable)', ejemplos: 'botellas de refresco, PET' },
+            'can': { tipo: 'inorganico-reciclable', contenedor: 'Amarillo (Metales)', ejemplos: 'latas de aluminio, refrescos' },
+            'cup': { tipo: 'inorganico-reciclable', contenedor: 'Azul (Reciclable)', ejemplos: 'vasos de plástico limpios' },
+            'plastic bag': { tipo: 'inorganico-reciclable', contenedor: 'Azul (Reciclable)', ejemplos: 'bolsas de plástico limpias' },
+            'paper towel': { tipo: 'inorganico-reciclable', contenedor: 'Contenedor de Papel', ejemplos: 'papel limpio, periódico' },
+            'notebook': { tipo: 'inorganico-reciclable', contenedor: 'Contenedor de Papel', ejemplos: 'cuadernos, hojas, papel' },
+            'cellular telephone': { tipo: 'inorganico-reciclable', contenedor: 'Centro de Acopio Electrónico', ejemplos: 'celulares, tablets, dispositivos' },
+            'laptop': { tipo: 'inorganico-reciclable', contenedor: 'Centro de Acopio Electrónico', ejemplos: 'computadoras, laptops' },
+            'toothbrush': { tipo: 'inorganico-no-reciclable', contenedor: 'Gris/Negro (Basura)', ejemplos: 'cepillos, artículos de higiene' }
+        };
+
+        // Sonidos con Web Audio API
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
         function playSound(type) {
@@ -1258,8 +1215,7 @@
             gainNode.connect(audioContext.destination);
             
             if (type === 'achievement') {
-                // Sonido de logro desbloqueado (melodía ascendente)
-                const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+                const notes = [523.25, 659.25, 783.99];
                 let time = audioContext.currentTime;
                 
                 notes.forEach((freq, i) => {
@@ -1279,10 +1235,7 @@
                     osc.stop(time + i * 0.1 + 0.3);
                 });
                 
-                createConfetti();
-                
             } else if (type === 'levelup') {
-                // Sonido de subir de nivel (más épico)
                 oscillator.type = 'square';
                 oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
                 oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.2);
@@ -1293,10 +1246,7 @@
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
                 
-                createConfetti(30);
-                
             } else if (type === 'detection') {
-                // Sonido sutil de detección
                 oscillator.type = 'sine';
                 oscillator.frequency.value = 800;
                 
@@ -1307,54 +1257,6 @@
                 oscillator.stop(audioContext.currentTime + 0.15);
             }
         }
-
-        // Efecto de confetti
-        function createConfetti(amount = 50) {
-            for (let i = 0; i < amount; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.top = '-10px';
-                    confetti.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
-                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => confetti.remove(), 3000);
-                }, i * 30);
-            }
-        }
-        const clasificacionMejorada = {
-            // Orgánicos
-            'banana': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'cáscaras de frutas, restos de verduras' },
-            'apple': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'frutas, cáscaras, semillas' },
-            'orange': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'cítricos, cáscaras de naranja' },
-            'lemon': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'cítricos, cáscaras' },
-            'pineapple': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'frutas tropicales, cáscaras' },
-            'strawberry': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'fresas, bayas, frutas pequeñas' },
-            'broccoli': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'verduras, restos vegetales' },
-            'mushroom': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'hongos, vegetales' },
-            'corn': { tipo: 'organico', contenedor: 'Verde (Orgánico)', ejemplos: 'maíz, vegetales' },
-            
-            // Reciclables
-            'bottle': { tipo: 'inorganico-reciclable', contenedor: 'Azul (Reciclable)', ejemplos: 'botellas PET, envases de plástico' },
-            'water bottle': { tipo: 'inorganico-reciclable', contenedor: 'Azul (Reciclable)', ejemplos: 'botellas de agua, PET' },
-            'wine bottle': { tipo: 'inorganico-reciclable', contenedor: 'Contenedor de Vidrio', ejemplos: 'botellas de vidrio, frascos' },
-            'beer bottle': { tipo: 'inorganico-reciclable', contenedor: 'Contenedor de Vidrio', ejemplos: 'botellas de cerveza, vidrio' },
-            'pop bottle': { tipo: 'inorganico-reciclable', contenedor: 'Azul (Reciclable)', ejemplos: 'botellas de refresco, PET' },
-            'can': { tipo: 'inorganico-reciclable', contenedor: 'Amarillo (Metales)', ejemplos: 'latas de aluminio, refrescos' },
-            'cup': { tipo: 'inorganico-reciclable', contenedor: 'Azul (Reciclable)', ejemplos: 'vasos de plástico limpios' },
-            'plastic bag': { tipo: 'inorganico-reciclable', contenedor: 'Azul (Reciclable)', ejemplos: 'bolsas de plástico limpias' },
-            'paper towel': { tipo: 'inorganico-reciclable', contenedor: 'Contenedor de Papel', ejemplos: 'papel limpio, periódico' },
-            'notebook': { tipo: 'inorganico-reciclable', contenedor: 'Contenedor de Papel', ejemplos: 'cuadernos, hojas, papel' },
-            
-            // Electrónicos
-            'cellular telephone': { tipo: 'inorganico-reciclable', contenedor: 'Centro de Acopio Electrónico', ejemplos: 'celulares, tablets, dispositivos' },
-            'laptop': { tipo: 'inorganico-reciclable', contenedor: 'Centro de Acopio Electrónico', ejemplos: 'computadoras, laptops' },
-            
-            // No reciclables
-            'toothbrush': { tipo: 'inorganico-no-reciclable', contenedor: 'Gris/Negro (Basura)', ejemplos: 'cepillos, artículos de higiene' }
-        };
 
         // Tema
         let savedTheme = 'light';
@@ -1450,7 +1352,6 @@
                     await loadModel();
                 }
                 
-                // Iniciar detección continua
                 video.addEventListener('loadeddata', () => {
                     detectRealtime();
                 });
@@ -1492,7 +1393,6 @@
                     const className = best.className.toLowerCase();
                     const confidence = (best.probability * 100).toFixed(1);
                     
-                    // Buscar coincidencia en base de datos
                     let match = null;
                     for (let key in clasificacionMejorada) {
                         if (className.includes(key) || key.includes(className.split(',')[0])) {
@@ -1508,7 +1408,6 @@
                     if (match && confidence > 50) {
                         updateRealtimeOverlay(match.name, match.info, confidence);
                         
-                        // Sonido sutil de detección
                         if (gameData.totalDetections % 3 === 0) {
                             playSound('detection');
                         }
@@ -1525,7 +1424,6 @@
                 console.error('Error en detección:', error);
             }
             
-            // Repetir cada 1.5 segundos
             detectionInterval = setTimeout(() => detectRealtime(), 1500);
         }
 
@@ -1551,7 +1449,6 @@
             
             overlay.classList.add('active');
             
-            // Agregar puntos cada 5 detecciones
             if (gameData.totalDetections % 5 === 0) {
                 addPoints(10, info.tipo);
             }
@@ -1573,7 +1470,6 @@
             }
         });
 
-        // Análisis de imagen subida
         async function analyzeImage(img, source) {
             const loadingEl = document.getElementById('loadingUpload');
             const resultEl = document.getElementById('resultUpload');
@@ -1703,6 +1599,12 @@
                     <p><strong>📦 Contenedor:</strong> ${info.contenedor}</p>
                 </div>
 
+                <div class="result-info" style="background: rgba(0, 255, 0, 0.15); border: 2px solid rgba(0, 255, 0, 0.3);">
+                    <h3>⚡ Ahorro Energético</h3>
+                    <p><strong>Energía ahorrada:</strong> ${info.energia || '0.5 kWh'}</p>
+                    <p style="font-size: 0.9em; margin-top: 8px;">${info.dato || 'Reciclar correctamente conserva recursos energéticos'}</p>
+                </div>
+
                 <div class="result-info">
                     <h3>♻️ Similares</h3>
                     <p>${info.ejemplos}</p>
@@ -1733,7 +1635,7 @@
         function addPoints(points, type) {
             gameData.totalPoints += points;
             gameData.currentExp += points;
-            gameData.ecoImpact += 0.5;
+            gameData.ecoImpact += 0.8;
             gameData.totalDetections++;
             
             while (gameData.currentExp >= gameData.maxExp) {
@@ -1755,6 +1657,7 @@
             gameData.level++;
             gameData.currentExp -= gameData.maxExp;
             gameData.maxExp = Math.floor(gameData.maxExp * 1.5);
+            playSound('levelup');
             showAchievement('🎉', '¡Nivel ' + gameData.level + '!', 'Has subido de nivel');
         }
 
@@ -1778,6 +1681,7 @@
                 if (unlock) {
                     gameData.badges.push(badge.id);
                     gameData.totalPoints += badge.points;
+                    playSound('achievement');
                     showAchievement(badge.icon, '¡Logro Desbloqueado!', badge.name);
                     updateBadges();
                 }
@@ -1785,7 +1689,6 @@
         }
 
         function updateGameUI() {
-            // Animar cambios en estadísticas
             animateValue('levelDisplay', gameData.level);
             document.getElementById('expText').textContent = `${gameData.currentExp}/${gameData.maxExp}`;
             const progress = (gameData.currentExp / gameData.maxExp) * 100;
@@ -1793,7 +1696,7 @@
             
             animateValue('streakDisplay', gameData.streak + (gameData.streak === 1 ? ' día' : ' días'));
             animateValue('scansDisplay', gameData.totalDetections);
-            animateValue('co2Display', gameData.ecoImpact.toFixed(1) + ' kg');
+            animateValue('co2Display', gameData.ecoImpact.toFixed(1) + ' kWh');
         }
 
         function animateValue(id, newValue) {
@@ -1852,12 +1755,10 @@
         };
         
         logoImage.onerror = function() {
-            // Si no encuentra el logo, mantiene el placeholder
             logoImage.style.display = 'none';
             logoPlaceholder.style.display = 'flex';
         };
         
-        // Intentar cargar el logo
         logoImage.src = logoImage.getAttribute('src');
     </script>
 </body>
