@@ -912,6 +912,331 @@
         input[type="file"] {
             display: none;
         }
+
+        /* Partículas Energéticas */
+        .energy-particle {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, var(--primary), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatParticle 8s infinite ease-in-out;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        @keyframes floatParticle {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-60px) translateX(-10px);
+                opacity: 0.8;
+            }
+            75% {
+                transform: translateY(-30px) translateX(-30px);
+                opacity: 0.6;
+            }
+        }
+
+        /* Milestone Modal */
+        .milestone-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .milestone-modal.active {
+            display: flex;
+        }
+
+        .milestone-content {
+            text-align: center;
+            padding: 60px 40px;
+            max-width: 600px;
+            animation: zoomIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .milestone-icon {
+            font-size: 8em;
+            margin-bottom: 20px;
+            animation: rotateScale 1s ease-in-out infinite;
+        }
+
+        @keyframes rotateScale {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(5deg); }
+            50% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.2) rotate(3deg); }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .milestone-content h2 {
+            font-size: 3em;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+        }
+
+        .milestone-content p {
+            font-size: 1.3em;
+            color: var(--text-dark);
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+
+        .milestone-close {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .milestone-close:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.5);
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 4999;
+            animation: confettiFall 3s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Comparador */
+        .comparador-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .comparador-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .comparador-header h2 {
+            font-size: 1.3em;
+            color: var(--text-dark);
+        }
+
+        .comparison-bars {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-bar {
+            flex: 1;
+        }
+
+        .comparison-label {
+            font-size: 0.9em;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .comparison-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .bar-container {
+            height: 30px;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 15px;
+            transition: width 1s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+
+        .comparison-message {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 200, 0, 0.15));
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 2px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .comparison-message .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .comparison-message .text {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .ranking-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+        }
+
+        /* Compartir en Redes */
+        .share-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .share-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .share-btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .share-btn.whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+
+        .share-btn.twitter {
+            background: linear-gradient(135deg, #1DA1F2, #0d8bd9);
+        }
+
+        .share-btn.facebook {
+            background: linear-gradient(135deg, #1877F2, #0d5ebd);
+        }
+
+        .share-btn.copy {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        }
+
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .share-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Mejorar visibilidad del texto en cards */
+        .comparador-section h2,
+        .share-section h2 {
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .comparador-section p,
+        .share-section p {
+            color: var(--text-gray);
+        }
+
+        body.dark-mode .comparison-message {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 200, 0, 0.25));
+            border: 2px solid rgba(0, 255, 0, 0.4);
+        }
+
+        body.dark-mode .comparison-message .text {
+            color: #e0ffe0;
+        }
+
+        body.dark-mode .comparison-label {
+            color: #88cc88;
+        }
+
+        body.dark-mode .comparison-value {
+            color: #e0ffe0;
+        }
+
+        /* Odómetro */
+        @keyframes countUp {
+            from {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 <body>
@@ -943,7 +1268,7 @@
                 <ul>
                     <li><strong>🎯 Detección en Tiempo Real:</strong> Apunta tu cámara y detecta objetos al instante</li>
                     <li><strong>🤖 IA MobileNet:</strong> Red neuronal con +90% de precisión</li>
-                    <li><strong>♻️ Clasificación Energética:</strong> Te muestra cuánta energía ahorras reciclando</li>
+                    <li><strong♻️ Clasificación Energética:</strong> Te muestra cuánta energía ahorras reciclando</li>
                     <li><strong>⚡ Ahorro Real:</strong> Cada objeto reciclado = energía conservada</li>
                     <li><strong>🔒 100% Privado:</strong> Todo se procesa en tu dispositivo</li>
                 </ul>
@@ -969,6 +1294,17 @@
                 <h3 id="achievementTitle">¡Logro Desbloqueado!</h3>
                 <p id="achievementDesc">Has ganado una nueva insignia</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Milestone Modal -->
+    <div class="milestone-modal" id="milestoneModal">
+        <div class="milestone-content">
+            <div class="milestone-icon" id="milestoneIcon">🏆</div>
+            <h2 id="milestoneTitle">¡Hito Alcanzado!</h2>
+            <p id="milestoneMessage">Has alcanzado un nuevo hito energético</p>
+            <p id="milestoneEquivalence" style="font-size: 1.1em; color: var(--primary);"></p>
+            <button class="milestone-close" onclick="closeMilestone()">¡Continuar! 🚀</button>
         </div>
     </div>
 
@@ -1031,6 +1367,65 @@
                 <span class="logros-counter" id="badgeCounter">0/8</span>
             </div>
             <div class="badges-grid" id="badgesGrid"></div>
+        </div>
+
+        <!-- Comparador Section -->
+        <div class="comparador-section">
+            <div class="comparador-header">
+                <span style="font-size: 1.5em;">📊</span>
+                <h2>Tu vs. Promedio</h2>
+            </div>
+            
+            <div class="comparison-bars">
+                <div class="comparison-bar">
+                    <div class="comparison-label">Usuario Promedio</div>
+                    <div class="comparison-value">45.0 kWh</div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 100%; background: linear-gradient(90deg, #6b7280, #9ca3af);"></div>
+                    </div>
+                </div>
+                
+                <div class="comparison-bar">
+                    <div class="comparison-label">Tu Ahorro</div>
+                    <div class="comparison-value" id="userComparison">0.0 kWh</div>
+                    <div class="bar-container">
+                        <div class="bar-fill" id="userBar" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comparison-message" id="comparisonMessage">
+                <div class="icon">🚀</div>
+                <div class="text">¡Comienza a detectar para comparar tu progreso!</div>
+            </div>
+        </div>
+
+        <!-- Compartir Section -->
+        <div class="share-section">
+            <div class="comparador-header">
+                <span style="font-size: 1.5em;">📱</span>
+                <h2>Comparte tu Progreso</h2>
+            </div>
+            <p style="color: var(--text-gray); margin-bottom: 15px;">Inspira a otros a ahorrar energía compartiendo tus logros</p>
+            
+            <div class="share-buttons">
+                <button class="share-btn whatsapp" onclick="shareWhatsApp()">
+                    <span>📱</span>
+                    <span>WhatsApp</span>
+                </button>
+                <button class="share-btn twitter" onclick="shareTwitter()">
+                    <span>🐦</span>
+                    <span>Twitter</span>
+                </button>
+                <button class="share-btn facebook" onclick="shareFacebook()">
+                    <span>📘</span>
+                    <span>Facebook</span>
+                </button>
+                <button class="share-btn copy" onclick="copyLink()">
+                    <span>🔗</span>
+                    <span>Copiar Link</span>
+                </button>
+            </div>
         </div>
 
         <!-- Tabs -->
@@ -1163,8 +1558,19 @@
             ecoImpact: 0,
             streak: 0,
             badges: [],
-            detectionHistory: []
+            detectionHistory: [],
+            milestonesReached: []
         };
+
+        // Definición de Hitos
+        const milestones = [
+            { id: 'milestone_10', threshold: 10, icon: '🌱', title: 'Primera Marca', message: '¡Has ahorrado 10 kWh! Equivale a 20 horas de TV' },
+            { id: 'milestone_50', threshold: 50, icon: '⚡', title: 'Medio Camino', message: '¡50 kWh ahorrados! Equivale a 100 horas de TV' },
+            { id: 'milestone_100', threshold: 100, icon: '🏆', title: '100 kWh Alcanzados', message: '¡Increíble! 100 kWh = 200 horas de TV' },
+            { id: 'milestone_250', threshold: 250, icon: '🌟', title: 'Eco Warrior', message: '¡250 kWh! Eres un guerrero ecológico. 500 horas de TV' },
+            { id: 'milestone_500', threshold: 500, icon: '👑', title: 'Rey de la Energía', message: '¡500 kWh! Eres royalty ecológica. 1000 horas de TV' },
+            { id: 'milestone_1000', threshold: 1000, icon: '🌍', title: 'Leyenda', message: '¡LEYENDA! 1000 kWh ahorrados. 2000 horas de TV' }
+        ];
 
         // Definición de Badges
         const availableBadges = [
@@ -1649,8 +2055,10 @@
             });
             
             checkBadges(type);
+            checkMilestones();
             saveGameData();
             updateGameUI();
+            updateComparison();
         }
 
         function levelUp() {
@@ -1704,8 +2112,176 @@
             element.style.animation = 'none';
             setTimeout(() => {
                 element.textContent = newValue;
-                element.style.animation = 'countUp 0.5s ease';
+                element.style.animation = 'countUp 0.8s ease';
             }, 10);
+        }
+
+        // Sistema de Hitos
+        function checkMilestones() {
+            milestones.forEach(milestone => {
+                if (gameData.ecoImpact >= milestone.threshold && !gameData.milestonesReached.includes(milestone.id)) {
+                    gameData.milestonesReached.push(milestone.id);
+                    showMilestone(milestone);
+                    saveGameData();
+                }
+            });
+        }
+
+        function showMilestone(milestone) {
+            document.getElementById('milestoneIcon').textContent = milestone.icon;
+            document.getElementById('milestoneTitle').textContent = milestone.title;
+            document.getElementById('milestoneMessage').textContent = milestone.message;
+            
+            const tvHours = (milestone.threshold * 2).toFixed(0);
+            document.getElementById('milestoneEquivalence').textContent = `Equivalente a ${tvHours} horas de TV 📺`;
+            
+            document.getElementById('milestoneModal').classList.add('active');
+            
+            playMilestoneSound();
+            createConfetti(100);
+        }
+
+        function closeMilestone() {
+            document.getElementById('milestoneModal').classList.remove('active');
+        }
+
+        function playMilestoneSound() {
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            let time = audioContext.currentTime;
+            
+            notes.forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+                
+                gain.gain.setValueAtTime(0.4, time);
+                gain.gain.exponentialRampToValueAtTime(0.01, time + 0.5);
+                
+                osc.start(time + i * 0.15);
+                osc.stop(time + i * 0.15 + 0.5);
+            });
+        }
+
+        function createConfetti(amount = 50) {
+            for (let i = 0; i < amount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Sistema de Comparación
+        function updateComparison() {
+            const promedio = 45.0;
+            const userImpact = gameData.ecoImpact;
+            
+            document.getElementById('userComparison').textContent = userImpact.toFixed(1) + ' kWh';
+            
+            const percentage = Math.min((userImpact / promedio) * 100, 200);
+            document.getElementById('userBar').style.width = percentage + '%';
+            
+            const messageEl = document.getElementById('comparisonMessage');
+            
+            if (userImpact >= promedio * 2) {
+                const diff = ((userImpact / promedio - 1) * 100).toFixed(0);
+                const topPercent = Math.max(1, Math.min(100 - Math.floor(userImpact / 10), 99));
+                messageEl.innerHTML = `
+                    <div class="icon">🏆</div>
+                    <div class="text">¡Increíble! Ahorras ${diff}% MÁS que el promedio</div>
+                    <div class="ranking-badge">TOP ${topPercent}% 🌟</div>
+                `;
+            } else if (userImpact > promedio) {
+                const diff = ((userImpact / promedio - 1) * 100).toFixed(0);
+                messageEl.innerHTML = `
+                    <div class="icon">🌟</div>
+                    <div class="text">¡Excelente! Ahorras ${diff}% más que el promedio</div>
+                `;
+            } else if (userImpact >= promedio * 0.5) {
+                messageEl.innerHTML = `
+                    <div class="icon">💪</div>
+                    <div class="text">¡Vas bien! Sigue así para superar el promedio</div>
+                `;
+            } else if (userImpact > 0) {
+                messageEl.innerHTML = `
+                    <div class="icon">🚀</div>
+                    <div class="text">¡Sigue detectando! Cada escaneo cuenta</div>
+                `;
+            }
+        }
+
+        // Compartir en Redes Sociales
+        function getShareMessage() {
+            const kwh = gameData.ecoImpact.toFixed(1);
+            const nivel = gameData.level;
+            const tvHours = (kwh * 2).toFixed(0);
+            const url = window.location.href;
+            
+            return {
+                text: `🌍⚡ ¡He ahorrado ${kwh} kWh con Nova!\n\n🎯 Nivel: ${nivel}\n📺 Equivalente a ${tvHours} horas de TV\n♻️ Detector de residuos con IA\n\n¡Únete al ahorro energético!`,
+                url: url
+            };
+        }
+
+        function shareWhatsApp() {
+            const { text, url } = getShareMessage();
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function shareTwitter() {
+            const { text, url } = getShareMessage();
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=NovaEnergia,Reciclaje,AhorroEnergetico`;
+            window.open(twitterUrl, '_blank');
+        }
+
+        function shareFacebook() {
+            const { url } = getShareMessage();
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+            window.open(facebookUrl, '_blank');
+        }
+
+        async function copyLink() {
+            const { text, url } = getShareMessage();
+            const fullText = text + '\n' + url;
+            
+            try {
+                await navigator.clipboard.writeText(fullText);
+                showAchievement('✅', '¡Copiado!', 'Link copiado al portapapeles');
+            } catch (err) {
+                const textarea = document.createElement('textarea');
+                textarea.value = fullText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showAchievement('✅', '¡Copiado!', 'Link copiado al portapapeles');
+            }
+        }
+
+        // Crear partículas energéticas
+        function createEnergyParticles() {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'energy-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (8 + Math.random() * 4) + 's';
+                document.body.appendChild(particle);
+            }
         }
 
         function updateBadges() {
@@ -1744,6 +2320,8 @@
         loadGameData();
         loadModel();
         checkWelcome();
+        createEnergyParticles();
+        updateComparison();
         
         // Cargar logo si existe
         const logoImage = document.getElementById('logoImage');
