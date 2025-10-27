@@ -18,11 +18,15 @@
             --primary-dark: #00cc00;
             --primary-light: #33ff33;
             --bg-light: #0a1f0a;
-            --bg-card: #1a3a1a;
+            --bg-card: rgba(26, 58, 26, 0.45);
             --text-dark: #e0ffe0;
             --text-gray: #88cc88;
-            --border: #2d5a2d;
+            --border: rgba(0, 255, 0, 0.3);
             --accent: #00ff00;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(0, 255, 0, 0.25);
+            --glow: 0 0 20px rgba(0, 255, 0, 0.6);
+            --glow-intense: 0 0 40px rgba(0, 255, 0, 0.9);
         }
 
         body {
@@ -36,11 +40,9 @@
         }
 
         body.dark-mode {
-            --bg-light: #050f05;
-            --bg-card: #0f1f0f;
-            --text-dark: #e0ffe0;
-            --text-gray: #88cc88;
-            --border: #1a3a1a;
+            --bg-card: rgba(15, 31, 15, 0.45);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(0, 255, 0, 0.2);
         }
 
         /* Video de Fondo */
@@ -62,7 +64,7 @@
             width: 100%;
             height: 100%;
             background: rgba(10, 31, 10, 0.65);
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(3px);
             transition: all 0.3s ease;
         }
 
@@ -71,17 +73,7 @@
             height: 100%;
             object-fit: cover;
             opacity: 0.7;
-            transition: opacity 0.3s ease;
             filter: hue-rotate(20deg) saturate(1.3);
-        }
-
-        body.dark-mode .video-background::after {
-            background: rgba(5, 15, 5, 0.50);
-            backdrop-filter: blur(1px);
-        }
-
-        body.dark-mode .video-background video {
-            opacity: 0.85;
         }
 
         .container {
@@ -92,6 +84,46 @@
             z-index: 1;
         }
 
+        /* GLASSMORPHISM CARDS */
+        .glass-card {
+            background: var(--glass);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1.5px solid var(--glass-border);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 2px 8px rgba(255, 255, 255, 0.1),
+                var(--glow);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.4), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.3),
+                inset 0 4px 16px rgba(255, 255, 255, 0.15),
+                var(--glow-intense);
+            border-color: rgba(0, 255, 0, 0.5);
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
         /* Header */
         .header {
             text-align: center;
@@ -99,19 +131,49 @@
             margin-bottom: 30px;
         }
 
+        /* LOGO CON ANILLOS ENERGÉTICOS */
         .logo-icon {
             width: 120px;
             height: 120px;
-            border-radius: 24px;
+            border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 20px;
-            box-shadow: 0 10px 40px rgba(0, 255, 0, 0.6);
-            animation: float 3s ease-in-out infinite;
-            overflow: hidden;
+            position: relative;
+            overflow: visible;
             background: linear-gradient(135deg, #0a1f0a, #1a3a1a);
             border: 3px solid var(--primary);
+            animation: float 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .logo-icon::before,
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--primary-light);
+            border-right-color: var(--primary);
+            animation: pulseRing 2s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        .logo-icon::after {
+            width: 160px;
+            height: 160px;
+            animation-delay: 0.5s;
+            border-top-color: var(--primary);
+            border-left-color: var(--primary-light);
+        }
+
+        @keyframes pulseRing {
+            0% { transform: scale(0.8); opacity: 1; }
+            70% { transform: scale(1.3); opacity: 0.6; }
+            100% { transform: scale(1.5); opacity: 0; }
         }
 
         .logo-icon img {
@@ -119,12 +181,14 @@
             height: 100%;
             object-fit: contain;
             padding: 10px;
-            filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.5));
+            filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.7));
+            z-index: 2;
         }
 
         .logo-icon-placeholder {
             font-size: 3.5em;
-            filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.8));
+            filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.9));
+            z-index: 2;
         }
 
         @keyframes float {
@@ -180,21 +244,6 @@
             margin-bottom: 30px;
         }
 
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: 1px solid var(--border);
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        }
-
         .stat-header {
             display: flex;
             align-items: center;
@@ -212,18 +261,34 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2em;
+            transition: all 0.3s ease;
         }
 
-        .stat-icon.nivel { background: #dbeafe; }
-        .stat-icon.racha { background: #fed7aa; }
-        .stat-icon.escaneos { background: #e0e7ff; }
-        .stat-icon.co2 { background: #d1fae5; }
+        .stat-icon.nivel:hover { animation: bounce 0.6s; }
+        .stat-icon.racha:hover { animation: flame 1.5s infinite; }
+        .stat-icon.escaneos:hover { animation: pulse 1s infinite; }
+        .stat-icon.co2:hover { animation: grow 1.2s infinite; }
 
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes flame { 0% { text-shadow: 0 0 10px #ff6b35; } 50% { text-shadow: 0 0 30px #ff4500; } 100% { text-shadow: 0 0 10px #ff6b35; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        @keyframes grow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+
+        /* NÚMEROS CON BRILLO */
         .stat-value {
             font-size: 2em;
             font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 4px;
+            color: transparent;
+            background: linear-gradient(135deg, #00ff00, #33ff33, #00ff88);
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: glowText 2s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+        }
+
+        @keyframes glowText {
+            0%, 100% { text-shadow: 0 0 20px rgba(0, 255, 0, 0.6); }
+            50% { text-shadow: 0 0 40px rgba(0, 255, 0, 1); }
         }
 
         .stat-progress {
@@ -240,29 +305,38 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
-            transition: width 0.3s;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light), var(--primary));
+            background-size: 200% 100%;
+            animation: flow 3s linear infinite;
             border-radius: 3px;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--glow-intense);
         }
 
-        .progress-text {
-            font-size: 0.75em;
-            color: var(--text-gray);
-            margin-top: 4px;
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, white);
+            filter: blur(8px);
+            animation: spark 1.5s infinite;
+        }
+
+        @keyframes flow {
+            0% { background-position: 0% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes spark {
+            0%, 100% { opacity: 0; transform: translateX(-10px); }
+            50% { opacity: 1; transform: translateX(0); }
         }
 
         /* Logros Section */
-        .logros-section {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 28px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-        }
-
         .logros-header {
             display: flex;
             justify-content: space-between;
@@ -305,9 +379,36 @@
         }
 
         .badge.unlocked {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
-            animation: bounceIn 0.6s ease;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24, #fde68a, #fbbf24, #f59e0b);
+            background-size: 200% 200%;
+            animation: holographic 4s linear infinite, bounceIn 0.6s ease;
+            box-shadow: 
+                0 4px 12px rgba(251, 191, 36, 0.4),
+                0 0 20px rgba(251, 191, 36, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge.unlocked::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes holographic {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .badge.locked {
@@ -376,25 +477,6 @@
             color: var(--primary);
         }
 
-        /* Content Card */
-        .content-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: 1px solid var(--border);
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .content-section {
-            display: none;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
         /* Camera Button */
         .camera-btn-large {
             width: 100%;
@@ -416,7 +498,7 @@
 
         .camera-btn-large:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 211, 153, 0.4);
+            box-shadow: 0 6px 20px rgba(52, 211, 153 0.4);
         }
 
         .camera-btn-large.stop {
@@ -444,6 +526,46 @@
             display: none;
         }
 
+        /* ESCANEO EN TIEMPO REAL */
+        #realtimeContainer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            box-shadow: 0 0 20px var(--primary);
+            animation: scan 2s linear infinite;
+            z-index: 10;
+        }
+
+        .detection-grid {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: 
+                repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(0, 255, 0, 0.05) 20px, rgba(0, 255, 0, 0.05) 40px),
+                repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0, 255, 0, 0.05) 20px, rgba(0, 255, 0, 0.05) 40px);
+            animation: gridPulse 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
         /* Detection Overlay */
         .detection-overlay {
             position: absolute;
@@ -458,14 +580,8 @@
         }
 
         @keyframes slideUpFade {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .detection-overlay.active {
@@ -502,14 +618,8 @@
         }
 
         @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .detection-type.organico {
@@ -672,9 +782,6 @@
         }
 
         .welcome-content {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 40px 35px;
             max-width: 550px;
             width: 90%;
             max-height: 85vh;
@@ -705,7 +812,6 @@
         }
 
         .welcome-features {
-            background: var(--bg-light);
             padding: 20px;
             border-radius: 15px;
             margin: 20px 0;
@@ -773,40 +879,42 @@
             position: fixed;
             top: 100px;
             right: -400px;
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
             color: white;
             padding: 20px 25px;
             border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(251, 191, 36, 0.6);
             z-index: 3500;
             transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             max-width: 350px;
             animation: shake 0.5s ease-in-out;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px) rotate(-2deg); }
-            75% { transform: translateX(10px) rotate(2deg); }
+        .achievement-toast::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.2), transparent 70%);
+            animation: pulseGlow 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes elasticEntry {
+            0% { transform: translateX(100%) scale(0.5); opacity: 0; }
+            60% { transform: translateX(-20px) scale(1.1); opacity: 1; }
+            100% { transform: translateX(0) scale(1); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
         }
 
         .achievement-toast.show {
             right: 20px;
-            animation: bounceInRight 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        @keyframes bounceInRight {
-            0% {
-                opacity: 0;
-                transform: translateX(100px) scale(0.5);
-            }
-            60% {
-                opacity: 1;
-                transform: translateX(-15px) scale(1.1);
-            }
-            100% {
-                transform: translateX(0) scale(1);
-            }
+            animation: elasticEntry 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         .achievement-content {
@@ -821,12 +929,8 @@
         }
 
         @keyframes rotateIn {
-            from {
-                transform: rotate(-180deg) scale(0);
-            }
-            to {
-                transform: rotate(0deg) scale(1);
-            }
+            from { transform: rotate(-180deg) scale(0); }
+            to { transform: rotate(0deg) scale(1); }
         }
 
         .achievement-text h3 {
@@ -843,14 +947,8 @@
         }
 
         @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         /* Info Message */
@@ -897,6 +995,19 @@
             .tabs {
                 flex-direction: column;
             }
+
+            .glass-card {
+                padding: 20px;
+            }
+
+            .logo-icon {
+                width: 100px;
+                height: 100px;
+            }
+
+            .stat-value {
+                font-size: 1.6em;
+            }
         }
 
         @keyframes fadeIn {
@@ -913,35 +1024,41 @@
             display: none;
         }
 
-        /* Partículas Energéticas */
+        /* PARTÍCULAS ENERGÉTICAS */
         .energy-particle {
             position: fixed;
-            width: 8px;
-            height: 8px;
-            background: radial-gradient(circle, var(--primary), transparent);
             border-radius: 50%;
             pointer-events: none;
             z-index: 0;
-            animation: floatParticle 8s infinite ease-in-out;
-            box-shadow: 0 0 10px var(--primary);
+            animation: floatParticle 10s infinite ease-in-out;
+            filter: blur(1px);
+            box-shadow: 0 0 15px currentColor;
         }
 
         @keyframes floatParticle {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-                opacity: 0.3;
-            }
-            25% {
-                transform: translateY(-30px) translateX(20px);
-                opacity: 0.6;
-            }
-            50% {
-                transform: translateY(-60px) translateX(-10px);
-                opacity: 0.8;
-            }
-            75% {
-                transform: translateY(-30px) translateX(-30px);
-                opacity: 0.6;
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            25% { transform: translateY(-30px) translateX(20px); opacity: 0.6; }
+            50% { transform: translateY(-60px) translateX(-10px); opacity: 0.8; }
+            75% { transform: translateY(-30px) translateX(-30px); opacity: 0.6; }
+        }
+
+        /* CURSOR PARTICLES */
+        .cursor-particle {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: cursorTrail 1s ease-out forwards;
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        @keyframes cursorTrail {
+            to {
+                transform: translateY(-100px) scale(0);
+                opacity: 0;
             }
         }
 
@@ -985,14 +1102,8 @@
         }
 
         @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.3);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.3); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .milestone-content h2 {
@@ -1035,6 +1146,7 @@
             z-index: 4999;
             animation: confettiFall 3s linear forwards;
             pointer-events: none;
+            background: hsl(var(--hue, 0), 70%, 60%);
         }
 
         @keyframes confettiFall {
@@ -1044,25 +1156,16 @@
             }
         }
 
-        /* Comparador */
-        .comparador-section {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 28px;
+        /* Comparador y Compartir */
+        .comparador-section, .share-section {
             margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
         }
 
-        .comparador-header {
+        .comparador-header, .share-section h2 {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 20px;
-        }
-
-        .comparador-header h2 {
             font-size: 1.3em;
             color: var(--text-dark);
         }
@@ -1138,17 +1241,6 @@
             box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
         }
 
-        /* Compartir en Redes */
-        .share-section {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 28px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-        }
-
         .share-buttons {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1172,41 +1264,14 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .share-btn.whatsapp {
-            background: linear-gradient(135deg, #25D366, #128C7E);
-        }
-
-        .share-btn.twitter {
-            background: linear-gradient(135deg, #1DA1F2, #0d8bd9);
-        }
-
-        .share-btn.facebook {
-            background: linear-gradient(135deg, #1877F2, #0d5ebd);
-        }
-
-        .share-btn.copy {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
-        }
+        .share-btn.whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); }
+        .share-btn.twitter { background: linear-gradient(135deg, #1DA1F2, #0d8bd9); }
+        .share-btn.facebook { background: linear-gradient(135deg, #1877F2, #0d5ebd); }
+        .share-btn.copy { background: linear-gradient(135deg, #6366f1, #4f46e5); }
 
         .share-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        .share-btn:active {
-            transform: translateY(-1px);
-        }
-
-        /* Mejorar visibilidad del texto en cards */
-        .comparador-section h2,
-        .share-section h2 {
-            color: var(--text-dark);
-            font-weight: 700;
-        }
-
-        .comparador-section p,
-        .share-section p {
-            color: var(--text-gray);
         }
 
         body.dark-mode .comparison-message {
@@ -1225,18 +1290,6 @@
         body.dark-mode .comparison-value {
             color: #e0ffe0;
         }
-
-        /* Odómetro */
-        @keyframes countUp {
-            from {
-                opacity: 0.5;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
     </style>
 </head>
 <body>
@@ -1245,43 +1298,38 @@
         <video autoplay muted loop playsinline>
             <source src="Fondo.mp4" type="video/mp4">
             <source src="https://cdn.pixabay.com/vimeo/665175468/particles-76048.mp4?width=1280" type="video/mp4">
-            <source src="https://cdn.pixabay.com/vimeo/531878502/technology-55864.mp4?width=1280" type="video/mp4">
         </video>
     </div>
 
     <!-- Theme Toggle -->
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-        <span id="themeIcon">🌙</span>
+        <span id="themeIcon">Luna</span>
     </button>
 
     <!-- Welcome Modal -->
     <div class="welcome-modal active" id="welcomeModal">
-        <div class="welcome-content">
-            <button class="skip-welcome" onclick="closeWelcome()">✕</button>
-            
-            <div class="welcome-icon">🔋⚡</div>
+        <div class="welcome-content glass-card">
+            <button class="skip-welcome" onclick="closeWelcome()">X</button>
+            <div class="welcome-icon">Energía</div>
             <h2>¡Bienvenido a Nova!</h2>
             <p>Tu asistente inteligente para ahorrar energía a través del reciclaje correcto</p>
-            
-            <div class="welcome-features">
-                <h3>⚡ ¿Qué es Nova?</h3>
+            <div class="welcome-features glass-card">
+                <h3>¿Qué es Nova?</h3>
                 <ul>
-                    <li><strong>🎯 Detección en Tiempo Real:</strong> Apunta tu cámara y detecta objetos al instante</li>
-                    <li><strong>🤖 IA MobileNet:</strong> Red neuronal con +90% de precisión</li>
-                    <li><strong>♻️ Clasificación Energética:</strong> Te muestra cuánta energía ahorras reciclando</li>
-                    <li><strong>⚡ Ahorro Real:</strong> Cada objeto reciclado = energía conservada</li>
-                    <li><strong>🔒 100% Privado:</strong> Todo se procesa en tu dispositivo</li>
+                    <li><strong>Detección en Tiempo Real:</strong> Apunta tu cámara y detecta objetos al instante</li>
+                    <li><strong>IA MobileNet:</strong> Red neuronal con +90% de precisión</li>
+                    <li><strong>Clasificación Energética:</strong> Te muestra cuánta energía ahorras reciclando</li>
+                    <li><strong>Ahorro Real:</strong> Cada objeto reciclado = energía conservada</li>
+                    <li><strong>100% Privado:</strong> Todo se procesa en tu dispositivo</li>
                 </ul>
             </div>
-
             <div style="background: #d1fae5; padding: 15px; border-radius: 12px; margin: 15px 0;">
                 <p style="color: #065f46; margin: 0; font-size: 0.95em;">
-                    <strong>💡 Sabías que:</strong> Reciclar 1 lata de aluminio ahorra suficiente energía para alimentar un TV durante 3 horas
+                    <strong>Sabías que:</strong> Reciclar 1 lata de aluminio ahorra suficiente energía para alimentar un TV durante 3 horas
                 </p>
             </div>
-
             <button class="welcome-btn" onclick="closeWelcome()">
-                ¡Comenzar a Detectar! 🚀
+                ¡Comenzar a Detectar! 
             </button>
         </div>
     </div>
@@ -1289,7 +1337,7 @@
     <!-- Achievement Toast -->
     <div class="achievement-toast" id="achievementToast">
         <div class="achievement-content">
-            <div class="achievement-icon" id="achievementIcon">🏆</div>
+            <div class="achievement-icon" id="achievementIcon">Trophy</div>
             <div class="achievement-text">
                 <h3 id="achievementTitle">¡Logro Desbloqueado!</h3>
                 <p id="achievementDesc">Has ganado una nueva insignia</p>
@@ -1300,11 +1348,11 @@
     <!-- Milestone Modal -->
     <div class="milestone-modal" id="milestoneModal">
         <div class="milestone-content">
-            <div class="milestone-icon" id="milestoneIcon">🏆</div>
+            <div class="milestone-icon" id="milestoneIcon">Trophy</div>
             <h2 id="milestoneTitle">¡Hito Alcanzado!</h2>
             <p id="milestoneMessage">Has alcanzado un nuevo hito energético</p>
             <p id="milestoneEquivalence" style="font-size: 1.1em; color: var(--primary);"></p>
-            <button class="milestone-close" onclick="closeMilestone()">¡Continuar! 🚀</button>
+            <button class="milestone-close" onclick="closeMilestone()">¡Continuar!</button>
         </div>
     </div>
 
@@ -1313,7 +1361,7 @@
         <div class="header">
             <div class="logo-icon">
                 <img src="nova-logo.png" alt="Nova Logo" style="display: none;" id="logoImage">
-                <div class="logo-icon-placeholder" id="logoPlaceholder">⭐💥⭐</div>
+                <div class="logo-icon-placeholder" id="logoPlaceholder">Estrella</div>
             </div>
             <h1>Nova</h1>
             <p>Ahorra Energía Reciclando Inteligentemente con IA</p>
@@ -1321,9 +1369,9 @@
 
         <!-- Stats Grid -->
         <div class="stats-grid">
-            <div class="stat-card">
+            <div class="stat-card glass-card">
                 <div class="stat-header">
-                    <div class="stat-icon nivel">🎯</div>
+                    <div class="stat-icon nivel">Objetivo</div>
                     <span>Nivel</span>
                 </div>
                 <div class="stat-value" id="levelDisplay">1</div>
@@ -1335,25 +1383,25 @@
                 </div>
             </div>
 
-            <div class="stat-card">
+            <div class="stat-card glass-card">
                 <div class="stat-header">
-                    <div class="stat-icon racha">🔥</div>
+                    <div class="stat-icon racha">Fuego</div>
                     <span>Racha</span>
                 </div>
                 <div class="stat-value" id="streakDisplay">0 días</div>
             </div>
 
-            <div class="stat-card">
+            <div class="stat-card glass-card">
                 <div class="stat-header">
-                    <div class="stat-icon escaneos">📊</div>
+                    <div class="stat-icon escaneos">Gráfico</div>
                     <span>Detecciones</span>
                 </div>
                 <div class="stat-value" id="scansDisplay">0</div>
             </div>
 
-            <div class="stat-card">
+            <div class="stat-card glass-card">
                 <div class="stat-header">
-                    <div class="stat-icon co2">🌱</div>
+                    <div class="stat-icon co2">Planta</div>
                     <span>Energía Ahorrada</span>
                 </div>
                 <div class="stat-value" id="co2Display">0.0 kWh</div>
@@ -1361,18 +1409,18 @@
         </div>
 
         <!-- Logros Section -->
-        <div class="logros-section">
+        <div class="logros-section glass-card">
             <div class="logros-header">
-                <h2>🏆 Logros</h2>
+                <h2>Logros</h2>
                 <span class="logros-counter" id="badgeCounter">0/8</span>
             </div>
             <div class="badges-grid" id="badgesGrid"></div>
         </div>
 
         <!-- Comparador Section -->
-        <div class="comparador-section">
+        <div class="comparador-section glass-card">
             <div class="comparador-header">
-                <span style="font-size: 1.5em;">📊</span>
+                <span style="font-size: 1.5em;">Gráfico</span>
                 <h2>Tu vs. Promedio</h2>
             </div>
             
@@ -1395,34 +1443,34 @@
             </div>
             
             <div class="comparison-message" id="comparisonMessage">
-                <div class="icon">🚀</div>
+                <div class="icon">Cohete</div>
                 <div class="text">¡Comienza a detectar para comparar tu progreso!</div>
             </div>
         </div>
 
         <!-- Compartir Section -->
-        <div class="share-section">
+        <div class="share-section glass-card">
             <div class="comparador-header">
-                <span style="font-size: 1.5em;">📱</span>
+                <span style="font-size: 1.5em;">Teléfono</span>
                 <h2>Comparte tu Progreso</h2>
             </div>
             <p style="color: var(--text-gray); margin-bottom: 15px;">Inspira a otros a ahorrar energía compartiendo tus logros</p>
             
             <div class="share-buttons">
                 <button class="share-btn whatsapp" onclick="shareWhatsApp()">
-                    <span>📱</span>
+                    <span>Teléfono</span>
                     <span>WhatsApp</span>
                 </button>
                 <button class="share-btn twitter" onclick="shareTwitter()">
-                    <span>🐦</span>
+                    <span>Pájaro</span>
                     <span>Twitter</span>
                 </button>
                 <button class="share-btn facebook" onclick="shareFacebook()">
-                    <span>📘</span>
+                    <span>Libro</span>
                     <span>Facebook</span>
                 </button>
                 <button class="share-btn copy" onclick="copyLink()">
-                    <span>🔗</span>
+                    <span>Enlace</span>
                     <span>Copiar Link</span>
                 </button>
             </div>
@@ -1431,40 +1479,42 @@
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab active" onclick="switchTab('realtime')">
-                <span>⚡</span>
+                <span>Energía</span>
                 <span>Tiempo Real</span>
             </button>
             <button class="tab" onclick="switchTab('upload')">
-                <span>📁</span>
+                <span>Archivo</span>
                 <span>Subir</span>
             </button>
             <button class="tab" onclick="switchTab('guide')">
-                <span>📖</span>
+                <span>Libro</span>
                 <span>Guía</span>
             </button>
         </div>
 
         <!-- Content Card -->
-        <div class="content-card">
+        <div class="content-card glass-card">
             <!-- Real Time Section -->
             <div class="content-section active" id="realtimeSection">
-                <h2 style="margin-bottom: 15px; color: var(--text-dark);">⚡ Detección en Tiempo Real</h2>
+                <h2 style="margin-bottom: 15px; color: var(--text-dark);">Detección en Tiempo Real</h2>
                 <div class="info-message">
-                    <span>🔋</span>
+                    <span>Energía</span>
                     <span>La IA analizará automáticamente lo que vea la cámara - Cada reciclaje ahorra energía</span>
                 </div>
                 
                 <button class="camera-btn-large" id="startRealtimeBtn" onclick="startRealtime()">
-                    <span>🎥</span>
+                    <span>Cámara</span>
                     <span>Iniciar Detección en Tiempo Real</span>
                 </button>
 
                 <button class="camera-btn-large stop" id="stopRealtimeBtn" onclick="stopRealtime()" style="display: none;">
-                    <span>⏹️</span>
+                    <span>Cuadrado</span>
                     <span>Detener Detección</span>
                 </button>
 
                 <div class="media-container" id="realtimeContainer" style="display: none; margin-top: 20px;">
+                    <div class="scan-line"></div>
+                    <div class="detection-grid"></div>
                     <video id="videoPreview" autoplay playsinline></video>
                     <div class="detection-overlay" id="detectionOverlay">
                         <div class="detection-label" id="detectionLabel">Detectando...</div>
@@ -1478,14 +1528,14 @@
 
             <!-- Upload Section -->
             <div class="content-section" id="uploadSection">
-                <h2 style="margin-bottom: 20px; color: var(--text-dark);">📁 Subir Imagen</h2>
+                <h2 style="margin-bottom: 20px; color: var(--text-dark);">Subir Imagen</h2>
                 <div class="info-message">
-                    <span>⚡</span>
+                    <span>Energía</span>
                     <span>Análisis preciso con MobileNet - Descubre cuánta energía ahorras</span>
                 </div>
                 <input type="file" id="imageInput" accept="image/*">
                 <button class="camera-btn-large" onclick="document.getElementById('imageInput').click()">
-                    <span>📁</span>
+                    <span>Archivo</span>
                     <span>Seleccionar Imagen</span>
                 </button>
 
@@ -1503,37 +1553,37 @@
 
             <!-- Guide Section -->
             <div class="content-section" id="guideSection">
-                <h2 style="margin-bottom: 20px; color: var(--text-dark);">📖 Guía de Reciclaje Energético</h2>
+                <h2 style="margin-bottom: 20px; color: var(--text-dark);">Guía de Reciclaje Energético</h2>
                 
                 <div style="margin-bottom: 20px;">
-                    <div class="stat-card" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
-                        <h3 style="color: #065f46; margin-bottom: 15px;">🟢 Residuos Orgánicos</h3>
+                    <div class="stat-card glass-card" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
+                        <h3 style="color: #065f46; margin-bottom: 15px;">Residuos Orgánicos</h3>
                         <p style="color: #047857; margin-bottom: 10px;"><strong>Contenedor:</strong> Verde</p>
                         <p style="color: #047857; margin-bottom: 10px;">Frutas, verduras, cáscaras, restos de comida, café, té, hojas, flores</p>
-                        <p style="color: #065f46; font-weight: 600;">⚡ Ahorro: El compostaje reduce metano y ahorra energía de tratamiento</p>
+                        <p style="color: #065f46; font-weight: 600;">Ahorro: El compostaje reduce metano y ahorra energía de tratamiento</p>
                     </div>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <div class="stat-card" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">
-                        <h3 style="color: #1e40af; margin-bottom: 15px;">🔵 Residuos Reciclables</h3>
+                    <div class="stat-card glass-card" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">
+                        <h3 style="color: #1e40af; margin-bottom: 15px;">Residuos Reciclables</h3>
                         <p style="color: #1e3a8a; margin-bottom: 10px;"><strong>Contenedor:</strong> Azul/Amarillo</p>
                         <p style="color: #1e3a8a; margin-bottom: 10px;">Plásticos, vidrio, papel, cartón, metales, latas, botellas, envases</p>
-                        <p style="color: #1e40af; font-weight: 600;">⚡ Ahorro: Reciclar aluminio ahorra 95% de energía vs. fabricar nuevo</p>
+                        <p style="color: #1e40af; font-weight: 600;">Ahorro: Reciclar aluminio ahorra 95% de energía vs. fabricar nuevo</p>
                     </div>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <div class="stat-card" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
-                        <h3 style="color: #991b1b; margin-bottom: 15px;">🔴 Residuos No Reciclables</h3>
+                    <div class="stat-card glass-card" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
+                        <h3 style="color: #991b1b; margin-bottom: 15px;">Residuos No Reciclables</h3>
                         <p style="color: #7f1d1d; margin-bottom: 10px;"><strong>Contenedor:</strong> Gris/Negro</p>
                         <p style="color: #7f1d1d; margin-bottom: 10px;">Papel higiénico, pañales, colillas, chicles, unicel, empaques mixtos</p>
-                        <p style="color: #991b1b; font-weight: 600;">⚡ Impacto: Reducir estos residuos ahorra energía de disposición</p>
+                        <p style="color: #991b1b; font-weight: 600;">Impacto: Reducir estos residuos ahorra energía de disposición</p>
                     </div>
                 </div>
 
                 <div class="info-message">
-                    <span>⚡</span>
+                    <span>Energía</span>
                     <span>Reciclar correctamente ahorra millones de kWh anuales • Nova detecta con 98% de precisión</span>
                 </div>
             </div>
@@ -1564,24 +1614,24 @@
 
         // Definición de Hitos
         const milestones = [
-            { id: 'milestone_10', threshold: 10, icon: '🌱', title: 'Primera Marca', message: '¡Has ahorrado 10 kWh! Equivale a 20 horas de TV' },
-            { id: 'milestone_50', threshold: 50, icon: '⚡', title: 'Medio Camino', message: '¡50 kWh ahorrados! Equivale a 100 horas de TV' },
-            { id: 'milestone_100', threshold: 100, icon: '🏆', title: '100 kWh Alcanzados', message: '¡Increíble! 100 kWh = 200 horas de TV' },
-            { id: 'milestone_250', threshold: 250, icon: '🌟', title: 'Eco Warrior', message: '¡250 kWh! Eres un guerrero ecológico. 500 horas de TV' },
-            { id: 'milestone_500', threshold: 500, icon: '👑', title: 'Rey de la Energía', message: '¡500 kWh! Eres royalty ecológica. 1000 horas de TV' },
-            { id: 'milestone_1000', threshold: 1000, icon: '🌍', title: 'Leyenda', message: '¡LEYENDA! 1000 kWh ahorrados. 2000 horas de TV' }
+            { id: 'milestone_10', threshold: 10, icon: 'Planta', title: 'Primera Marca', message: '¡Has ahorrado 10 kWh! Equivale a 20 horas de TV' },
+            { id: 'milestone_50', threshold: 50, icon: 'Energía', title: 'Medio Camino', message: '¡50 kWh ahorrados! Equivale a 100 horas de TV' },
+            { id: 'milestone_100', threshold: 100, icon: 'Trophy', title: '100 kWh Alcanzados', message: '¡Increíble! 100 kWh = 200 horas de TV' },
+            { id: 'milestone_250', threshold: 250, icon: 'Estrella', title: 'Eco Warrior', message: '¡250 kWh! Eres un guerrero ecológico. 500 horas de TV' },
+            { id: 'milestone_500', threshold: 500, icon: 'Corona', title: 'Rey de la Energía', message: '¡500 kWh! Eres royalty ecológica. 1000 horas de TV' },
+            { id: 'milestone_1000', threshold: 1000, icon: 'Mundo', title: 'Leyenda', message: '¡LEYENDA! 1000 kWh ahorrados. 2000 horas de TV' }
         ];
 
         // Definición de Badges
         const availableBadges = [
-            { id: 'first', name: 'Primera Detección', icon: '🌱', requirement: 1, points: 10 },
-            { id: 'bronze', name: 'Explorador Bronce', icon: '🔥', requirement: 10, points: 50 },
-            { id: 'silver', name: 'Explorador Plata', icon: '⭐', requirement: 50, points: 100 },
-            { id: 'gold', name: 'Explorador Oro', icon: '🎯', requirement: 100, points: 200 },
-            { id: 'streak7', name: 'Racha Semanal', icon: '🔥', requirement: 7, type: 'streak', points: 150 },
-            { id: 'organic', name: 'Maestro Orgánico', icon: '🍃', requirement: 25, type: 'organico', points: 75 },
-            { id: 'recycle', name: 'Rey del Reciclaje', icon: '👑', requirement: 25, type: 'reciclable', points: 75 },
-            { id: 'eco100', name: 'Eco Warrior', icon: '🌍', requirement: 100, type: 'impact', points: 300 }
+            { id: 'first', name: 'Primera Detección', icon: 'Planta', requirement: 1, points: 10 },
+            { id: 'bronze', name: 'Explorador Bronce', icon: 'Fuego', requirement: 10, points: 50 },
+            { id: 'silver', name: 'Explorador Plata', icon: 'Estrella', requirement: 50, points: 100 },
+            { id: 'gold', name: 'Explorador Oro', icon: 'Objetivo', requirement: 100, points: 200 },
+            { id: 'streak7', name: 'Racha Semanal', icon: 'Fuego', requirement: 7, type: 'streak', points: 150 },
+            { id: 'organic', name: 'Maestro Orgánico', icon: 'Hoja', requirement: 25, type: 'organico', points: 75 },
+            { id: 'recycle', name: 'Rey del Reciclaje', icon: 'Corona', requirement: 25, type: 'reciclable', points: 75 },
+            { id: 'eco100', name: 'Eco Warrior', icon: 'Mundo', requirement: 100, type: 'impact', points: 300 }
         ];
 
         // Clasificación de residuos
@@ -1672,13 +1722,13 @@
         
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
-            document.getElementById('themeIcon').textContent = '☀️';
+            document.getElementById('themeIcon').textContent = 'Sol';
         }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('themeIcon').textContent = isDark ? 'Sol' : 'Luna';
             try {
                 localStorage.setItem('novaTheme', isDark ? 'dark' : 'light');
             } catch (e) {}
@@ -1720,13 +1770,13 @@
         // Cargar modelo MobileNet
         async function loadModel() {
             try {
-                console.log('🔄 Cargando MobileNet...');
+                console.log('Cargando MobileNet...');
                 model = await mobilenet.load({
                     version: 2,
                     alpha: 1.0
                 });
-                console.log('✅ MobileNet cargado');
-                showAchievement('🤖', 'IA Lista', 'MobileNet cargado exitosamente');
+                console.log('MobileNet cargado');
+                showAchievement('Robot', 'IA Lista', 'MobileNet cargado exitosamente');
             } catch (error) {
                 console.error('Error cargando modelo:', error);
                 alert('Error al cargar la IA. Recarga la página.');
@@ -1763,7 +1813,7 @@
                 });
                 
             } catch (error) {
-                alert('❌ No se pudo acceder a la cámara. Verifica los permisos.');
+                alert('No se pudo acceder a la cámara. Verifica los permisos.');
                 console.error('Error:', error);
             }
         }
@@ -1843,13 +1893,13 @@
             confEl.textContent = `Confianza: ${confidence}%`;
             
             if (info.tipo === 'organico') {
-                typeEl.textContent = '🟢 Orgánico';
+                typeEl.textContent = 'Orgánico';
                 typeEl.className = 'detection-type organico';
             } else if (info.tipo === 'inorganico-reciclable') {
-                typeEl.textContent = '🔵 Reciclable';
+                typeEl.textContent = 'Reciclable';
                 typeEl.className = 'detection-type reciclable';
             } else {
-                typeEl.textContent = '🔴 No Reciclable';
+                typeEl.textContent = 'No Reciclable';
                 typeEl.className = 'detection-type no-reciclable';
             }
             
@@ -1897,7 +1947,7 @@
                     resultEl.style.background = 'linear-gradient(135deg, #fef3c7, #fde68a)';
                     resultEl.innerHTML = `
                         <div class="result-header">
-                            <span class="result-icon">⚠️</span>
+                            <span class="result-icon">Advertencia</span>
                             <h2>No se detectaron objetos</h2>
                         </div>
                         <div class="result-info">
@@ -1979,13 +2029,13 @@
 
             let icono, titulo;
             if (info.tipo === 'organico') {
-                icono = '🟢';
+                icono = 'Círculo Verde';
                 titulo = 'Residuo Orgánico';
             } else if (info.tipo === 'inorganico-reciclable') {
-                icono = '🔵';
+                icono = 'Círculo Azul';
                 titulo = 'Residuo Reciclable';
             } else {
-                icono = '🔴';
+                icono = 'Círculo Rojo';
                 titulo = 'Residuo No Reciclable';
             }
 
@@ -1996,23 +2046,23 @@
                     <span class="result-icon">${icono}</span>
                     <div>
                         <h2>${titulo}</h2>
-                        <span class="confidence-badge">✨ Confianza: ${confianza}%</span>
+                        <span class="confidence-badge">Confianza: ${confianza}%</span>
                     </div>
                 </div>
                 
                 <div class="result-info">
-                    <h3>🎯 Objeto: ${objetoNombre}</h3>
-                    <p><strong>📦 Contenedor:</strong> ${info.contenedor}</p>
+                    <h3>Objeto: ${objetoNombre}</h3>
+                    <p><strong>Contenedor:</strong> ${info.contenedor}</p>
                 </div>
 
                 <div class="result-info" style="background: rgba(0, 255, 0, 0.15); border: 2px solid rgba(0, 255, 0, 0.3);">
-                    <h3>⚡ Ahorro Energético</h3>
+                    <h3>Ahorro Energético</h3>
                     <p><strong>Energía ahorrada:</strong> ${info.energia || '0.5 kWh'}</p>
                     <p style="font-size: 0.9em; margin-top: 8px;">${info.dato || 'Reciclar correctamente conserva recursos energéticos'}</p>
                 </div>
 
                 <div class="result-info">
-                    <h3>♻️ Similares</h3>
+                    <h3>Similares</h3>
                     <p>${info.ejemplos}</p>
                 </div>
             `;
@@ -2066,7 +2116,7 @@
             gameData.currentExp -= gameData.maxExp;
             gameData.maxExp = Math.floor(gameData.maxExp * 1.5);
             playSound('levelup');
-            showAchievement('🎉', '¡Nivel ' + gameData.level + '!', 'Has subido de nivel');
+            showAchievement('Celebración', '¡Nivel ' + gameData.level + '!', 'Has subido de nivel');
         }
 
         function checkBadges(type) {
@@ -2133,7 +2183,7 @@
             document.getElementById('milestoneMessage').textContent = milestone.message;
             
             const tvHours = (milestone.threshold * 2).toFixed(0);
-            document.getElementById('milestoneEquivalence').textContent = `Equivalente a ${tvHours} horas de TV 📺`;
+            document.getElementById('milestoneEquivalence').textContent = `Equivalente a ${tvHours} horas de TV Televisor`;
             
             document.getElementById('milestoneModal').classList.add('active');
             
@@ -2176,6 +2226,7 @@
                     confetti.style.top = '-10px';
                     confetti.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
                     confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    confetti.style.setProperty('--hue', Math.random() * 360);
                     document.body.appendChild(confetti);
                     
                     setTimeout(() => confetti.remove(), 3000);
@@ -2199,24 +2250,24 @@
                 const diff = ((userImpact / promedio - 1) * 100).toFixed(0);
                 const topPercent = Math.max(1, Math.min(100 - Math.floor(userImpact / 10), 99));
                 messageEl.innerHTML = `
-                    <div class="icon">🏆</div>
+                    <div class="icon">Trophy</div>
                     <div class="text">¡Increíble! Ahorras ${diff}% MÁS que el promedio</div>
-                    <div class="ranking-badge">TOP ${topPercent}% 🌟</div>
+                    <div class="ranking-badge">TOP ${topPercent}% Estrella</div>
                 `;
             } else if (userImpact > promedio) {
                 const diff = ((userImpact / promedio - 1) * 100).toFixed(0);
                 messageEl.innerHTML = `
-                    <div class="icon">🌟</div>
+                    <div class="icon">Estrella</div>
                     <div class="text">¡Excelente! Ahorras ${diff}% más que el promedio</div>
                 `;
             } else if (userImpact >= promedio * 0.5) {
                 messageEl.innerHTML = `
-                    <div class="icon">💪</div>
+                    <div class="icon">Fuerza</div>
                     <div class="text">¡Vas bien! Sigue así para superar el promedio</div>
                 `;
             } else if (userImpact > 0) {
                 messageEl.innerHTML = `
-                    <div class="icon">🚀</div>
+                    <div class="icon">Cohete</div>
                     <div class="text">¡Sigue detectando! Cada escaneo cuenta</div>
                 `;
             }
@@ -2230,7 +2281,7 @@
             const url = window.location.href;
             
             return {
-                text: `🌍⚡ ¡He ahorrado ${kwh} kWh con Nova!\n\n🎯 Nivel: ${nivel}\n📺 Equivalente a ${tvHours} horas de TV\n♻️ Detector de residuos con IA\n\n¡Únete al ahorro energético!`,
+                text: `¡He ahorrado ${kwh} kWh con Nova!\n\nNivel: ${nivel}\nEquivalente a ${tvHours} horas de TV\nDetector de residuos con IA\n\n¡Únete al ahorro energético!`,
                 url: url
             };
         }
@@ -2259,7 +2310,7 @@
             
             try {
                 await navigator.clipboard.writeText(fullText);
-                showAchievement('✅', '¡Copiado!', 'Link copiado al portapapeles');
+                showAchievement('Check', '¡Copiado!', 'Link copiado al portapapeles');
             } catch (err) {
                 const textarea = document.createElement('textarea');
                 textarea.value = fullText;
@@ -2267,20 +2318,7 @@
                 textarea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
-                showAchievement('✅', '¡Copiado!', 'Link copiado al portapapeles');
-            }
-        }
-
-        // Crear partículas energéticas
-        function createEnergyParticles() {
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'energy-particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 8 + 's';
-                particle.style.animationDuration = (8 + Math.random() * 4) + 's';
-                document.body.appendChild(particle);
+                showAchievement('Check', '¡Copiado!', 'Link copiado al portapapeles');
             }
         }
 
@@ -2316,28 +2354,63 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
+        // === 30 PARTÍCULAS ENERGÉTICAS + CURSOR ===
+        function createEnergyParticles() {
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                const size = 4 + Math.random() * 8;
+                const hue = 75 + Math.random() * 45;
+                p.className = 'energy-particle';
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 10 + 's';
+                p.style.animationDuration = (8 + Math.random() * 6) + 's';
+                p.style.background = `radial-gradient(circle, hsl(${hue}, 100%, 70%), transparent)`;
+                p.style.color = `hsl(${hue}, 100%, 70%)`;
+                document.body.appendChild(p);
+            }
+        }
+
+        let lastX = 0, lastY = 0;
+        document.addEventListener('mousemove', (e) => {
+            const dx = Math.abs(e.clientX - lastX);
+            const dy = Math.abs(e.clientY - lastY);
+            if (dx + dy > 30 && Math.random() < 0.1) {
+                const p = document.createElement('div');
+                p.className = 'cursor-particle';
+                p.style.left = e.clientX + 'px';
+                p.style.top = e.clientY + 'px';
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+            lastX = e.clientX; lastY = e.clientY;
+        });
+
         // Inicializar
-        loadGameData();
-        loadModel();
-        checkWelcome();
-        createEnergyParticles();
-        updateComparison();
-        
-        // Cargar logo si existe
-        const logoImage = document.getElementById('logoImage');
-        const logoPlaceholder = document.getElementById('logoPlaceholder');
-        
-        logoImage.onload = function() {
-            logoImage.style.display = 'block';
-            logoPlaceholder.style.display = 'none';
+        window.onload = () => {
+            createEnergyParticles();
+            loadGameData();
+            loadModel();
+            checkWelcome();
+            updateComparison();
+            
+            const logoImage = document.getElementById('logoImage');
+            const logoPlaceholder = document.getElementById('logoPlaceholder');
+            
+            logoImage.onload = function() {
+                logoImage.style.display = 'block';
+                logoPlaceholder.style.display = 'none';
+            };
+            
+            logoImage.onerror = function() {
+                logoImage.style.display = 'none';
+                logoPlaceholder.style.display = 'flex';
+            };
+            
+            logoImage.src = logoImage.getAttribute('src');
         };
-        
-        logoImage.onerror = function() {
-            logoImage.style.display = 'none';
-            logoPlaceholder.style.display = 'flex';
-        };
-        
-        logoImage.src = logoImage.getAttribute('src');
     </script>
 </body>
 </html>
