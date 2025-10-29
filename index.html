@@ -520,10 +520,63 @@
 
         #videoPreview, #imagePreview {
             width: 100%;
-            height: auto;
-            max-height: 60vh;
-            object-fit: contain;
-            display: none;
+                height: auto;
+                max-height: 60vh;
+                object-fit: contain;
+                display: none;
+                transition: border 0.3s ease;
+        }
+        
+        /* Bordes según tipo de residuo */
+        #videoPreview.organico {
+            border: 6px solid #00ff00;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+            animation: borderPulseGreen 1.5s infinite;
+        }
+        
+        #videoPreview.reciclable {
+            border: 6px solid #00c8ff;
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.8);
+            animation: borderPulseBlue 1.5s infinite;
+        }
+        
+        #videoPreview.no-reciclable {
+            border: 6px solid #ff3333;
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.8);
+            animation: borderPulseRed 1.5s infinite;
+        }
+        
+        @keyframes borderPulseGreen {
+            0%, 100% { 
+                border-color: #00ff00; 
+                box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+            }
+            50% { 
+                border-color: #33ff33; 
+                box-shadow: 0 0 40px rgba(0, 255, 0, 1);
+            }
+        }
+        
+        @keyframes borderPulseBlue {
+            0%, 100% { 
+                border-color: #00c8ff; 
+                box-shadow: 0 0 20px rgba(0, 200, 255, 0.6);
+            }
+            50% { 
+                border-color: #33d4ff; 
+                box-shadow: 0 0 40px rgba(0, 200, 255, 1);
+            }
+        }
+        
+        @keyframes borderPulseRed {
+            0%, 100% { 
+                border-color: #ff3333; 
+                box-shadow: 0 0 20px rgba(255, 51, 51, 0.6);
+            }
+            50% { 
+                border-color: #ff6666; 
+                box-shadow: 0 0 40px rgba(255, 51, 51, 1);
+            }
         }
 
         /* ESCANEO EN TIEMPO REAL */
@@ -1290,6 +1343,125 @@
         body.dark-mode .comparison-value {
             color: #e0ffe0;
         }
+        
+        /* Tutorial Interactivo */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: transparent;
+            z-index: 9998;
+            display: none;
+            pointer-events: none;
+        }
+
+        .tutorial-overlay.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .tutorial-spotlight {
+            position: fixed;
+            border: 3px solid #00ff00;
+            border-radius: 12px;
+            box-shadow: 
+                0 0 0 9999px rgba(0, 0, 0, 0.85),
+                0 0 40px rgba(0, 255, 0, 0.8);
+            z-index: 9999;
+            pointer-events: none;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: spotlightPulse 2s infinite;
+        }
+
+        @keyframes spotlightPulse {
+            0%, 100% { 
+                border-color: #00ff00;
+                box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85), 0 0 30px rgba(0, 255, 0, 0.6);
+            }
+            50% { 
+                border-color: #33ff33;
+                box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85), 0 0 60px rgba(0, 255, 0, 1);
+            }
+        }
+
+        .tutorial-tooltip {
+            position: fixed;
+            background: linear-gradient(135deg, #1a3a1a, #0a1f0a);
+            padding: 25px;
+            border-radius: 16px;
+            max-width: 350px;
+            z-index: 10000;
+            border: 2px solid #00ff00;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.5s ease;
+        }
+
+        .tutorial-tooltip h3 {
+            color: #00ff00;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tutorial-tooltip p {
+            color: #88cc88;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .tutorial-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tutorial-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .tutorial-btn.primary {
+            background: linear-gradient(135deg, #00ff00, #00cc00);
+            color: #0a1f0a;
+        }
+
+        .tutorial-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #88cc88;
+            border: 1px solid #00ff00;
+        }
+
+        .tutorial-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .tutorial-progress {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .tutorial-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(0, 255, 0, 0.3);
+            transition: all 0.3s;
+        }
+
+        .tutorial-dot.active {
+            background: #00ff00;
+            transform: scale(1.3);
+            box-shadow: 0 0 10px #00ff00;
+        }
     </style>
 </head>
 <body>
@@ -1357,6 +1529,11 @@
     </div>
 
     <div class="container">
+        <!-- Tutorial Elements -->
+        <div class="tutorial-overlay" id="tutorialOverlay"></div>
+        <div class="tutorial-spotlight" id="tutorialSpotlight"></div>
+        <div class="tutorial-tooltip" id="tutorialTooltip" style="display: none;"></div>
+        
         <!-- Header -->
         <div class="header">
             <div class="logo-icon">
@@ -1740,6 +1917,9 @@
             try {
                 localStorage.setItem('novaWelcomeShown', 'true');
             } catch (e) {}
+            
+            // Iniciar tutorial después del welcome
+            setTimeout(() => startTutorial(), 800);
         }
 
         function checkWelcome() {
@@ -1829,7 +2009,10 @@
                 stream.getTracks().forEach(track => track.stop());
             }
             
-            document.getElementById('videoPreview').style.display = 'none';
+            const video = document.getElementById('videoPreview');
+            video.style.display = 'none';
+            video.classList.remove('organico', 'reciclable', 'no-reciclable');
+            
             document.getElementById('realtimeContainer').style.display = 'none';
             document.getElementById('startRealtimeBtn').style.display = 'flex';
             document.getElementById('stopRealtimeBtn').style.display = 'none';
@@ -1892,6 +2075,11 @@
             label.textContent = name.charAt(0).toUpperCase() + name.slice(1);
             confEl.textContent = `Confianza: ${confidence}%`;
             
+            // ✅ VIBRACIÓN EN MÓVILES (NUEVO)
+            if (navigator.vibrate && confidence > 70) {
+                navigator.vibrate(200); // Vibra 200ms cuando confianza > 70%
+            }
+            
             if (info.tipo === 'organico') {
                 typeEl.textContent = 'Orgánico';
                 typeEl.className = 'detection-type organico';
@@ -1904,6 +2092,21 @@
             }
             
             overlay.classList.add('active');
+            
+            // ✅ BORDES DE COLOR EN EL VIDEO (NUEVO)
+            const video = document.getElementById('videoPreview');
+            
+            // Remover clases anteriores
+            video.classList.remove('organico', 'reciclable', 'no-reciclable');
+            
+            // Agregar clase según el tipo detectado
+            if (info.tipo === 'organico') {
+                video.classList.add('organico'); // Borde VERDE
+            } else if (info.tipo === 'inorganico-reciclable') {
+                video.classList.add('reciclable'); // Borde AZUL
+            } else {
+                video.classList.add('no-reciclable'); // Borde ROJO
+            }
             
             if (gameData.totalDetections % 5 === 0) {
                 addPoints(10, info.tipo);
@@ -2029,13 +2232,13 @@
 
             let icono, titulo;
             if (info.tipo === 'organico') {
-                icono = 'Círculo Verde';
+                icono = '🟢';
                 titulo = 'Residuo Orgánico';
             } else if (info.tipo === 'inorganico-reciclable') {
-                icono = 'Círculo Azul';
+                icono = '🔵';
                 titulo = 'Residuo Reciclable';
             } else {
-                icono = 'Círculo Rojo';
+                icono = '🔴';
                 titulo = 'Residuo No Reciclable';
             }
 
@@ -2116,7 +2319,11 @@
             gameData.currentExp -= gameData.maxExp;
             gameData.maxExp = Math.floor(gameData.maxExp * 1.5);
             playSound('levelup');
-            showAchievement('Celebración', '¡Nivel ' + gameData.level + '!', 'Has subido de nivel');
+            showAchievement('🎉', '¡Nivel ' + gameData.level + '!', 'Has subido de nivel');
+                        // Vibración al subir de nivel
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100, 50, 200]);
+            }
         }
 
         function checkBadges(type) {
@@ -2183,7 +2390,7 @@
             document.getElementById('milestoneMessage').textContent = milestone.message;
             
             const tvHours = (milestone.threshold * 2).toFixed(0);
-            document.getElementById('milestoneEquivalence').textContent = `Equivalente a ${tvHours} horas de TV Televisor`;
+            document.getElementById('milestoneEquivalence').textContent = `Equivalente a ${tvHours} horas de TV 📺`;
             
             document.getElementById('milestoneModal').classList.add('active');
             
@@ -2250,24 +2457,24 @@
                 const diff = ((userImpact / promedio - 1) * 100).toFixed(0);
                 const topPercent = Math.max(1, Math.min(100 - Math.floor(userImpact / 10), 99));
                 messageEl.innerHTML = `
-                    <div class="icon">Trophy</div>
+                    <div class="icon">🏆</div>
                     <div class="text">¡Increíble! Ahorras ${diff}% MÁS que el promedio</div>
                     <div class="ranking-badge">TOP ${topPercent}% Estrella</div>
                 `;
             } else if (userImpact > promedio) {
                 const diff = ((userImpact / promedio - 1) * 100).toFixed(0);
                 messageEl.innerHTML = `
-                    <div class="icon">Estrella</div>
+                    <div class="icon">⭐</div>
                     <div class="text">¡Excelente! Ahorras ${diff}% más que el promedio</div>
                 `;
             } else if (userImpact >= promedio * 0.5) {
                 messageEl.innerHTML = `
-                    <div class="icon">Fuerza</div>
+                    <div class="icon">💪</div>
                     <div class="text">¡Vas bien! Sigue así para superar el promedio</div>
                 `;
             } else if (userImpact > 0) {
                 messageEl.innerHTML = `
-                    <div class="icon">Cohete</div>
+                    <div class="icon">🚀</div>
                     <div class="text">¡Sigue detectando! Cada escaneo cuenta</div>
                 `;
             }
@@ -2310,7 +2517,7 @@
             
             try {
                 await navigator.clipboard.writeText(fullText);
-                showAchievement('Check', '¡Copiado!', 'Link copiado al portapapeles');
+                showAchievement('✅', '¡Copiado!', 'Link copiado al portapapeles');
             } catch (err) {
                 const textarea = document.createElement('textarea');
                 textarea.value = fullText;
@@ -2318,7 +2525,7 @@
                 textarea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
-                showAchievement('Check', '¡Copiado!', 'Link copiado al portapapeles');
+                showAchievement('✅', '¡Copiado!', 'Link copiado al portapapeles');
             }
         }
 
@@ -2352,6 +2559,162 @@
             const toast = document.getElementById('achievementToast');
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+        // Tutorial Interactivo
+        const tutorialSteps = [
+            {
+                element: '#logoPlaceholder',
+                title: '👋 ¡Bienvenido a Nova!',
+                text: 'Voy a mostrarte cómo usar la app en 30 segundos',
+                position: 'bottom'
+            },
+            {
+                element: '.stats-grid',
+                title: '📊 Tus Estadísticas',
+                text: 'Aquí verás tu nivel, racha diaria, total de detecciones y energía ahorrada',
+                position: 'bottom'
+            },
+            {
+                element: '#badgesGrid',
+                title: '🏆 Logros',
+                text: 'Desbloquea insignias mientras reciclas. ¡Colecciónalas todas!',
+                position: 'bottom'
+            },
+            {
+                element: '.tabs',
+                title: '⚡ Modos de Detección',
+                text: 'Tiempo Real para escanear con tu cámara, o Subir una foto desde tu galería',
+                position: 'bottom'
+            },
+            {
+                element: '#startRealtimeBtn',
+                title: '📷 ¡Comienza Aquí!',
+                text: 'Presiona este botón para empezar a detectar residuos con tu cámara',
+                position: 'top'
+            }
+        ];
+
+        let currentTutorialStep = 0;
+
+        function startTutorial() {
+            currentTutorialStep = 0;
+            showTutorialStep(0);
+        }
+
+        function showTutorialStep(stepIndex) {                  
+            if (stepIndex >= tutorialSteps.length) {
+                endTutorial();
+                return;
+            }
+
+            const step = tutorialSteps[stepIndex];
+            const element = document.querySelector(step.element);
+
+            // 1. Verificación de seguridad: Si el elemento no existe, salta al siguiente paso.
+            if (!element) {
+                console.warn('Elemento del tutorial no encontrado:', step.element);
+                showTutorialStep(stepIndex + 1); // Continúa con el siguiente paso
+                return;
+            }
+
+            const overlay = document.getElementById('tutorialOverlay');
+            const spotlight = document.getElementById('tutorialSpotlight');
+            const tooltip = document.getElementById('tutorialTooltip');
+
+            overlay.classList.add('active');
+            tooltip.style.display = 'block';
+
+            // 2. Primero, llenamos el tooltip con su contenido para que tenga un tamaño real.
+            const isLast = stepIndex === tutorialSteps.length - 1;
+            const progressDots = tutorialSteps.map((_, i) =>
+                `<div class="tutorial-dot ${i === stepIndex ? 'active' : ''}"></div>`
+            ).join('');
+
+            tooltip.innerHTML = `
+                <div class="tutorial-progress">${progressDots}</div>
+                <h3>${step.title}</h3>
+                <p>${step.text}</p>
+                <div class="tutorial-buttons">
+                    ${stepIndex > 0 ? `<button class="tutorial-btn secondary" onclick="showTutorialStep(${stepIndex - 1})">⬅️ Anterior</button>` : ''}
+                    <button class="tutorial-btn secondary" onclick="endTutorial()">Saltar</button>
+                    <button class="tutorial-btn primary" onclick="showTutorialStep(${stepIndex + 1})">
+                        ${isLast ? '🚀 ¡Empezar!' : 'Siguiente ➡️'}
+                    </button>
+                </div>
+            `;
+
+            // 3. AHORA que el tooltip tiene contenido y tamaño, calculamos las posiciones.
+            const rect = element.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+
+            // Posicionar el foco (spotlight)
+            spotlight.style.left = (rect.left - 10) + 'px';
+            spotlight.style.top = (rect.top - 10) + 'px';
+            spotlight.style.width = (rect.width + 20) + 'px';
+            spotlight.style.height = (rect.height + 20) + 'px';
+
+            // Posicionar el mensaje (tooltip)
+            let tooltipTop, tooltipLeft;
+
+            if (step.position === 'bottom') {
+                tooltipTop = rect.bottom + 20;
+                tooltipLeft = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+            } else {
+                tooltipTop = rect.top - tooltipRect.height - 20;
+                tooltipLeft = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+            }
+
+            // Asegurar que el tooltip no se salga de la pantalla
+            tooltipLeft = Math.max(10, Math.min(tooltipLeft, window.innerWidth - tooltipRect.width - 10));
+            tooltipTop = Math.max(10, Math.min(tooltipTop, window.innerHeight - tooltipRect.height - 10));
+
+            tooltip.style.left = tooltipLeft + 'px';
+            tooltip.style.top = tooltipTop + 'px';
+
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
+            setTimeout(() => {
+                const elementRect = element.getBoundingClientRect();
+                const absoluteElementTop = elementRect.top + window.scrollY;
+                const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2);
+
+                window.scrollTo({
+                    top: middle,
+                    behavior: 'smooth'
+                });
+            }, 50);
+            
+        }
+
+        function endTutorial() {
+            document.getElementById('tutorialOverlay').classList.remove('active');
+            document.getElementById('tutorialTooltip').style.display = 'none';
+            document.getElementById('tutorialSpotlight').style.display = 'none';
+            
+            try {
+                localStorage.setItem('novaTutorialCompleted', 'true');
+            } catch (e) {}
+            
+            showAchievement('✅', '¡Tutorial Completado!', 'Ya puedes empezar a detectar');
+            
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+        }
+
+        function checkTutorial() {
+            try {
+                const completed = localStorage.getItem('novaTutorialCompleted');
+                const welcomeShown = localStorage.getItem('novaWelcomeShown');
+                
+                if (!completed && welcomeShown) {
+                    setTimeout(() => startTutorial(), 500);
+                }
+            } catch (e) {
+                setTimeout(() => startTutorial(), 500);
+            }
         }
 
         // === 30 PARTÍCULAS ENERGÉTICAS + CURSOR ===
@@ -2394,6 +2757,7 @@
             loadGameData();
             loadModel();
             checkWelcome();
+            checkTutorial();
             updateComparison();
             
             const logoImage = document.getElementById('logoImage');
