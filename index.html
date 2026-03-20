@@ -142,20 +142,58 @@
         }
 
         /* ── THEME TOGGLE ── */
-        .theme-toggle {
+        /* ── THEME TOGGLE — pill switch ── */
+        .theme-toggle-wrap {
             position: fixed; top: 18px; right: 18px;
-            width: 40px; height: 40px;
+            display: flex; align-items: center; gap: 8px;
             background: var(--bg-raised);
             border: 1px solid var(--border-subtle);
-            border-radius: 50%;
+            border-radius: 999px;
+            padding: 5px 10px 5px 8px;
             cursor: pointer;
-            font-size: 1.1em;
-            display: flex; align-items: center; justify-content: center;
             z-index: 900;
-            transition: border-color var(--fast), transform var(--fast);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            transition: border-color 0.25s, box-shadow 0.25s;
+            user-select: none;
         }
-        .theme-toggle:hover { border-color: var(--border-mid); transform: rotate(20deg); }
+        .theme-toggle-wrap:hover { border-color: var(--border-mid); }
+        body.dark-mode .theme-toggle-wrap { border-color: rgba(192,132,252,0.3); }
+
+        /* The actual pill toggle */
+        .theme-pill {
+            width: 36px; height: 20px;
+            border-radius: 999px;
+            position: relative;
+            transition: background 0.35s var(--ease);
+            flex-shrink: 0;
+        }
+        body:not(.dark-mode) .theme-pill { background: linear-gradient(135deg, #f6d860, #f59e0b); }
+        body.dark-mode        .theme-pill { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+
+        .theme-pill-dot {
+            position: absolute; top: 2px; left: 2px;
+            width: 16px; height: 16px; border-radius: 50%;
+            background: #fff;
+            transition: transform 0.35s cubic-bezier(0.34,1.4,0.64,1);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center;
+        }
+        body.dark-mode .theme-pill-dot { transform: translateX(16px); }
+
+        .theme-pill-dot svg { width: 10px; height: 10px; stroke-width: 2.5; }
+        body:not(.dark-mode) .theme-pill-dot svg { stroke: #f59e0b; }
+        body.dark-mode        .theme-pill-dot svg { stroke: #7c3aed; }
+
+        /* Label next to pill */
+        .theme-toggle-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75em; font-weight: 700;
+            transition: color 0.3s;
+            letter-spacing: 0.2px;
+        }
+        body:not(.dark-mode) .theme-toggle-label { color: #d97706; }
+        body.dark-mode        .theme-toggle-label { color: #a78bfa; }
+        #themeToggle { display: none; } /* hide old button */
 
         /* ── HEADER ── */
         .header {
@@ -335,36 +373,169 @@
             padding: 3px 10px;
             border-radius: 999px;
         }
+        /* ── BADGES GRID — full card design ── */
         .badges-grid {
-            display: flex; flex-wrap: wrap; gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
         }
-        .badge {
-            width: 52px; height: 52px;
-            border-radius: var(--r-md);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.6em;
-            cursor: pointer;
-            transition: transform var(--fast), box-shadow var(--fast);
+
+        .badge-card {
             position: relative;
+            border-radius: var(--r-lg);
+            padding: 16px 10px 14px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            cursor: pointer;
+            transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease);
+            overflow: hidden;
+            border: 1px solid;
+            text-align: center;
         }
-        .badge.unlocked {
-            background: linear-gradient(145deg, rgba(30,219,110,0.2), rgba(30,219,110,0.08));
-            border: 1px solid var(--border-mid);
-            box-shadow: 0 2px 12px rgba(30,219,110,0.15);
+
+        /* ── LOCKED state ── */
+        .badge-card.locked {
+            background: rgba(255,255,255,0.02);
+            border-color: rgba(255,255,255,0.05);
+            filter: grayscale(1);
+            opacity: 0.38;
         }
-        .badge.unlocked::after {
+        .badge-card.locked .badge-icon-wrap { opacity: 0.5; }
+
+        /* ── UNLOCKED rarity themes ── */
+        /* Common — green */
+        .badge-card.rarity-common {
+            background: linear-gradient(160deg, rgba(30,219,110,0.12) 0%, rgba(30,219,110,0.04) 100%);
+            border-color: rgba(30,219,110,0.28);
+            box-shadow: 0 4px 20px rgba(30,219,110,0.12);
+        }
+        .badge-card.rarity-common:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 30px rgba(30,219,110,0.28);
+        }
+        /* Rare — cyan */
+        .badge-card.rarity-rare {
+            background: linear-gradient(160deg, rgba(34,211,238,0.15) 0%, rgba(34,211,238,0.04) 100%);
+            border-color: rgba(34,211,238,0.35);
+            box-shadow: 0 4px 22px rgba(34,211,238,0.15);
+        }
+        .badge-card.rarity-rare:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 32px rgba(34,211,238,0.35);
+        }
+        /* Epic — amber/gold */
+        .badge-card.rarity-epic {
+            background: linear-gradient(160deg, rgba(251,191,36,0.18) 0%, rgba(251,191,36,0.05) 100%);
+            border-color: rgba(251,191,36,0.38);
+            box-shadow: 0 4px 24px rgba(251,191,36,0.18);
+        }
+        .badge-card.rarity-epic:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 36px rgba(251,191,36,0.38);
+        }
+        /* Legendary — purple/pink */
+        .badge-card.rarity-legendary {
+            background: linear-gradient(160deg, rgba(192,132,252,0.2) 0%, rgba(244,114,182,0.06) 100%);
+            border-color: rgba(192,132,252,0.4);
+            box-shadow: 0 4px 28px rgba(192,132,252,0.2);
+            animation: legendary-pulse 3s ease-in-out infinite;
+        }
+        .badge-card.rarity-legendary:hover {
+            transform: translateY(-5px) scale(1.04);
+            box-shadow: 0 12px 40px rgba(192,132,252,0.45);
+        }
+        @keyframes legendary-pulse {
+            0%,100% { box-shadow: 0 4px 28px rgba(192,132,252,0.2); }
+            50%      { box-shadow: 0 4px 36px rgba(192,132,252,0.4), 0 0 60px rgba(244,114,182,0.12); }
+        }
+
+        /* ── Icon wrapper — large centered icon ── */
+        .badge-icon-wrap {
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.9em;
+            position: relative;
+            transition: transform 0.22s var(--ease);
+        }
+        .badge-card:hover .badge-icon-wrap { transform: scale(1.1) rotate(-4deg); }
+
+        .rarity-common  .badge-icon-wrap { background: rgba(30,219,110,0.15);  border: 1px solid rgba(30,219,110,0.3); }
+        .rarity-rare    .badge-icon-wrap { background: rgba(34,211,238,0.15);  border: 1px solid rgba(34,211,238,0.3); }
+        .rarity-epic    .badge-icon-wrap { background: rgba(251,191,36,0.15);  border: 1px solid rgba(251,191,36,0.3); }
+        .rarity-legendary .badge-icon-wrap { background: rgba(192,132,252,0.15); border: 1px solid rgba(192,132,252,0.3); }
+
+        /* Locked icon wrap */
+        .locked .badge-icon-wrap { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+
+        /* Shine sweep on unlocked */
+        .badge-card.unlocked .badge-icon-wrap::after {
             content: '';
             position: absolute; inset: 0; border-radius: inherit;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+            background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%);
         }
-        .badge.locked {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border-subtle);
-            opacity: 0.4;
-            filter: grayscale(100%);
+
+        /* ── Badge name ── */
+        .badge-name {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.72em; font-weight: 700;
+            color: var(--t2); line-height: 1.25;
+            letter-spacing: 0.1px;
         }
-        .badge:hover { transform: scale(1.1) rotate(3deg); }
-        .badge.unlocked:hover { box-shadow: 0 4px 20px rgba(30,219,110,0.35); }
+        .badge-card.unlocked .badge-name { color: var(--t1); }
+
+        /* ── Rarity label ── */
+        .badge-rarity-label {
+            font-size: 0.6em; font-weight: 800; letter-spacing: 0.8px;
+            text-transform: uppercase; padding: 2px 8px;
+            border-radius: 999px; margin-top: 2px;
+        }
+        .rarity-common    .badge-rarity-label { color: var(--green-1); background: rgba(30,219,110,0.12); }
+        .rarity-rare      .badge-rarity-label { color: #22d3ee;       background: rgba(34,211,238,0.12); }
+        .rarity-epic      .badge-rarity-label { color: #fbbf24;       background: rgba(251,191,36,0.12); }
+        .rarity-legendary .badge-rarity-label { color: #c084fc;       background: rgba(192,132,252,0.12); }
+        .locked           .badge-rarity-label { color: var(--t3);     background: rgba(255,255,255,0.04); }
+
+        /* ── Locked overlay icon ── */
+        .badge-lock-icon {
+            position: absolute; top: 8px; right: 8px;
+            width: 18px; height: 18px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .badge-lock-icon svg { width: 10px; height: 10px; stroke: var(--t3); stroke-width: 2.5; }
+
+        /* ── Progress pip (for milestone badges) ── */
+        .badge-progress-pip {
+            position: absolute; bottom: 8px; right: 8px;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--green-1);
+            box-shadow: 0 0 6px var(--green-1);
+            animation: pip-blink 2s ease-in-out infinite;
+        }
+        @keyframes pip-blink {
+            0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+        }
+
+        /* ── Tooltip on hover ── */
+        .badge-card::before {
+            content: attr(data-tip);
+            position: absolute; bottom: calc(100% + 10px); left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: var(--bg-raised);
+            border: 1px solid var(--border-mid);
+            color: var(--t1);
+            font-size: 0.72em; font-weight: 600;
+            padding: 5px 12px; border-radius: 8px;
+            white-space: nowrap;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 50;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        }
+        .badge-card:hover::before {
+            opacity: 1; transform: translateX(-50%) translateY(0);
+        }
 
         /* ── COMPARADOR ── */
         .comparador-section { margin-bottom: 14px; }
@@ -931,8 +1102,48 @@
         }
         .offline-badge.visible { display: block; }
 
-        /* ── DARK MODE OVERRIDES ── */
-        body.dark-mode { --bg-card: rgba(2, 8, 2, 0.85); }
+        /* ── DARK MODE — full palette swap ── */
+        body.dark-mode {
+            /* Shift base to a true deep dark with slight purple-green tint */
+            --bg-base:    #05060a;
+            --bg-card:    rgba(8, 8, 18, 0.82);
+            --bg-raised:  rgba(10, 10, 22, 0.9);
+            --bg-input:   rgba(8, 8, 16, 0.95);
+
+            /* Borders — more visible in dark */
+            --border-subtle: rgba(120, 100, 220, 0.10);
+            --border-soft:   rgba(140, 110, 240, 0.18);
+            --border-mid:    rgba(160, 120, 255, 0.28);
+            --border-vivid:  rgba(180, 140, 255, 0.55);
+
+            /* Shift brand to cooler purple-green */
+            --green-1: #7c86ff;
+            --green-2: #6366f1;
+            --green-3: #a5b4fc;
+            --green-dim: rgba(120,134,255,0.12);
+            --green-glow: 0 0 28px rgba(120,134,255,0.22);
+            --green-glow-sm: 0 0 12px rgba(120,134,255,0.18);
+
+            /* Text — cooler, slightly blue-white */
+            --t1: #e8e8ff;
+            --t2: #7878aa;
+            --t3: #3a3a5a;
+            --t4: #1e1e32;
+        }
+        /* Dark video tint — shift to deep blue-black */
+        body.dark-mode .video-background::after { background: rgba(2,2,10,0.68); }
+        body.dark-mode .video-background video  { filter: hue-rotate(220deg) saturate(0.7) brightness(0.5); }
+        /* Impact widget dark mode — shift to indigo */
+        body.dark-mode {
+            --impact-bg: linear-gradient(135deg, rgba(8,6,22,0.92) 0%, rgba(12,8,28,0.92) 100%);
+            --impact-accent-rgb: 120, 134, 255;
+        }
+        body.dark-mode .video-mesh {
+            background:
+                radial-gradient(ellipse 60% 50% at 10% 80%, rgba(99,102,241,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 60% at 90% 10%, rgba(120,134,255,0.04) 0%, transparent 55%),
+                radial-gradient(ellipse 80% 30% at 50% 50%, rgba(5,5,20,0.12) 0%, transparent 80%);
+        }
 
         /* ═══════════════════════════════════════
            FEATURE 8 — ONBOARDING ANIMADO
@@ -1196,23 +1407,24 @@
         ═══════════════════════════════════════ */
         .impact-widget {
             margin-bottom: 14px;
-            background: linear-gradient(135deg, rgba(5,18,5,0.9) 0%, rgba(8,26,8,0.9) 100%);
+            background: var(--impact-bg, linear-gradient(135deg, rgba(5,18,5,0.9) 0%, rgba(8,26,8,0.9) 100%));
             border: 1px solid var(--border-soft);
             border-radius: var(--r-xl);
             padding: 24px;
             position: relative; overflow: hidden;
             backdrop-filter: blur(18px);
+            transition: background 0.4s ease;
         }
         .impact-widget::before {
             content: '';
             position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(30,219,110,0.5), transparent);
+            background: linear-gradient(90deg, transparent, rgba(var(--impact-accent-rgb, 30,219,110), 0.5), transparent);
         }
         .impact-widget::after {
             content: '';
             position: absolute; top: -60px; right: -60px;
             width: 200px; height: 200px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(30,219,110,0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(var(--impact-accent-rgb, 30,219,110), 0.08) 0%, transparent 70%);
             pointer-events: none;
         }
         .impact-top-row {
@@ -1235,9 +1447,9 @@
             animation: live-pulse 1.8s ease-out infinite;
         }
         @keyframes live-pulse {
-            0%   { box-shadow: 0 0 0 0 rgba(30,219,110,0.6); }
-            70%  { box-shadow: 0 0 0 8px rgba(30,219,110,0); }
-            100% { box-shadow: 0 0 0 0 rgba(30,219,110,0); }
+            0%   { box-shadow: 0 0 0 0 rgba(var(--impact-accent-rgb, 30,219,110), 0.6); }
+            70%  { box-shadow: 0 0 0 8px rgba(var(--impact-accent-rgb, 30,219,110), 0); }
+            100% { box-shadow: 0 0 0 0 rgba(var(--impact-accent-rgb, 30,219,110), 0); }
         }
 
         .impact-number-wrap { display: flex; align-items: baseline; gap: 6px; margin-bottom: 6px; }
@@ -1248,6 +1460,7 @@
             background: linear-gradient(135deg, #ffffff 0%, var(--green-1) 60%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
+            transition: background 0.4s ease;
             transition: all 0.3s;
         }
         .impact-unit {
@@ -1260,7 +1473,7 @@
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
         }
         .impact-equiv {
-            background: rgba(30,219,110,0.06); border: 1px solid var(--border-subtle);
+            background: rgba(var(--impact-accent-rgb, 30,219,110), 0.06); border: 1px solid var(--border-subtle);
             border-radius: var(--r-md); padding: 10px 8px; text-align: center;
         }
         .impact-equiv .eq-icon  { font-size: 1.4em; display: block; margin-bottom: 4px; }
@@ -1278,10 +1491,10 @@
             color: var(--t2); cursor: pointer; width: 100%;
             transition: all 0.15s var(--ease);
         }
-        .notif-btn:hover { border-color: var(--border-mid); color: var(--t1); background: rgba(30,219,110,0.04); }
-        .notif-btn.enabled { border-color: rgba(30,219,110,0.3); color: var(--green-1); background: rgba(30,219,110,0.07); }
+        .notif-btn:hover { border-color: var(--border-mid); color: var(--t1); background: rgba(var(--impact-accent-rgb, 30,219,110), 0.04); }
+        .notif-btn.enabled { border-color: rgba(var(--impact-accent-rgb, 30,219,110), 0.3); color: var(--green-1); background: rgba(var(--impact-accent-rgb, 30,219,110), 0.07); }
         .notif-btn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--t3); flex-shrink: 0; transition: all 0.2s; }
-        .notif-btn.enabled .notif-btn-dot { background: var(--green-1); box-shadow: 0 0 6px rgba(30,219,110,0.6); }
+        .notif-btn.enabled .notif-btn-dot { background: var(--green-1); box-shadow: 0 0 6px rgba(var(--impact-accent-rgb, 30,219,110), 0.6); }
 
         /* ── LUCIDE ICONS ── */
         .icon {
@@ -2090,6 +2303,11 @@
             100%    { opacity: 0; }
         }
 
+
+        /* Badge SVG icon sizing */
+        .badge-icon-wrap .icon { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .badge-icon-wrap .icon i,
+        .badge-icon-wrap svg { width: 30px !important; height: 30px !important; }
     </style>
 </head>
 <body>
@@ -2131,9 +2349,18 @@
     </div>
 
     <!-- Theme Toggle -->
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-        <span id="themeIcon"><span class="icon"><i data-lucide="moon"></i></span></span>
-    </button>
+    <button class="theme-toggle" id="themeToggle" style="display:none"></button>
+    <div class="theme-toggle-wrap" onclick="toggleTheme()" role="button" aria-label="Cambiar tema">
+        <div class="theme-pill">
+            <div class="theme-pill-dot" id="themePillDot">
+                <svg id="themePillIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="5" stroke-width="2.5"/>
+                    <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+        <span class="theme-toggle-label" id="themeLabel">Día</span>
+    </div>
 
     <!-- Onboarding Modal (Feature 8) -->
     <div class="onboarding-modal" id="welcomeModal">
@@ -2572,14 +2799,14 @@
 
         // Definición de Badges
         const availableBadges = [
-            { id: 'first', name: 'Primera Detección', icon: '🌱', requirement: 1, points: 10 },
-            { id: 'bronze', name: 'Explorador Bronce', icon: '🥉', requirement: 10, points: 50 },
-            { id: 'silver', name: 'Explorador Plata', icon: '🥈', requirement: 50, points: 100 },
-            { id: 'gold', name: 'Explorador Oro', icon: '🥇', requirement: 100, points: 200 },
-            { id: 'streak7', name: 'Racha Semanal', icon: '🔥', requirement: 7, type: 'streak', points: 150 },
-            { id: 'organic', name: 'Maestro Orgánico', icon: '🌿', requirement: 25, type: 'organico', points: 75 },
-            { id: 'recycle', name: 'Rey del Reciclaje', icon: '👑', requirement: 25, type: 'reciclable', points: 75 },
-            { id: 'eco100', name: 'Eco Warrior', icon: '🌎', requirement: 100, type: 'impact', points: 300 }
+            { id: 'first', name: 'Primer Paso', lucideIcon: 'sprout', iconColor: '#1edb6e', rarity: 'common', requirement: 1, points: 10, desc: '1 detección' },
+            { id: 'bronze', name: 'Explorador', lucideIcon: 'compass', iconColor: '#1edb6e', rarity: 'common', requirement: 10, points: 50, desc: '10 detecciones' },
+            { id: 'silver', name: 'Reciclador Plata', lucideIcon: 'recycle', iconColor: '#22d3ee', rarity: 'rare', requirement: 50, points: 100, desc: '50 detecciones' },
+            { id: 'gold', name: 'Reciclador Oro', lucideIcon: 'trophy', iconColor: '#fbbf24', rarity: 'epic', requirement: 100, points: 200, desc: '100 detecciones' },
+            { id: 'streak7', name: 'Racha Semanal', lucideIcon: 'flame', iconColor: '#22d3ee', rarity: 'rare', requirement: 7, points: 150, desc: '7 días seguidos', type: 'streak' },
+            { id: 'organic', name: 'Maestro Orgánico', lucideIcon: 'leaf', iconColor: '#22d3ee', rarity: 'rare', requirement: 25, points: 75, desc: '25 orgánicos', type: 'organico' },
+            { id: 'recycle', name: 'Rey del Reciclaje', lucideIcon: 'refresh-cw', iconColor: '#fbbf24', rarity: 'epic', requirement: 25, points: 75, desc: '25 reciclables', type: 'reciclable' },
+            { id: 'eco100', name: 'Guardián del Planeta', lucideIcon: 'globe', iconColor: '#c084fc', rarity: 'legendary', requirement: 100, points: 300, desc: '100 kg CO₂', type: 'impact' }
         ];
 
         // Clasificación de residuos — extendida con más objetos de ImageNet
@@ -2711,18 +2938,22 @@
             savedTheme = localStorage.getItem('novaTheme') || 'light';
         } catch (e) {}
         
+        function applyThemeUI(isDark) {
+            const dot   = document.getElementById('themePillDot');
+            const label = document.getElementById('themeLabel');
+            if (dot)   dot.innerHTML   = isDark ? `<svg id="themePillIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : `<svg id="themePillIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="5" stroke-width="2.5"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke-width="2" stroke-linecap="round"/></svg>`;
+            if (label) label.textContent = isDark ? 'Noche' : 'Día';
+        }
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
-            document.getElementById('themeIcon').innerHTML = `<span class="icon"><i data-lucide="sun"></i></span>`; lucide.createIcons();
+            applyThemeUI(true);
         }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('themeIcon').innerHTML = isDark ? `<span class="icon"><i data-lucide="sun"></i></span>` : `<span class="icon"><i data-lucide="moon"></i></span>`; lucide.createIcons();
-            try {
-                localStorage.setItem('novaTheme', isDark ? 'dark' : 'light');
-            } catch (e) {}
+            applyThemeUI(isDark);
+            try { localStorage.setItem('novaTheme', isDark ? 'dark' : 'light'); } catch (e) {}
         }
 
         // Welcome Modal
@@ -3582,25 +3813,50 @@
             showAchievement('🗑', 'Historial borrado', 'Tu historial fue limpiado');
         }
 
-        function updateBadges() {            const container = document.getElementById('badgesGrid');
+        function updateBadges() {
+            const container = document.getElementById('badgesGrid');
             container.innerHTML = '';
-            
-            availableBadges.forEach(badge => {
-                const badgeDiv = document.createElement('div');
-                badgeDiv.className = 'badge';
-                
-                if (gameData.badges.includes(badge.id)) {
-                    badgeDiv.classList.add('unlocked');
-                } else {
-                    badgeDiv.classList.add('locked');
-                }
-                
-                badgeDiv.textContent = badge.icon;
-                badgeDiv.title = badge.name;
-                container.appendChild(badgeDiv);
+
+            availableBadges.forEach((badge, i) => {
+                const isUnlocked = gameData.badges.includes(badge.id);
+                const rarity     = badge.rarity || 'common';
+                const rarityLabels = { common: 'Común', rare: 'Raro', epic: 'Épico', legendary: 'Legendario' };
+
+                const card = document.createElement('div');
+                card.className = [
+                    'badge-card',
+                    isUnlocked ? 'unlocked rarity-' + rarity : 'locked',
+                    isUnlocked ? 'pop' : ''
+                ].filter(Boolean).join(' ');
+
+                card.setAttribute('data-tip', badge.name);
+                card.style.animationDelay = (i * 60) + 'ms';
+
+                // Build Lucide icon for the badge
+                const iconSvg = `<span class="icon" style="display:flex;align-items:center;justify-content:center"><i data-lucide="${badge.lucideIcon}" style="width:28px;height:28px;stroke:${isUnlocked ? badge.iconColor : 'var(--t3)'};stroke-width:1.6"></i></span>`;
+
+                card.innerHTML = `
+                    <div class="badge-icon-wrap">${iconSvg}</div>
+                    <div class="badge-name">${badge.name}</div>
+                    <span class="badge-rarity-label">${isUnlocked ? rarityLabels[rarity] : badge.desc}</span>
+                    ${!isUnlocked ? `<div class="badge-lock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-width="2"/></svg></div>` : ''}
+                    ${isUnlocked && rarity === 'legendary' ? '<div class="badge-progress-pip"></div>' : ''}
+                `;
+
+                // Click to show info
+                card.addEventListener('click', () => {
+                    const status = isUnlocked ? '¡Desbloqueado!' : `Meta: ${badge.desc}`;
+                    // Use a contextual emoji for achievement toast
+                    const toastEmoji = { common: '✅', rare: '⭐', epic: '🏆', legendary: '👑' }[rarity] || '🎖️';
+                    showAchievement(toastEmoji, badge.name, status + ' · ' + badge.points + ' pts');
+                });
+
+                container.appendChild(card);
             });
-            
+
             document.getElementById('badgeCounter').textContent = `${gameData.badges.length}/${availableBadges.length}`;
+            // Render Lucide icons in badge cards
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function showAchievement(icon, title, desc) {
