@@ -10,6 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#00ff00">
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Lucide -->
     <script src="https://unpkg.com/lucide@0.378.0/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0"></script>
@@ -2308,6 +2316,304 @@
         .badge-icon-wrap .icon { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
         .badge-icon-wrap .icon i,
         .badge-icon-wrap svg { width: 30px !important; height: 30px !important; }
+
+        /* ╔═══════════════════════════════════════════════════════╗
+           ║  FEATURE 1 — MODEL CACHE INDICATOR                   ║
+           ╚═══════════════════════════════════════════════════════╝ */
+        .model-status {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.7em; font-weight: 600; color: var(--t3);
+            padding: 3px 10px; border-radius: 999px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-raised);
+            margin-top: 8px;
+            transition: all 0.3s;
+        }
+        .model-status.loading { color: #fbbf24; border-color: rgba(251,191,36,0.3); }
+        .model-status.cached  { color: var(--green-1); border-color: var(--border-soft); }
+        .model-status.online  { color: var(--t2); }
+        .model-status-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            animation: pip-blink 2s ease-in-out infinite;
+        }
+        .model-status.loading .model-status-dot { background: #fbbf24; }
+        .model-status.cached  .model-status-dot { background: var(--green-1); }
+        .model-status.online  .model-status-dot { background: var(--t2); animation: none; }
+
+        /* ╔═══════════════════════════════════════════════════════╗
+           ║  FEATURE 4 — RECYCLING MAP                           ║
+           ╚═══════════════════════════════════════════════════════╝ */
+        .map-modal {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.88); backdrop-filter: blur(10px);
+            z-index: 6500; display: none;
+            align-items: center; justify-content: center;
+        }
+        .map-modal.active { display: flex; }
+
+        .map-wrap {
+            width: min(720px, 96vw);
+            height: min(580px, 92vh);
+            background: var(--bg-raised);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--r-xl);
+            overflow: hidden; position: relative;
+            display: flex; flex-direction: column;
+            animation: slideUpFade 0.35s var(--ease);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.7), var(--green-glow);
+        }
+        .map-header {
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+        }
+        .map-header-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: var(--green-dim); border: 1px solid var(--border-soft);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .map-header-icon svg { width: 18px; height: 18px; stroke: var(--green-1); stroke-width: 2; }
+        .map-header-text { flex: 1; }
+        .map-header-text h3 { font-family: 'Syne', sans-serif; font-size: 1em; font-weight: 700; color: var(--t1); }
+        .map-header-text p  { font-size: 0.74em; color: var(--t3); margin-top: 1px; }
+        .map-close {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s;
+        }
+        .map-close:hover { border-color: var(--border-mid); }
+        .map-close svg { width: 14px; height: 14px; stroke: var(--t2); stroke-width: 2.5; }
+
+        .map-controls {
+            display: flex; gap: 8px; padding: 10px 20px;
+            border-bottom: 1px solid var(--border-subtle); flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        .map-filter-btn {
+            padding: 5px 12px; border-radius: 999px;
+            border: 1px solid var(--border-subtle);
+            background: transparent; cursor: pointer;
+            font-family: 'DM Sans', sans-serif; font-size: 0.75em; font-weight: 600;
+            color: var(--t3); transition: all 0.15s; display: flex; align-items: center; gap: 5px;
+        }
+        .map-filter-btn:hover { border-color: var(--border-mid); color: var(--t2); }
+        .map-filter-btn.active { background: var(--green-1); border-color: var(--green-1); color: #030d03; }
+        .map-filter-btn.active-blue { background: #22d3ee; border-color: #22d3ee; color: #030d03; }
+
+        #novaMap { flex: 1; }
+        /* Leaflet popup */
+        .leaflet-popup-content-wrapper {
+            background: var(--bg-raised) !important;
+            border: 1px solid var(--border-mid) !important;
+            border-radius: 12px !important; color: var(--t1) !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+        }
+        .leaflet-popup-tip { background: var(--bg-raised) !important; }
+
+        .map-point-info { font-family: 'DM Sans', sans-serif; min-width: 180px; }
+        .map-point-type {
+            display: inline-block; padding: 2px 9px; border-radius: 999px;
+            font-size: 0.72em; font-weight: 700; margin-bottom: 6px;
+        }
+        .map-point-type.organic  { background: rgba(30,219,110,0.2); color: var(--green-1); }
+        .map-point-type.recycle  { background: rgba(34,211,238,0.2); color: #22d3ee; }
+        .map-point-type.hazard   { background: rgba(248,113,113,0.2); color: #f87171; }
+        .map-point-name { font-weight: 600; font-size: 0.88em; color: var(--t1); margin-bottom: 4px; }
+        .map-point-dist { font-size: 0.74em; color: var(--t3); }
+
+        .map-locate-btn {
+            position: absolute; bottom: 12px; right: 12px; z-index: 500;
+            width: 40px; height: 40px; border-radius: 10px;
+            background: var(--bg-raised); border: 1px solid var(--border-mid);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            transition: all 0.15s;
+        }
+        .map-locate-btn:hover { border-color: var(--green-1); }
+        .map-locate-btn svg { width: 18px; height: 18px; stroke: var(--green-1); stroke-width: 2; }
+
+        /* Map FAB button in main UI */
+        .map-fab {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 16px; margin-top: 10px;
+            background: transparent; border: 1px solid var(--border-soft);
+            border-radius: var(--r-md); width: 100%;
+            font-family: 'DM Sans', sans-serif; font-size: 0.84em; font-weight: 600;
+            color: var(--t2); cursor: pointer; transition: all 0.15s;
+        }
+        .map-fab:hover { border-color: var(--border-mid); color: var(--t1); background: rgba(30,219,110,0.04); }
+        .map-fab svg { width: 16px; height: 16px; stroke: var(--green-1); stroke-width: 2; }
+
+        /* ╔═══════════════════════════════════════════════════════╗
+           ║  FEATURE 7 — LEVEL THEMES                            ║
+           ╚═══════════════════════════════════════════════════════╝ */
+        /* Tier accent on logo */
+        .logo-icon { transition: border-color 0.5s ease, box-shadow 0.5s ease; }
+
+        /* Tier badge on header */
+        .level-tier-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 12px; border-radius: 999px;
+            font-size: 0.7em; font-weight: 800; letter-spacing: 0.5px;
+            text-transform: uppercase; margin-top: 6px;
+            transition: all 0.5s ease;
+        }
+        .level-tier-badge svg { width: 11px; height: 11px; stroke-width: 2.5; }
+
+        /* TIER DEFINITIONS — applied via JS to :root */
+        :root {
+            --tier-color:       #1edb6e;
+            --tier-color-dim:   rgba(30,219,110,0.15);
+            --tier-color-glow:  rgba(30,219,110,0.4);
+            --tier-name:        'Explorador';
+        }
+
+        /* ╔═══════════════════════════════════════════════════════╗
+           ║  FEATURE 10 — FULLSCREEN QUICK SCAN                  ║
+           ╚═══════════════════════════════════════════════════════╝ */
+        .quickscan-modal {
+            position: fixed; inset: 0;
+            z-index: 7000; display: none;
+            background: #000;
+        }
+        .quickscan-modal.active { display: flex; flex-direction: column; }
+
+        #quickscanVideo {
+            flex: 1; width: 100%; object-fit: cover;
+        }
+        .quickscan-overlay {
+            position: absolute; inset: 0; pointer-events: none;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        /* Top bar */
+        .qs-top-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+            pointer-events: all;
+        }
+        .qs-title {
+            font-family: 'Syne', sans-serif; font-size: 1.1em; font-weight: 700;
+            color: #fff; display: flex; align-items: center; gap: 8px;
+        }
+        .qs-title svg { stroke: var(--green-1); width: 18px; height: 18px; }
+        .qs-close-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(255,255,255,0.12); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            pointer-events: all;
+        }
+        .qs-close-btn svg { stroke: #fff; width: 16px; height: 16px; stroke-width: 2.5; }
+
+        /* Center frame */
+        .qs-frame-wrap {
+            display: flex; align-items: center; justify-content: center;
+            flex: 1; pointer-events: none;
+        }
+        .qs-frame {
+            width: 240px; height: 240px; position: relative;
+        }
+        .qs-frame::before, .qs-frame::after,
+        .qs-frame-bl::before, .qs-frame-br::before {
+            content: ''; position: absolute;
+            width: 32px; height: 32px;
+            border-color: var(--green-1); border-style: solid;
+        }
+        .qs-frame::before  { top:0;    left:0;  border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+        .qs-frame::after   { top:0;    right:0; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
+        .qs-frame-bl, .qs-frame-br { position: absolute; }
+        .qs-frame-bl       { bottom:0; left:0; }
+        .qs-frame-br       { bottom:0; right:0; }
+        .qs-frame-bl::before { content: ''; position: absolute; bottom:0; left:0;  width:32px; height:32px; border: 3px solid transparent; border-width: 0 0 3px 3px; border-color: var(--green-1); border-radius: 0 0 0 4px; }
+        .qs-frame-br::before { content: ''; position: absolute; bottom:0; right:0; width:32px; height:32px; border: 3px solid transparent; border-width: 0 3px 3px 0; border-color: var(--green-1); border-radius: 0 0 4px 0; }
+
+        /* Scan line inside frame */
+        .qs-scan-line {
+            position: absolute; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--green-1), transparent);
+            animation: qs-scan 1.8s ease-in-out infinite;
+        }
+        @keyframes qs-scan {
+            0%   { top: 0%; opacity: 0; }
+            5%   { opacity: 1; }
+            95%  { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .qs-hint { position: absolute; bottom: -36px; left:50%; transform: translateX(-50%); font-size: 0.75em; color: rgba(255,255,255,0.5); white-space: nowrap; }
+
+        /* Bottom result bar */
+        .qs-result-bar {
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+            pointer-events: all; min-height: 100px;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .qs-result-icon-wrap {
+            width: 56px; height: 56px; border-radius: 14px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8em; border: 2px solid transparent;
+        }
+        .qs-result-icon-wrap.organico        { background: rgba(30,219,110,0.2); border-color: rgba(30,219,110,0.5); }
+        .qs-result-icon-wrap.reciclable      { background: rgba(34,211,238,0.2); border-color: rgba(34,211,238,0.5); }
+        .qs-result-icon-wrap.no-reciclable   { background: rgba(248,113,113,0.2); border-color: rgba(248,113,113,0.5); }
+        .qs-result-icon-wrap.idle            { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+
+        .qs-result-info { flex: 1; }
+        .qs-result-name { font-family: 'Syne', sans-serif; font-size: 1.1em; font-weight: 700; color: #fff; }
+        .qs-result-container { font-size: 0.8em; color: rgba(255,255,255,0.5); margin-top: 2px; }
+        .qs-result-pill {
+            padding: 4px 14px; border-radius: 999px;
+            font-size: 0.75em; font-weight: 700; flex-shrink: 0;
+        }
+        .qs-result-pill.organico        { background: rgba(30,219,110,0.25); color: var(--green-1); }
+        .qs-result-pill.reciclable      { background: rgba(34,211,238,0.25); color: #22d3ee; }
+        .qs-result-pill.no-reciclable   { background: rgba(248,113,113,0.25); color: #f87171; }
+
+        /* Quickscan launch button */
+        .qs-launch-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 16px;
+            background: transparent; border: 1px solid var(--border-soft);
+            border-radius: var(--r-md); font-family: 'DM Sans', sans-serif;
+            font-size: 0.84em; font-weight: 600; color: var(--t2);
+            cursor: pointer; transition: all 0.15s; margin-top: 10px; width: 100%;
+        }
+        .qs-launch-btn:hover { border-color: var(--border-mid); color: var(--t1); background: rgba(30,219,110,0.04); }
+        .qs-launch-btn svg { stroke: var(--green-1); width: 16px; height: 16px; stroke-width: 2; }
+
+        /* ╔═══════════════════════════════════════════════════════╗
+           ║  FEATURE 12 — FIREBASE AUTH UI                       ║
+           ╚═══════════════════════════════════════════════════════╝ */
+        .sync-bar {
+            position: fixed; top: 18px; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg-raised); border: 1px solid var(--border-subtle);
+            border-radius: 999px; padding: 5px 14px 5px 8px;
+            z-index: 900; backdrop-filter: blur(16px);
+            cursor: pointer; transition: border-color 0.2s;
+            font-family: 'DM Sans', sans-serif; font-size: 0.78em; font-weight: 600;
+            color: var(--t2);
+        }
+        .sync-bar:hover { border-color: var(--border-mid); }
+        .sync-bar.synced { border-color: var(--border-soft); color: var(--green-1); }
+        .sync-avatar {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--green-dim); border: 1px solid var(--border-soft);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; flex-shrink: 0;
+        }
+        .sync-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sync-avatar svg { width: 13px; height: 13px; stroke: var(--t3); stroke-width: 2; }
+        .sync-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--t3); flex-shrink: 0;
+        }
+        .sync-bar.synced .sync-dot { background: var(--green-1); animation: pip-blink 2s ease-in-out infinite; }
+        .sync-bar.syncing .sync-dot { background: #fbbf24; animation: pip-blink 0.8s ease-in-out infinite; }
+
     </style>
 </head>
 <body>
@@ -2346,6 +2652,15 @@
             <source src="Fondo.mp4" type="video/mp4">
             <source src="https://cdn.pixabay.com/vimeo/665175468/particles-76048.mp4?width=1280" type="video/mp4">
         </video>
+    </div>
+
+    <!-- Sync Bar (Feature 12) -->
+    <div class="sync-bar" id="syncBar" onclick="handleSyncBarClick()" title="Sincronizar con la nube">
+        <div class="sync-avatar" id="syncAvatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <span class="sync-dot" id="syncDot"></span>
+        <span id="syncLabel">Iniciar sesión</span>
     </div>
 
     <!-- Theme Toggle -->
@@ -2460,8 +2775,10 @@
                 <div class="logo-icon-placeholder" id="logoPlaceholder"><span class="icon icon-3xl" style="opacity:0.7"><i data-lucide="sparkles"></i></span></div>
             </div>
             <div class="header-greeting" id="headerGreeting"></div>
+            <div class="model-status loading" id="modelStatus"><div class="model-status-dot"></div><span id="modelStatusText">Cargando IA...</span></div>
             <div class="header-eyebrow"><span class="icon" style="margin-right:4px"><i data-lucide="zap"></i></span> IA en tu dispositivo · 100% Privado</div>
             <h1>Nova</h1>
+            <div class="level-tier-badge" id="levelTierBadge" style="display:none"></div>
             <p>Identifica residuos · Recicla correctamente · Protege el planeta</p>
         </div>
 
@@ -2539,6 +2856,10 @@
             <button class="notif-btn" id="notifBtn" onclick="toggleNotifications()">
                 <span class="notif-btn-dot" id="notifDot"></span><span class="icon"><i data-lucide="bell"></i></span>
                 <span id="notifBtnLabel">Activar recordatorios diarios</span>
+            </button>
+            <button class="map-fab" onclick="openMapModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke-width="2"/></svg>
+                Ver puntos de reciclaje cercanos
             </button>
         </div>
 
@@ -2652,6 +2973,11 @@
                     <span>La IA identifica residuos en tiempo real · Cada reciclaje correcto reduce tu huella de carbono</span>
                 </div>
                 
+                <button class="qs-launch-btn" onclick="openQuickscan()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Modo Escaneo Rápido (pantalla completa)
+                </button>
+
                 <button class="camera-btn-large" id="startRealtimeBtn" onclick="startRealtime()">
                     <span class="icon"><i data-lucide="camera"></i></span>
                     <span>Iniciar Detección en Tiempo Real</span>
@@ -3161,8 +3487,9 @@
                 typeEl.textContent = 'No Reciclable';
                 typeEl.className = 'detection-type no-reciclable';
             }
-            // Feature 9: particle burst
+            // Feature 9: particle burst + category sound
             spawnDetectionBurst(info.tipo);
+            playCategorySound(info.tipo);
             
             overlay.classList.add('active');
             
@@ -3476,8 +3803,9 @@
             `;
 
             resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            // Feature 9: burst on upload result too
+            // Feature 9: burst + sound on upload result
             spawnDetectionBurst(info.tipo);
+            playCategorySound(info.tipo);
         }
 
         // Gamificación
@@ -3539,6 +3867,8 @@
             updateGameUI();
             updateComparison();
             renderHistory();
+            // Sync to cloud (Feature 12)
+            if (currentUser) pushToFirestore(currentUser.uid);
         }
 
         function levelUp() {
@@ -3582,6 +3912,7 @@
 
         function updateGameUI() {
             animateValue('levelDisplay', gameData.level);
+            applyLevelTheme(gameData.level);
             document.getElementById('expText').textContent = `${gameData.currentExp}/${gameData.maxExp}`;
             const progress = (gameData.currentExp / gameData.maxExp) * 100;
             document.getElementById('levelProgress').style.width = progress + '%';
@@ -4353,6 +4684,593 @@
             } catch(e) { console.warn('SW notification error:', e); }
         }
 
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 1 — OFFLINE MODEL CACHE (IndexedDB + tf.io)
+        // ════════════════════════════════════════════════════════
+        const MODEL_CACHE_KEY = 'nova-mobilenet-v2';
+
+        function setModelStatus(state, text) {
+            const el  = document.getElementById('modelStatus');
+            const txt = document.getElementById('modelStatusText');
+            if (!el || !txt) return;
+            el.className = 'model-status ' + state;
+            txt.textContent = text;
+        }
+
+        async function loadModel() {
+            setModelStatus('loading', 'Cargando IA...');
+            try {
+                // Try IndexedDB cache first
+                const cached = await tf.io.listModels();
+                if (cached['indexeddb://' + MODEL_CACHE_KEY]) {
+                    console.log('✅ Modelo desde caché local');
+                    model = await tf.loadLayersModel('indexeddb://' + MODEL_CACHE_KEY);
+                    // Wrap in mobilenet-compatible API
+                    model.classify = async (img, topK = 3) => {
+                        return await mobileNetClassifyWithModel(model, img, topK);
+                    };
+                    setModelStatus('cached', 'IA lista (offline)');
+                    showAchievement('⚡', 'IA cargada offline', 'Modelo guardado localmente');
+                    return;
+                }
+            } catch(e) {
+                console.warn('Cache miss, cargando desde red:', e.message);
+            }
+
+            try {
+                console.log('Cargando MobileNet desde red...');
+                model = await mobilenet.load({ version: 2, alpha: 1.0 });
+
+                // Save to IndexedDB for next time
+                try {
+                    await model.model.save('indexeddb://' + MODEL_CACHE_KEY);
+                    console.log('✅ Modelo guardado en IndexedDB');
+                    setModelStatus('cached', 'IA lista (guardada offline)');
+                } catch(saveErr) {
+                    console.warn('No se pudo guardar el modelo:', saveErr.message);
+                    setModelStatus('online', 'IA lista');
+                }
+
+                showAchievement('🤖', 'IA Lista', 'MobileNet cargado exitosamente');
+            } catch (error) {
+                console.error('Error cargando modelo:', error);
+                setModelStatus('loading', 'Error — recarga la página');
+                alert('Error al cargar la IA. Verifica tu conexión y recarga.');
+            }
+        }
+
+        // Fallback classify for cached raw model
+        async function mobileNetClassifyWithModel(rawModel, img, topK) {
+            try {
+                // If it's a real mobilenet instance, use its classify method
+                if (rawModel.classify) return await rawModel.classify(img, topK);
+                // Otherwise use standard mobilenet
+                const freshModel = await mobilenet.load({ version: 2, alpha: 1.0 });
+                model = freshModel;
+                return await freshModel.classify(img, topK);
+            } catch(e) {
+                return [];
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 4 — NEARBY RECYCLING MAP (Leaflet + Overpass)
+        // ════════════════════════════════════════════════════════
+        let novaMap = null;
+        let mapMarkers = [];
+        let userMarker = null;
+        let userLatLng = null;
+        let activeMapFilter = 'all';
+
+        function openMapModal() {
+            document.getElementById('mapModal').classList.add('active');
+            if (!novaMap) {
+                setTimeout(initMap, 200);
+            }
+        }
+
+        function closeMapModal() {
+            document.getElementById('mapModal').classList.remove('active');
+        }
+
+        function initMap() {
+            if (novaMap) return;
+
+            // Default center: Mexico City
+            const defaultCenter = [19.4326, -99.1332];
+
+            novaMap = L.map('novaMap', { zoomControl: false }).setView(defaultCenter, 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap',
+                maxZoom: 19,
+            }).addTo(novaMap);
+
+            L.control.zoom({ position: 'topleft' }).addTo(novaMap);
+
+            // Get user location
+            if (navigator.geolocation) {
+                document.getElementById('mapStatusText').textContent = 'Obteniendo tu ubicación...';
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        userLatLng = [pos.coords.latitude, pos.coords.longitude];
+                        novaMap.setView(userLatLng, 15);
+                        placeUserMarker(userLatLng);
+                        fetchRecyclingPoints(userLatLng);
+                    },
+                    () => {
+                        document.getElementById('mapStatusText').textContent = 'Ubicación no disponible — mostrando México';
+                        fetchRecyclingPoints(defaultCenter);
+                    },
+                    { timeout: 10000 }
+                );
+            } else {
+                fetchRecyclingPoints(defaultCenter);
+            }
+        }
+
+        function placeUserMarker(latlng) {
+            if (userMarker) userMarker.remove();
+            const userIcon = L.divIcon({
+                className: '',
+                html: `<div style="width:16px;height:16px;border-radius:50%;background:var(--green-1);border:3px solid #fff;box-shadow:0 0 0 3px rgba(30,219,110,0.4),0 2px 8px rgba(0,0,0,0.4)"></div>`,
+                iconSize: [16, 16], iconAnchor: [8, 8]
+            });
+            userMarker = L.marker(latlng, { icon: userIcon }).addTo(novaMap);
+            userMarker.bindPopup('<div class="map-point-info"><div class="map-point-name">📍 Tu ubicación</div></div>');
+        }
+
+        function centerMapOnUser() {
+            if (userLatLng) novaMap.setView(userLatLng, 16);
+        }
+
+        async function fetchRecyclingPoints(center) {
+            document.getElementById('mapStatusText').textContent = 'Buscando puntos de reciclaje...';
+            const [lat, lon] = center;
+            const radius = 2000; // 2km
+
+            const query = `[out:json][timeout:15];
+(
+  node["amenity"="recycling"](around:${radius},${lat},${lon});
+  node["recycling_type"="container"](around:${radius},${lat},${lon});
+  node["amenity"="waste_disposal"](around:${radius},${lat},${lon});
+  node["leisure"="park"]["composting"](around:${radius},${lat},${lon});
+)
+out body;`;
+
+            try {
+                const res = await fetch('https://overpass-api.de/api/interpreter', {
+                    method: 'POST',
+                    body: 'data=' + encodeURIComponent(query)
+                });
+                const data = await res.json();
+                renderMapPoints(data.elements || []);
+            } catch(e) {
+                // Fallback: add some illustrative markers near center
+                document.getElementById('mapStatusText').textContent = 'Sin conexión — mostrando puntos de ejemplo';
+                renderMapPoints(generateExamplePoints(lat, lon));
+            }
+        }
+
+        function generateExamplePoints(lat, lon) {
+            const types = ['recycling','recycling','organic','hazard','recycling'];
+            return types.map((t, i) => ({
+                id: i, lat: lat + (Math.random()-0.5)*0.02,
+                lon: lon + (Math.random()-0.5)*0.02,
+                tags: { amenity: t === 'organic' ? 'composting' : 'recycling',
+                        name: ['Centro Reciclaje Norte','Contenedor Plaza','Compostera Parque','Acopio Especial','Reciclaje Sur'][i],
+                        _novaType: t }
+            }));
+        }
+
+        function getPointType(tags) {
+            if (tags._novaType) return tags._novaType;
+            if (tags.amenity === 'recycling' || tags.recycling_type === 'container') return 'recycling';
+            if (tags.composting || tags.leisure === 'park') return 'organic';
+            if (tags.hazardous_waste) return 'hazard';
+            return 'recycling';
+        }
+
+        function makeMarkerIcon(type) {
+            const colors = { recycling: '#22d3ee', organic: '#1edb6e', hazard: '#f87171' };
+            const color = colors[type] || '#22d3ee';
+            const emoji = { recycling: '♻️', organic: '🌱', hazard: '⚠️' }[type] || '♻️';
+            return L.divIcon({
+                className: '',
+                html: `<div style="width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.8);border:2px solid ${color};display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.5),0 0 0 3px ${color}33">${emoji}</div>`,
+                iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -18]
+            });
+        }
+
+        function renderMapPoints(elements) {
+            // Clear existing
+            mapMarkers.forEach(m => m.remove());
+            mapMarkers = [];
+
+            const visible = elements.filter(el => {
+                const t = getPointType(el.tags || {});
+                return activeMapFilter === 'all' || t === activeMapFilter;
+            });
+
+            visible.forEach(el => {
+                const type = getPointType(el.tags || {});
+                const name = el.tags?.name || el.tags?.amenity || 'Punto de reciclaje';
+                const latlng = [el.lat, el.lon];
+
+                let dist = '';
+                if (userLatLng) {
+                    const d = novaMap.distance(userLatLng, latlng);
+                    dist = d < 1000 ? Math.round(d) + ' m' : (d/1000).toFixed(1) + ' km';
+                }
+
+                const typeLabels = { recycling: 'Reciclable', organic: 'Orgánico', hazard: 'Especial' };
+
+                const m = L.marker(latlng, { icon: makeMarkerIcon(type) }).addTo(novaMap);
+                m.bindPopup(`
+                    <div class="map-point-info">
+                        <span class="map-point-type ${type}">${typeLabels[type] || 'Reciclaje'}</span>
+                        <div class="map-point-name">${name}</div>
+                        ${dist ? `<div class="map-point-dist">📍 ${dist} de ti</div>` : ''}
+                    </div>`);
+                mapMarkers.push(m);
+            });
+
+            const count = visible.length;
+            document.getElementById('mapStatusText').textContent =
+                count > 0 ? `${count} puntos encontrados en 2 km` : 'Sin puntos en esta zona — intenta ampliar';
+        }
+
+        function filterMapPoints(btn, filter) {
+            activeMapFilter = filter;
+            document.querySelectorAll('.map-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (mapMarkers.length > 0) {
+                // Re-fetch or just re-filter from existing data
+                fetchRecyclingPoints(userLatLng || [19.4326, -99.1332]);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 7 — LEVEL VISUAL THEMES
+        // ════════════════════════════════════════════════════════
+        const LEVEL_TIERS = [
+            { minLevel: 1,  name: 'Explorador',   color: '#1edb6e', dim: 'rgba(30,219,110,0.15)',  glow: 'rgba(30,219,110,0.4)',  icon: 'sprout'  },
+            { minLevel: 5,  name: 'Guardián',      color: '#22d3ee', dim: 'rgba(34,211,238,0.15)',  glow: 'rgba(34,211,238,0.4)',  icon: 'shield'  },
+            { minLevel: 10, name: 'Maestro',        color: '#fbbf24', dim: 'rgba(251,191,36,0.15)',  glow: 'rgba(251,191,36,0.4)',  icon: 'star'    },
+            { minLevel: 15, name: 'Héroe Verde',    color: '#fb923c', dim: 'rgba(251,146,60,0.15)',  glow: 'rgba(251,146,60,0.4)',  icon: 'zap'     },
+            { minLevel: 20, name: 'Leyenda',        color: '#c084fc', dim: 'rgba(192,132,252,0.15)', glow: 'rgba(192,132,252,0.4)', icon: 'crown'   },
+        ];
+
+        function getTierForLevel(level) {
+            let tier = LEVEL_TIERS[0];
+            for (const t of LEVEL_TIERS) {
+                if (level >= t.minLevel) tier = t;
+            }
+            return tier;
+        }
+
+        function applyLevelTheme(level) {
+            const tier = getTierForLevel(level);
+            const root = document.documentElement;
+
+            root.style.setProperty('--tier-color',     tier.color);
+            root.style.setProperty('--tier-color-dim', tier.dim);
+            root.style.setProperty('--tier-glow',      `0 0 28px ${tier.glow}`);
+
+            // Update logo border
+            const logo = document.querySelector('.logo-icon');
+            if (logo) {
+                logo.style.borderColor = tier.color;
+                logo.style.boxShadow   = `0 0 0 6px ${tier.dim}, 0 0 28px ${tier.glow}`;
+            }
+
+            // Update header h1 gradient
+            const h1 = document.querySelector('.header h1');
+            if (h1) {
+                h1.style.backgroundImage = `linear-gradient(135deg, ${tier.color} 0%, #fff 50%, ${tier.color} 100%)`;
+            }
+
+            // Update tier badge
+            const badge = document.getElementById('levelTierBadge');
+            if (badge) {
+                badge.style.display = 'inline-flex';
+                badge.style.background = tier.dim;
+                badge.style.color = tier.color;
+                badge.style.border = `1px solid ${tier.glow.replace('0.4', '0.3')}`;
+                badge.innerHTML = `<span class="icon icon-xs"><i data-lucide="${tier.icon}"></i></span> ${tier.name} · Nivel ${level}`;
+                lucide.createIcons();
+            }
+
+            // Flash logo briefly on level-up
+            if (logo) {
+                logo.style.transition = 'border-color 0.1s, box-shadow 0.1s';
+                setTimeout(() => { logo.style.transition = 'border-color 0.5s ease, box-shadow 0.5s ease'; }, 600);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 9 — CATEGORY-SPECIFIC SOUNDS
+        // ════════════════════════════════════════════════════════
+        function playCategorySound(tipo) {
+            const ctx = getAudioContext();
+            const now = ctx.currentTime;
+
+            if (tipo === 'organico') {
+                // Natural, warm chord — two soft sine waves
+                [[261.63, 0], [329.63, 0.05], [392.00, 0.1]].forEach(([freq, delay]) => {
+                    const osc  = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.type = 'sine'; osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0, now + delay);
+                    gain.gain.linearRampToValueAtTime(0.12, now + delay + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.8);
+                    osc.start(now + delay); osc.stop(now + delay + 0.8);
+                });
+
+            } else if (tipo === 'inorganico-reciclable') {
+                // Bright metallic ping — triangle + quick decay
+                [[880, 0], [1320, 0.02]].forEach(([freq, delay]) => {
+                    const osc  = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.type = 'triangle'; osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.18, now + delay);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.5);
+                    osc.start(now + delay); osc.stop(now + delay + 0.5);
+                });
+
+            } else {
+                // Low warning — descending square, muted
+                const osc  = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(180, now + 0.25);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                osc.start(now); osc.stop(now + 0.35);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 10 — FULLSCREEN QUICK SCAN
+        // ════════════════════════════════════════════════════════
+        let qsStream = null;
+        let qsDetecting = false;
+        let qsInterval = null;
+
+        async function openQuickscan() {
+            const modal = document.getElementById('quickscanModal');
+            modal.classList.add('active');
+
+            // Request camera
+            const constraints = [
+                { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+                { facingMode: 'user' }, true
+            ];
+
+            for (const c of constraints) {
+                try {
+                    qsStream = await navigator.mediaDevices.getUserMedia({ video: c });
+                    break;
+                } catch(e) { console.warn('QS camera fallback:', e.message); }
+            }
+
+            if (!qsStream) { closeQuickscan(); alert('No se pudo acceder a la cámara'); return; }
+
+            const video = document.getElementById('quickscanVideo');
+            video.srcObject = qsStream;
+            video.play();
+
+            if (!model) await loadModel();
+
+            qsDetecting = true;
+            video.addEventListener('loadeddata', () => { qsDetectLoop(); }, { once: true });
+        }
+
+        function closeQuickscan() {
+            qsDetecting = false;
+            clearTimeout(qsInterval);
+            if (qsStream) { qsStream.getTracks().forEach(t => t.stop()); qsStream = null; }
+            document.getElementById('quickscanModal').classList.remove('active');
+            document.getElementById('qsIconWrap').className = 'qs-result-icon-wrap idle';
+            document.getElementById('qsResultName').textContent = 'Apunta la cámara';
+            document.getElementById('qsResultContainer').textContent = 'Nova clasificará el objeto automáticamente';
+            document.getElementById('qsResultPill').style.display = 'none';
+        }
+
+        async function qsDetectLoop() {
+            if (!qsDetecting) return;
+            const video = document.getElementById('quickscanVideo');
+
+            try {
+                const preds = await model.classify(video, 3);
+                if (preds.length > 0) {
+                    const best = preds[0];
+                    const cn   = best.className.toLowerCase();
+                    const conf = (best.probability * 100).toFixed(1);
+
+                    let match = null;
+                    for (const key in clasificacionMejorada) {
+                        if (cn.includes(key) || key.includes(cn.split(',')[0])) {
+                            match = { name: key, info: clasificacionMejorada[key], conf };
+                            break;
+                        }
+                    }
+
+                    if (match && parseFloat(conf) > 45) {
+                        const { tipo, contenedor } = match.info;
+                        const typeMap = { organico: 'Orgánico', 'inorganico-reciclable': 'Reciclable', 'inorganico-no-reciclable': 'No Reciclable' };
+                        const cssMap  = { organico: 'organico', 'inorganico-reciclable': 'reciclable', 'inorganico-no-reciclable': 'no-reciclable' };
+                        const css     = cssMap[tipo] || 'idle';
+
+                        document.getElementById('qsIconWrap').className = 'qs-result-icon-wrap ' + css;
+                        document.getElementById('qsIconWrap').textContent = { organico:'🌱', 'inorganico-reciclable':'♻️', 'inorganico-no-reciclable':'🗑️' }[tipo] || '📦';
+                        document.getElementById('qsResultName').textContent = match.name.charAt(0).toUpperCase() + match.name.slice(1);
+                        document.getElementById('qsResultContainer').textContent = contenedor + ' · ' + conf + '%';
+
+                        const pill = document.getElementById('qsResultPill');
+                        pill.style.display = 'inline-block';
+                        pill.className = 'qs-result-pill ' + css;
+                        pill.textContent = typeMap[tipo] || '?';
+
+                        // Play category sound every 4 detections
+                        if (gameData.totalDetections % 4 === 0) playCategorySound(tipo);
+                    } else {
+                        document.getElementById('qsResultName').textContent = best.className.split(',')[0];
+                        document.getElementById('qsResultContainer').textContent = `Confianza: ${conf}% — analizando...`;
+                        document.getElementById('qsResultPill').style.display = 'none';
+                    }
+                }
+            } catch(e) { console.warn('QS detect error:', e); }
+
+            qsInterval = setTimeout(qsDetectLoop, 1200);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 12 — FIREBASE SYNC
+        // ════════════════════════════════════════════════════════
+        // ⚠️  CONFIGURA aquí tu proyecto de Firebase
+        //     Ve a console.firebase.google.com → Configuración del proyecto → Tu app web
+        const FIREBASE_CONFIG = {
+            apiKey:            "AIzaSyBN8TsFvvVIzLt94QZgqdnxwyypn_iTqXY",
+            authDomain:        "nova-70425.firebaseapp.com",
+            projectId:         "nova-70425",
+            storageBucket:     "nova-70425.firebasestorage.app",
+            messagingSenderId: "53632804261",
+            appId:             "1:53632804261:web:03cdb6545ae458df20744c"
+        };
+
+        let firebaseApp    = null;
+        let firebaseAuth   = null;
+        let firebaseDB     = null;
+        let currentUser    = null;
+        let syncEnabled    = false;
+
+        function initFirebase() {
+            try {
+                if (FIREBASE_CONFIG.apiKey === 'TU_API_KEY') {
+                    console.info('Firebase: Configura FIREBASE_CONFIG con tu proyecto.');
+                    return;
+                }
+                firebaseApp  = firebase.initializeApp(FIREBASE_CONFIG);
+                firebaseAuth = firebase.auth();
+                firebaseDB   = firebase.firestore();
+                syncEnabled  = true;
+
+                firebaseAuth.onAuthStateChanged(user => {
+                    currentUser = user;
+                    updateSyncBar(user);
+                    if (user) {
+                        pullFromFirestore(user.uid);
+                    }
+                });
+            } catch(e) {
+                console.warn('Firebase init error:', e.message);
+            }
+        }
+
+        function updateSyncBar(user) {
+            const bar    = document.getElementById('syncBar');
+            const avatar = document.getElementById('syncAvatar');
+            const label  = document.getElementById('syncLabel');
+            if (!bar) return;
+
+            if (user) {
+                bar.classList.add('synced');
+                label.textContent = user.displayName?.split(' ')[0] || 'Sincronizado';
+                if (user.photoURL) {
+                    avatar.innerHTML = `<img src="${user.photoURL}" alt="">`;
+                } else {
+                    avatar.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke-width="2"/></svg>`;
+                }
+            } else {
+                bar.classList.remove('synced');
+                label.textContent = 'Iniciar sesión';
+                avatar.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke-width="2"/></svg>`;
+            }
+        }
+
+        async function handleSyncBarClick() {
+            if (!syncEnabled) {
+                showAchievement('ℹ️', 'Sincronización', 'Configura Firebase en el código para activar sync');
+                return;
+            }
+            if (currentUser) {
+                // Already logged in — offer sign out
+                if (confirm('¿Cerrar sesión y dejar de sincronizar?')) {
+                    await firebaseAuth.signOut();
+                    showAchievement('👋', 'Sesión cerrada', 'Tus datos locales se mantienen');
+                }
+            } else {
+                await signInWithGoogle();
+            }
+        }
+
+        async function signInWithGoogle() {
+            if (!syncEnabled) return;
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                await firebaseAuth.signInWithPopup(provider);
+                showAchievement('✅', '¡Sesión iniciada!', 'Tus datos se sincronizarán automáticamente');
+            } catch(e) {
+                if (e.code !== 'auth/popup-closed-by-user') {
+                    console.error('Sign-in error:', e);
+                    showAchievement('❌', 'Error al iniciar sesión', e.message);
+                }
+            }
+        }
+
+        async function pushToFirestore(uid) {
+            if (!firebaseDB || !uid) return;
+            const bar = document.getElementById('syncBar');
+            if (bar) bar.classList.add('syncing');
+
+            try {
+                await firebaseDB.collection('users').doc(uid).set({
+                    gameData: JSON.parse(JSON.stringify(gameData)),
+                    userName: userName,
+                    lastSynced: firebase.firestore.FieldValue.serverTimestamp(),
+                }, { merge: true });
+                if (bar) { bar.classList.remove('syncing'); bar.classList.add('synced'); }
+            } catch(e) {
+                console.warn('Firestore push error:', e.message);
+                if (bar) bar.classList.remove('syncing');
+            }
+        }
+
+        async function pullFromFirestore(uid) {
+            if (!firebaseDB || !uid) return;
+            try {
+                const doc = await firebaseDB.collection('users').doc(uid).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.gameData) {
+                        // Merge remote data (take the higher values)
+                        const remote = data.gameData;
+                        if (remote.totalPoints > gameData.totalPoints) {
+                            gameData = { ...gameData, ...remote };
+                            saveGameData();
+                            updateGameUI();
+                            updateBadges();
+                            renderHistory();
+                            showAchievement('☁️', 'Datos sincronizados', 'Tu progreso está actualizado');
+                        }
+                    }
+                    if (data.userName && !userName) {
+                        userName = data.userName;
+                        saveUserName(userName);
+                        updateGreeting();
+                    }
+                }
+            } catch(e) {
+                console.warn('Firestore pull error:', e.message);
+            }
+        }
+
         // Inicializar
         window.onload = () => {
             createEnergyParticles();
@@ -4415,6 +5333,8 @@
             checkNameScreen();
             updateNotifBtn();
             renderActivityChart();
+            initFirebase();
+            applyLevelTheme(gameData.level);
             // Render all Lucide icons
             lucide.createIcons();
             // Init visual systems
@@ -4911,5 +5831,67 @@
         </svg>
     </button>
 
+
+    <!-- MAP MODAL (Feature 4) -->
+    <div class="map-modal" id="mapModal">
+        <div class="map-wrap">
+            <div class="map-header">
+                <div class="map-header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="10" r="3" stroke-width="2"/></svg>
+                </div>
+                <div class="map-header-text">
+                    <h3>Puntos de Reciclaje Cercanos</h3>
+                    <p id="mapStatusText">Obteniendo tu ubicación...</p>
+                </div>
+                <button class="map-close" onclick="closeMapModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6L6 18M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+            <div class="map-controls">
+                <button class="map-filter-btn active" data-filter="all" onclick="filterMapPoints(this,'all')">Todos</button>
+                <button class="map-filter-btn" data-filter="recycling" onclick="filterMapPoints(this,'recycling')">♻️ Reciclaje</button>
+                <button class="map-filter-btn" data-filter="organic" onclick="filterMapPoints(this,'organic')">🌱 Orgánico</button>
+                <button class="map-filter-btn" data-filter="hazard" onclick="filterMapPoints(this,'hazard')">⚠️ Peligrosos</button>
+            </div>
+            <div id="novaMap" style="min-height:300px;flex:1"></div>
+            <button class="map-locate-btn" onclick="centerMapOnUser()" title="Mi ubicación">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- QUICKSCAN MODAL (Feature 10) -->
+    <div class="quickscan-modal" id="quickscanModal">
+        <video id="quickscanVideo" autoplay playsinline muted></video>
+        <div class="quickscan-overlay">
+            <div class="qs-top-bar">
+                <div class="qs-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2" stroke-width="2"/></svg>
+                    Escaneo Rápido
+                </div>
+                <button class="qs-close-btn" onclick="closeQuickscan()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6L6 18M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+
+            <div class="qs-frame-wrap">
+                <div class="qs-frame">
+                    <div class="qs-scan-line"></div>
+                    <div class="qs-frame-bl"></div>
+                    <div class="qs-frame-br"></div>
+                    <span class="qs-hint">Centra el objeto en el recuadro</span>
+                </div>
+            </div>
+
+            <div class="qs-result-bar">
+                <div class="qs-result-icon-wrap idle" id="qsIconWrap">📷</div>
+                <div class="qs-result-info">
+                    <div class="qs-result-name" id="qsResultName">Apunta la cámara</div>
+                    <div class="qs-result-container" id="qsResultContainer">Nova clasificará el objeto automáticamente</div>
+                </div>
+                <span class="qs-result-pill" id="qsResultPill" style="display:none"></span>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
