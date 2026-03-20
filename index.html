@@ -10,15 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#00ff00">
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-    <!-- Leaflet Map -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Lucide -->
+    <!-- Lucide (needed at startup) -->
     <script src="https://unpkg.com/lucide@0.378.0/dist/umd/lucide.min.js"></script>
+    <!-- Firebase + Leaflet loaded lazily on demand -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0"></script>
     <style>
@@ -2904,12 +2898,27 @@
             --bg-card:    rgba(0,4,8,0.88);
             --bg-raised:  rgba(0,5,10,0.92);
             --t1: #c8d8e8; --t2: #4a6070; --t3: #1e2e38;
-            --green-1: #4af; --green-2: #38e; --green-3: #6bf;
+            --green-1: #44aaff; --green-2: #2288ee; --green-3: #66bbff;
             --green-dim: rgba(68,170,255,0.1);
             --border-subtle: rgba(68,170,255,0.08);
             --border-soft:   rgba(68,170,255,0.15);
             --border-mid:    rgba(68,170,255,0.25);
+            /* Impact widget — shift to deep blue */
+            --impact-bg:          linear-gradient(135deg, rgba(0,4,14,0.95) 0%, rgba(0,6,18,0.95) 100%);
+            --impact-accent-rgb:  44, 120, 220;
         }
+        /* Impact widget extra overrides for earth-hour */
+        body.earth-hour .impact-widget {
+            border-color: rgba(44,120,220,0.25);
+        }
+        body.earth-hour .impact-equiv {
+            background: rgba(44,120,220,0.07);
+            border-color: rgba(44,120,220,0.12);
+        }
+        body.earth-hour .impact-equiv svg { stroke: #44aaff; }
+        body.earth-hour .notif-btn { border-color: rgba(44,120,220,0.2); }
+        body.earth-hour .map-fab   { border-color: rgba(44,120,220,0.2); }
+        body.earth-hour .map-fab svg { stroke: #44aaff; }
         body.earth-hour .video-background video {
             filter: hue-rotate(190deg) saturate(0.4) brightness(0.3);
         }
@@ -3105,6 +3114,87 @@
         .ptr-indicator.releasing svg { stroke: var(--green-1); }
         .ptr-indicator.refreshing svg { animation: spin 0.8s linear infinite; }
 
+
+        /* ══════════════════════════════════════════════════════
+           PERFORMANCE TIERS
+           .perf-low   → old phones (≤2GB RAM / slow CPU)
+           .perf-mid   → mid-range
+           .perf-high  → modern devices (default)
+        ══════════════════════════════════════════════════════ */
+
+        /* LOW — disable all heavy effects */
+        body.perf-low .glass-card,
+        body.perf-low .impact-widget,
+        body.perf-low .name-card,
+        body.perf-low .onboarding-wrap,
+        body.perf-low .welcome-content,
+        body.perf-low .tut-panel,
+        body.perf-low .theme-toggle-wrap,
+        body.perf-low .sync-bar,
+        body.perf-low .map-wrap,
+        body.perf-low .tut-tooltip,
+        body.perf-low .milestone-content,
+        body.perf-low .achievement-toast {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+
+        body.perf-low .aurora-layer,
+        body.perf-low .video-mesh,
+        body.perf-low .video-noise,
+        body.perf-low #nova-cursor,
+        body.perf-low .nc-trail,
+        body.perf-low .cursor-particle,
+        body.perf-low .energy-particle,
+        body.perf-low .ns-particle,
+        body.perf-low .logo-ring-1,
+        body.perf-low .logo-ring-2,
+        body.perf-low .logo-ring-3 {
+            display: none !important;
+        }
+
+        body.perf-low * {
+            animation-duration: 0.001ms !important;
+            transition-duration: 0.15s !important;
+        }
+        /* Keep essential animations */
+        body.perf-low .spinner,
+        body.perf-low .scan-line,
+        body.perf-low .splash-bar,
+        body.perf-low .impact-live-dot::before {
+            animation-duration: revert !important;
+        }
+        body.perf-low .video-background video { opacity: 0.25; filter: none; }
+        body.perf-low .glass-card { background: var(--bg-raised); }
+        body.perf-low .aurora-band { filter: none; }
+        body.perf-low body { cursor: auto; }
+
+        /* MID — reduce blur, keep key transitions */
+        body.perf-mid .glass-card,
+        body.perf-mid .impact-widget {
+            backdrop-filter: blur(6px) !important;
+            -webkit-backdrop-filter: blur(6px) !important;
+        }
+        body.perf-mid .aurora-band { filter: blur(30px) !important; opacity: 0.3; }
+        body.perf-mid .aurora-layer { opacity: 0.3 !important; }
+        body.perf-mid .energy-particle { display: none; }
+        body.perf-mid #nova-cursor .nc-trail { display: none; }
+
+        /* Performance indicator badge */
+        .perf-badge {
+            position: fixed; bottom: 20px; right: 70px;
+            font-size: 0.65em; font-weight: 700; letter-spacing: 0.5px;
+            padding: 3px 10px; border-radius: 999px;
+            background: var(--bg-raised); border: 1px solid var(--border-subtle);
+            color: var(--t3); z-index: 700; opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        .perf-badge.visible { opacity: 1; }
+        .perf-badge.low  { color: #f87171; border-color: rgba(248,113,113,0.3); }
+        .perf-badge.mid  { color: #fbbf24; border-color: rgba(251,191,36,0.3); }
+        .perf-badge.high { color: var(--green-1); border-color: var(--border-soft); }
+
     </style>
 </head>
 <body>
@@ -3136,6 +3226,9 @@
     <button class="eh-toggle" id="ehToggle" onclick="toggleEarthHour()" title="Modo Earth Hour">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="12" x2="22" y2="12" stroke-width="1.5"/></svg>
     </button>
+
+    <!-- Performance badge -->
+    <div class="perf-badge" id="perfBadge"></div>
 
     <!-- Offline Badge -->
     <div class="offline-badge" id="offlineBadge">📴 Modo sin conexión · Funciones básicas activas</div>
@@ -4535,22 +4628,7 @@
             });
         }
 
-        function createConfetti(amount = 50) {
-            for (let i = 0; i < amount; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.top = '-10px';
-                    confetti.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
-                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                    confetti.style.setProperty('--hue', Math.random() * 360);
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => confetti.remove(), 3000);
-                }, i * 30);
-            }
-        }
+        // createConfetti — moved to performance system above
 
         // Sistema de Comparación
         function updateComparison() {
@@ -4932,38 +5010,9 @@
         }
 
         // === 30 PARTÍCULAS ENERGÉTICAS + CURSOR ===
-        function createEnergyParticles() {
-            for (let i = 0; i < 30; i++) {
-                const p = document.createElement('div');
-                const size = 4 + Math.random() * 8;
-                const hue = 75 + Math.random() * 45;
-                p.className = 'energy-particle';
-                p.style.width = size + 'px';
-                p.style.height = size + 'px';
-                p.style.left = Math.random() * 100 + '%';
-                p.style.top = Math.random() * 100 + '%';
-                p.style.animationDelay = Math.random() * 10 + 's';
-                p.style.animationDuration = (8 + Math.random() * 6) + 's';
-                p.style.background = `radial-gradient(circle, hsl(${hue}, 100%, 70%), transparent)`;
-                p.style.color = `hsl(${hue}, 100%, 70%)`;
-                document.body.appendChild(p);
-            }
-        }
+        // createEnergyParticles — moved to performance system above
 
-        let lastX = 0, lastY = 0;
-        document.addEventListener('mousemove', (e) => {
-            const dx = Math.abs(e.clientX - lastX);
-            const dy = Math.abs(e.clientY - lastY);
-            if (dx + dy > 30 && Math.random() < 0.1) {
-                const p = document.createElement('div');
-                p.className = 'cursor-particle';
-                p.style.left = e.clientX + 'px';
-                p.style.top = e.clientY + 'px';
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), 1000);
-            }
-            lastX = e.clientX; lastY = e.clientY;
-        });
+        // cursor-particle mousemove — replaced by custom cursor system
 
 
 
@@ -6243,8 +6292,451 @@ out body;`;
             });
         }
 
+
+        // ════════════════════════════════════════════════════════
+        // PERFORMANCE TIER DETECTION & OPTIMIZATION SYSTEM
+        // ════════════════════════════════════════════════════════
+
+        let perfTier = 'high'; // 'low' | 'mid' | 'high'
+
+        async function detectPerformanceTier() {
+            const scores = [];
+
+            // 1. Hardware concurrency (CPU cores)
+            const cores = navigator.hardwareConcurrency || 2;
+            scores.push(cores >= 6 ? 2 : cores >= 4 ? 1 : 0);
+
+            // 2. Device memory (GB) — Chrome only
+            const ram = navigator.deviceMemory || 4;
+            scores.push(ram >= 6 ? 2 : ram >= 3 ? 1 : 0);
+
+            // 3. Connection speed
+            const conn = navigator.connection;
+            if (conn) {
+                const fast = ['4g','wifi','ethernet'].includes(conn.effectiveType);
+                scores.push(fast ? 2 : conn.effectiveType === '3g' ? 1 : 0);
+            } else { scores.push(1); }
+
+            // 4. Benchmark: measure time of 500k simple ops
+            const t0 = performance.now();
+            let x = 0;
+            for (let i = 0; i < 500000; i++) x += Math.sqrt(i);
+            const bench = performance.now() - t0;
+            scores.push(bench < 12 ? 2 : bench < 30 ? 1 : 0);
+
+            // 5. Reduced motion preference
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                scores.push(0);
+            } else { scores.push(2); }
+
+            const total = scores.reduce((a,b) => a+b, 0);
+            const max   = scores.length * 2;
+            const pct   = total / max;
+
+            perfTier = pct >= 0.65 ? 'high' : pct >= 0.35 ? 'mid' : 'low';
+
+            // Check override from localStorage
+            try {
+                const saved = localStorage.getItem('novaPerfTier');
+                if (saved && ['low','mid','high'].includes(saved)) {
+                    perfTier = saved;
+                }
+            } catch(e) {}
+
+            applyPerfTier(perfTier);
+            console.info(`Nova perf tier: ${perfTier} (score ${total}/${max}, bench ${bench.toFixed(1)}ms)`);
+        }
+
+        function applyPerfTier(tier) {
+            document.body.classList.remove('perf-low', 'perf-mid', 'perf-high');
+            document.body.classList.add('perf-' + tier);
+
+            const badge = document.getElementById('perfBadge');
+            if (badge) {
+                const labels = { low: '⚡ Modo Eco', mid: '⚡ Modo Balanced', high: '⚡ Modo Full' };
+                badge.textContent = labels[tier] || '';
+                badge.className   = `perf-badge ${tier}`;
+                badge.classList.add('visible');
+                setTimeout(() => badge.classList.remove('visible'), 3500);
+            }
+
+            // Adapt particle count to tier
+            PARTICLE_COUNT = tier === 'low' ? 0 : tier === 'mid' ? 8 : 30;
+
+            // Disable cursor on low/touch devices
+            if (tier === 'low' || ('ontouchstart' in window)) {
+                document.body.style.cursor = 'auto';
+                const cur = document.getElementById('nova-cursor');
+                if (cur) cur.style.display = 'none';
+            }
+
+            // Reduce aurora opacity on mid
+            if (tier === 'mid') {
+                const al = document.getElementById('auroraLayer');
+                if (al) al.style.opacity = '0.25';
+            }
+            if (tier === 'low') {
+                const al = document.getElementById('auroraLayer');
+                if (al) al.style.display = 'none';
+            }
+        }
+
+        // Public toggle for user to switch tier manually (from settings or FAB long-press)
+        function cyclePerfTier() {
+            const tiers = ['high', 'mid', 'low'];
+            const next  = tiers[(tiers.indexOf(perfTier) + 1) % tiers.length];
+            perfTier = next;
+            try { localStorage.setItem('novaPerfTier', next); } catch(e) {}
+            applyPerfTier(next);
+            const msgs = { high: 'Efectos completos activados', mid: 'Efectos balanceados', low: 'Modo eco — máximo rendimiento' };
+            showAchievement('⚡', 'Rendimiento: ' + next.toUpperCase(), msgs[next]);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // LAZY SCRIPT LOADER — loads CDN only when needed
+        // ════════════════════════════════════════════════════════
+        const loadedScripts = new Set();
+
+        function loadScript(src, id) {
+            return new Promise((resolve, reject) => {
+                if (loadedScripts.has(src)) { resolve(); return; }
+                const el = document.createElement('script');
+                el.src = src; el.async = true;
+                el.onload  = () => { loadedScripts.add(src); resolve(); };
+                el.onerror = reject;
+                document.head.appendChild(el);
+            });
+        }
+
+        function loadStyle(href) {
+            if (document.querySelector(`link[href="${href}"]`)) return Promise.resolve();
+            return new Promise(resolve => {
+                const el = document.createElement('link');
+                el.rel = 'stylesheet'; el.href = href;
+                el.onload = resolve;
+                document.head.appendChild(el);
+            });
+        }
+
+        // Lazy Firebase loader
+        async function ensureFirebase() {
+            if (typeof firebase !== 'undefined') return;
+            await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+            await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js');
+            await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js');
+        }
+
+        // Lazy Leaflet loader
+        async function ensureLeaflet() {
+            if (typeof L !== 'undefined') return;
+            await loadStyle('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+            await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
+        }
+
+        // ════════════════════════════════════════════════════════
+        // OPTIMIZED PARTICLE SYSTEM
+        // ════════════════════════════════════════════════════════
+        let PARTICLE_COUNT = 30;  // overridden by perf tier
+
+        // Replace original createEnergyParticles to respect tier
+        function createEnergyParticles() {
+            if (perfTier === 'low') return;
+            const count = PARTICLE_COUNT;
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                const size = 4 + Math.random() * 8;
+                const hue  = 75 + Math.random() * 45;
+                p.className = 'energy-particle';
+                p.style.cssText = `
+                    width:${size}px; height:${size}px;
+                    left:${Math.random() * 100}%;
+                    top:${Math.random() * 100}%;
+                    animation-delay:${Math.random() * 10}s;
+                    animation-duration:${(8 + Math.random() * 6)}s;
+                    background:radial-gradient(circle, hsl(${hue},100%,70%), transparent);
+                `;
+                document.body.appendChild(p);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // OPTIMIZED CURSOR — uses single RAF, throttled trail
+        // ════════════════════════════════════════════════════════
+        function initCustomCursor() {
+            if (perfTier === 'low' || 'ontouchstart' in window) return;
+
+            const outer = document.getElementById('ncOuter');
+            const inner = document.getElementById('ncInner');
+            if (!outer || !inner) return;
+
+            let mx = 0, my = 0, ox = 0, oy = 0;
+            let trailCount = 0;
+            const TRAIL_EVERY = perfTier === 'mid' ? 999 : 4; // no trail on mid
+
+            document.addEventListener('mousemove', e => {
+                mx = e.clientX; my = e.clientY;
+                inner.style.left = mx + 'px';
+                inner.style.top  = my + 'px';
+
+                trailCount++;
+                if (perfTier === 'high' && trailCount % TRAIL_EVERY === 0) {
+                    const t = document.createElement('div');
+                    t.className = 'nc-trail';
+                    const s = 4 + Math.random() * 5;
+                    t.style.cssText = `left:${mx}px;top:${my}px;width:${s}px;height:${s}px;`;
+                    document.body.appendChild(t);
+                    setTimeout(() => t.remove(), 650);
+                }
+            }, { passive: true });
+
+            // Single RAF loop for outer ring
+            function animateOuter() {
+                ox += (mx - ox) * (perfTier === 'high' ? 0.12 : 0.2);
+                oy += (my - oy) * (perfTier === 'high' ? 0.12 : 0.2);
+                outer.style.left = ox + 'px';
+                outer.style.top  = oy + 'px';
+                requestAnimationFrame(animateOuter);
+            }
+            animateOuter();
+
+            const hoverEls = 'button,a,[role=button],input,.tab,.badge-card,.glass-card,.tut-fab';
+            document.addEventListener('mouseover', e => { if (e.target.closest(hoverEls)) outer.classList.add('hovering'); });
+            document.addEventListener('mouseout',  e => { if (e.target.closest(hoverEls)) outer.classList.remove('hovering'); });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // OPTIMIZED CONFETTI — max 40 pieces, auto-cleanup
+        // ════════════════════════════════════════════════════════
+        function createConfetti(amount = 50) {
+            const count = Math.min(amount, perfTier === 'low' ? 0 : perfTier === 'mid' ? 20 : 40);
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left       = Math.random() * 100 + '%';
+                    confetti.style.top        = '-10px';
+                    confetti.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                    confetti.style.transform  = `rotate(${Math.random() * 360}deg)`;
+                    confetti.style.setProperty('--hue', Math.random() * 360);
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // OPTIMIZED AURORA — only on high tier
+        // ════════════════════════════════════════════════════════
+        function initAurora() {
+            const layer = document.getElementById('auroraLayer');
+            if (!layer) return;
+            if (perfTier === 'low') { layer.style.display = 'none'; return; }
+            if (perfTier === 'mid') { layer.style.opacity = '0.25'; }
+            layer.style.display = 'block';
+        }
+
+        // ════════════════════════════════════════════════════════
+        // OPTIMIZED STAR FIELD — reduced on mid
+        // ════════════════════════════════════════════════════════
+        function initStarField() {
+            const field = document.getElementById('starField');
+            if (!field || field.children.length > 0) return;
+            const count = perfTier === 'low' ? 30 : perfTier === 'mid' ? 60 : 120;
+            const frag  = document.createDocumentFragment();
+            for (let i = 0; i < count; i++) {
+                const s = document.createElement('div');
+                s.className = 'star-dot';
+                const size = 0.8 + Math.random() * 2;
+                s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s;`;
+                frag.appendChild(s);
+            }
+            field.appendChild(frag);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // HOLOGRAPHIC BADGES — only on high tier
+        // ════════════════════════════════════════════════════════
+        function initHoloBadges() {
+            if (perfTier === 'low') return;
+            document.addEventListener('mousemove', e => {
+                document.querySelectorAll('.badge-card.unlocked').forEach(card => {
+                    const r  = card.getBoundingClientRect();
+                    const dx = (e.clientX - (r.left + r.width/2))  / (r.width/2);
+                    const dy = (e.clientY - (r.top  + r.height/2)) / (r.height/2);
+                    if (Math.sqrt(dx*dx + dy*dy) < 1.5) {
+                        card.style.transform = `perspective(600px) rotateX(${dy*-10}deg) rotateY(${dx*10}deg)`;
+                        card.style.setProperty('--holo-pos', `${((dx+1)/2*100).toFixed(0)}% ${((dy+1)/2*100).toFixed(0)}%`);
+                    } else {
+                        card.style.transform = '';
+                    }
+                });
+            }, { passive: true });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // OPTIMIZED TILT — passive + only high tier
+        // ════════════════════════════════════════════════════════
+        function initTilt() {
+            if (perfTier === 'low' || 'ontouchstart' in window) return;
+            document.querySelectorAll('.glass-card, .impact-widget').forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const r  = card.getBoundingClientRect();
+                    const x  = (e.clientX - r.left) / r.width  - 0.5;
+                    const y  = (e.clientY - r.top)  / r.height - 0.5;
+                    card.style.transform = `perspective(800px) rotateX(${y*-5}deg) rotateY(${x*5}deg) translateY(-3px)`;
+                }, { passive: true });
+                card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+            });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // LAZY FIREBASE INIT — only when user clicks sync bar
+        // ════════════════════════════════════════════════════════
+        async function initFirebase() {
+            // Don't load Firebase on startup — only when user interacts
+            // ensureFirebase() is called from handleSyncBarClick()
+            console.info('Firebase: se cargará cuando el usuario inicie sesión.');
+        }
+
+        async function handleSyncBarClick() {
+            if (!syncEnabled && typeof firebase === 'undefined') {
+                // First click — lazy load Firebase
+                const label = document.getElementById('syncLabel');
+                if (label) label.textContent = 'Cargando...';
+                try {
+                    await ensureFirebase();
+                    // Re-init now that scripts are loaded
+                    firebaseApp  = firebase.initializeApp(FIREBASE_CONFIG);
+                    firebaseAuth = firebase.auth();
+                    firebaseDB   = firebase.firestore();
+                    syncEnabled  = true;
+                    firebaseAuth.onAuthStateChanged(user => {
+                        currentUser = user;
+                        updateSyncBar(user);
+                        if (user) pullFromFirestore(user.uid);
+                    });
+                } catch(e) {
+                    console.error('Firebase lazy load failed:', e);
+                    if (label) label.textContent = 'Error';
+                    return;
+                }
+            }
+            if (!syncEnabled) {
+                showAchievement('ℹ️', 'Sincronización', 'Configura Firebase en el código');
+                return;
+            }
+            if (currentUser) {
+                if (confirm('¿Cerrar sesión y dejar de sincronizar?')) {
+                    await firebaseAuth.signOut();
+                    showAchievement('👋', 'Sesión cerrada', 'Tus datos locales se mantienen');
+                }
+            } else {
+                await signInWithGoogle();
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // LAZY MAP — load Leaflet only when modal opens
+        // ════════════════════════════════════════════════════════
+        async function openMapModal() {
+            document.getElementById('mapModal').classList.add('active');
+            if (!novaMap) {
+                document.getElementById('mapStatusText').textContent = 'Cargando mapa...';
+                await ensureLeaflet();
+                setTimeout(initMap, 100);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // DEBOUNCED SCROLL for parallax — less CPU
+        // ════════════════════════════════════════════════════════
+        function initParallax() {
+            if (perfTier === 'low') return;
+            const header = document.querySelector('.header');
+            const logo   = document.querySelector('.logo-icon');
+            if (!header) return;
+
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    if (perfTier === 'high') {
+                        if (header) { header.style.transform = `translateY(${scrollY*0.22}px)`; header.style.opacity = Math.max(0, 1-scrollY/320); }
+                        if (logo)   logo.style.transform = `translateY(${scrollY*-0.08}px)`;
+                    }
+                    ticking = false;
+                });
+            }, { passive: true });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // SCROLL REVEAL — uses IntersectionObserver (already set)
+        // Patch: skip on low tier
+        // ════════════════════════════════════════════════════════
+        function initScrollReveal() {
+            if (perfTier === 'low') {
+                document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+                return;
+            }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const delay = parseFloat(entry.target.dataset.delay || 0);
+                        setTimeout(() => entry.target.classList.add('visible'), delay);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+            document.querySelectorAll('.stat-card').forEach((el, i) => { el.dataset.delay = i * 80; });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        // ════════════════════════════════════════════════════════
+        // NAME SCREEN PARTICLES — only on high
+        // ════════════════════════════════════════════════════════
+        function spawnNameScreenParticles() {
+            if (perfTier === 'low') return;
+            const screen = document.getElementById('nameScreen');
+            if (!screen) return;
+            const count = perfTier === 'mid' ? 6 : 18;
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'ns-particle';
+                const size = 3 + Math.random() * 8;
+                p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;animation-duration:${6+Math.random()*8}s;animation-delay:${Math.random()*6}s;opacity:0;`;
+                screen.insertBefore(p, screen.firstChild);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // MEMORY CLEANUP — purge orphan DOM nodes periodically
+        // ════════════════════════════════════════════════════════
+        function initMemoryCleanup() {
+            setInterval(() => {
+                // Remove any stray confetti/burst/trail particles older than expected
+                const stale = document.querySelectorAll('.confetti, .burst-particle, .nc-trail, .cursor-particle');
+                stale.forEach(el => {
+                    if (!el.isConnected) return;
+                    const created = parseInt(el.dataset.t || Date.now());
+                    if (Date.now() - created > 4000) el.remove();
+                });
+                // Limit energy particles
+                const energyParticles = document.querySelectorAll('.energy-particle');
+                const maxP = PARTICLE_COUNT;
+                if (energyParticles.length > maxP + 5) {
+                    [...energyParticles].slice(0, energyParticles.length - maxP).forEach(p => p.remove());
+                }
+            }, 8000);
+        }
+
         // Inicializar
-        window.onload = () => {
+        window.onload = async () => {
+            // Detect performance tier FIRST — everything adapts to it
+            await detectPerformanceTier();
+
             createEnergyParticles();
             loadGameData();
             loadModel();
@@ -6311,6 +6803,8 @@ out body;`;
             lucide.createIcons();
             // Init visual systems
             initVisuals();
+            // Memory cleanup
+            initMemoryCleanup();
             // Init new visual features
             spawnNameScreenParticles();
             initCustomCursor();
@@ -6808,7 +7302,7 @@ out body;`;
     </div>
 
     <!-- FAB Help Button -->
-    <button class="tut-fab" id="tutFab" onclick="openTutorialPanel()" aria-label="Abrir tutorial">
+    <button class="tut-fab" id="tutFab" onclick="openTutorialPanel()" ondblclick="cyclePerfTier()" title="Clic: Tutorial · Doble clic: Cambiar rendimiento" aria-label="Abrir tutorial">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="0.5" fill="currentColor" stroke-width="2"/>
         </svg>
