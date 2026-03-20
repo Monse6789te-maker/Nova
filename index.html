@@ -2614,29 +2614,558 @@
         .sync-bar.synced .sync-dot { background: var(--green-1); animation: pip-blink 2s ease-in-out infinite; }
         .sync-bar.syncing .sync-dot { background: #fbbf24; animation: pip-blink 0.8s ease-in-out infinite; }
 
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  1. CINEMATIC NAME SCREEN                           ║
+           ╚══════════════════════════════════════════════════════╝ */
+        .name-screen {
+            position: fixed; inset: 0;
+            background: radial-gradient(ellipse 120% 80% at 50% 60%, rgba(0,30,10,0.97) 0%, #010803 100%);
+            z-index: 6000; display: none;
+            align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .name-screen.active { display: flex; }
+
+        /* Floating particles on name screen */
+        .ns-particle {
+            position: absolute; border-radius: 50%; pointer-events: none;
+            animation: ns-float linear infinite;
+            background: radial-gradient(circle, rgba(30,219,110,0.6), transparent);
+        }
+        @keyframes ns-float {
+            0%   { transform: translateY(110vh) scale(0); opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 0.4; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* Logo animation on name screen */
+        .ns-logo-wrap {
+            position: relative; width: 90px; height: 90px; margin: 0 auto 28px;
+        }
+        .ns-logo-bg {
+            width: 90px; height: 90px; border-radius: 22px;
+            background: linear-gradient(145deg, rgba(0,30,12,0.95), rgba(0,50,20,0.95));
+            border: 1.5px solid rgba(30,219,110,0.4);
+            display: flex; align-items: center; justify-content: center;
+            animation: ns-logo-enter 0.8s cubic-bezier(0.34,1.4,0.64,1) both;
+            position: relative; z-index: 2;
+        }
+        @keyframes ns-logo-enter {
+            from { transform: scale(0) rotate(-180deg); opacity: 0; }
+            to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+        }
+        .ns-logo-bg svg { width: 40px; height: 40px; stroke: var(--green-1); stroke-width: 1.5; }
+        .ns-ring {
+            position: absolute; border-radius: 50%; border: 1px solid rgba(30,219,110,0.2);
+            top: 50%; left: 50%; transform: translate(-50%,-50%);
+            animation: ns-ring-pulse 2.5s ease-out infinite;
+        }
+        .ns-ring:nth-child(2) { width: 120px; height: 120px; animation-delay: 0s; }
+        .ns-ring:nth-child(3) { width: 150px; height: 150px; animation-delay: 0.6s; }
+        .ns-ring:nth-child(4) { width: 180px; height: 180px; animation-delay: 1.2s; }
+        @keyframes ns-ring-pulse {
+            0%   { transform: translate(-50%,-50%) scale(0.7); opacity: 0.8; }
+            100% { transform: translate(-50%,-50%) scale(1.4); opacity: 0; }
+        }
+
+        .name-card {
+            max-width: 420px; width: 92%;
+            background: rgba(4,14,6,0.7);
+            border: 1px solid rgba(30,219,110,0.2);
+            border-radius: 28px;
+            padding: 44px 36px 36px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(30,219,110,0.08) inset;
+            position: relative; z-index: 2;
+            animation: ns-card-enter 1s cubic-bezier(0.22,1,0.36,1) 0.2s both;
+        }
+        @keyframes ns-card-enter {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to   { opacity: 1; transform: translateY(0)    scale(1); }
+        }
+        .name-card::before {
+            content: '';
+            position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(30,219,110,0.6), transparent);
+        }
+
+        .name-card h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2em; font-weight: 800; letter-spacing: -0.5px;
+            color: var(--t1); margin-bottom: 10px; line-height: 1.15;
+            animation: ns-text-enter 0.7s var(--ease) 0.5s both;
+        }
+        .name-card h2 span { color: var(--green-1); }
+        .name-card > p {
+            font-size: 0.86em; color: var(--t3); line-height: 1.6; margin-bottom: 28px;
+            animation: ns-text-enter 0.7s var(--ease) 0.65s both;
+        }
+        @keyframes ns-text-enter {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .name-input-wrap { animation: ns-text-enter 0.7s var(--ease) 0.75s both; }
+        .name-submit-btn { animation: ns-text-enter 0.7s var(--ease) 0.85s both; }
+        .name-skip       { animation: ns-text-enter 0.7s var(--ease) 0.95s both; }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  2. SLIDE TRANSITIONS between tabs                  ║
+           ╚══════════════════════════════════════════════════════╝ */
+        .content-card { overflow: hidden; }
+
+        .content-section {
+            display: none;
+            animation: none;
+        }
+        .content-section.slide-in-right {
+            display: block;
+            animation: slide-from-right 0.38s cubic-bezier(0.22,1,0.36,1) both;
+        }
+        .content-section.slide-in-left {
+            display: block;
+            animation: slide-from-left 0.38s cubic-bezier(0.22,1,0.36,1) both;
+        }
+        .content-section.active {
+            display: block;
+        }
+        @keyframes slide-from-right {
+            from { opacity: 0; transform: translateX(32px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slide-from-left {
+            from { opacity: 0; transform: translateX(-32px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  3. FLIP CARD RESULT                                ║
+           ╚══════════════════════════════════════════════════════╝ */
+        .result-flip-wrap {
+            perspective: 1000px;
+            margin-top: 16px;
+        }
+        .result-flip-inner {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.34,1.1,0.64,1);
+        }
+        .result-flip-inner.flipped { transform: rotateY(180deg); }
+
+        .result-flip-front, .result-flip-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: var(--r-lg);
+        }
+        .result-flip-back {
+            position: absolute; inset: 0;
+            transform: rotateY(180deg);
+            background: var(--bg-raised);
+            border: 1px solid var(--border-soft);
+            padding: 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; gap: 10px;
+        }
+        .rfb-title {
+            font-family: 'Syne', sans-serif; font-size: 1em; font-weight: 700; color: var(--t1);
+        }
+        .rfb-co2 {
+            font-family: 'Syne', sans-serif; font-size: 2.4em; font-weight: 800;
+            background: linear-gradient(135deg, var(--green-1), #fff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .rfb-sub { font-size: 0.8em; color: var(--t3); }
+        .rfb-tip {
+            font-size: 0.75em; color: var(--t2); line-height: 1.5;
+            padding: 10px 14px; background: var(--green-dim);
+            border: 1px solid var(--border-soft); border-radius: var(--r-sm);
+            margin-top: 4px;
+        }
+        .flip-toggle-btn {
+            width: 100%; margin-top: 10px; padding: 9px;
+            background: transparent; border: 1px solid var(--border-subtle);
+            border-radius: var(--r-sm); color: var(--t3); cursor: pointer;
+            font-family: 'DM Sans', sans-serif; font-size: 0.78em; font-weight: 600;
+            transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .flip-toggle-btn:hover { border-color: var(--border-mid); color: var(--t2); }
+        .flip-toggle-btn svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2.5; }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  4. HEADER PARALLAX                                 ║
+           ╚══════════════════════════════════════════════════════╝ */
+        .header {
+            will-change: transform;
+            transition: transform 0.05s linear;
+        }
+        .header .logo-icon { will-change: transform; }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  6. ROLLING DIGIT COUNTER                           ║
+           ╚══════════════════════════════════════════════════════╝ */
+        .rolling-counter {
+            display: inline-flex; align-items: baseline; gap: 1px;
+            overflow: hidden;
+        }
+        .rolling-digit {
+            display: inline-block;
+            position: relative; overflow: hidden;
+            line-height: 1;
+        }
+        .rolling-digit-inner {
+            display: flex; flex-direction: column;
+            transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+        }
+        .rolling-digit-inner span { display: block; }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  8. CUSTOM CURSOR + TRAIL                           ║
+           ╚══════════════════════════════════════════════════════╝ */
+        @media (hover: hover) and (pointer: fine) {
+            body { cursor: none; }
+            a, button, [role=button], input, .tab, .badge-card, .tut-fab, .glass-card { cursor: none; }
+        }
+        #nova-cursor {
+            position: fixed; pointer-events: none; z-index: 99999;
+            top: 0; left: 0;
+            mix-blend-mode: normal;
+        }
+        .nc-outer {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 1.5px solid rgba(30,219,110,0.6);
+            position: absolute; transform: translate(-50%,-50%);
+            transition: transform 0.12s var(--ease), width 0.12s, height 0.12s, border-color 0.15s;
+        }
+        .nc-inner {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--green-1);
+            position: absolute; transform: translate(-50%,-50%);
+            box-shadow: 0 0 8px var(--green-1);
+            transition: transform 0.04s linear;
+        }
+        .nc-outer.hovering {
+            width: 48px; height: 48px;
+            background: rgba(30,219,110,0.06);
+            border-color: var(--green-1);
+        }
+        .nc-trail {
+            position: fixed; pointer-events: none; z-index: 99998;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(30,219,110,0.5), transparent);
+            transform: translate(-50%,-50%);
+            animation: trail-fade 0.6s ease forwards;
+        }
+        @keyframes trail-fade {
+            0%   { opacity: 0.7; transform: translate(-50%,-50%) scale(1); }
+            100% { opacity: 0;   transform: translate(-50%,-50%) scale(0.2); }
+        }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  9. AURORA BOREALIS BACKGROUND                      ║
+           ╚══════════════════════════════════════════════════════╝ */
+        .aurora-layer {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            overflow: hidden; opacity: 0.55;
+        }
+        .aurora-band {
+            position: absolute; left: -20%; width: 140%; border-radius: 50%;
+            filter: blur(60px);
+            animation: aurora-drift linear infinite alternate;
+        }
+        .aurora-band:nth-child(1) {
+            height: 35vh; top: 5%;
+            background: linear-gradient(180deg, transparent, rgba(0,180,80,0.18), transparent);
+            animation-duration: 18s; animation-delay: 0s;
+        }
+        .aurora-band:nth-child(2) {
+            height: 28vh; top: 15%;
+            background: linear-gradient(180deg, transparent, rgba(0,220,130,0.12), rgba(0,150,200,0.08), transparent);
+            animation-duration: 24s; animation-delay: -6s;
+        }
+        .aurora-band:nth-child(3) {
+            height: 22vh; top: 8%;
+            background: linear-gradient(180deg, transparent, rgba(100,255,180,0.08), transparent);
+            animation-duration: 30s; animation-delay: -12s;
+        }
+        @keyframes aurora-drift {
+            0%   { transform: translateX(-8%) skewY(-2deg) scaleY(0.9); }
+            33%  { transform: translateX(4%)  skewY(1deg)  scaleY(1.1); }
+            66%  { transform: translateX(-4%) skewY(-1deg) scaleY(0.95); }
+            100% { transform: translateX(8%)  skewY(2deg)  scaleY(1.05); }
+        }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  10. EARTH HOUR MODE                                ║
+           ╚══════════════════════════════════════════════════════╝ */
+        body.earth-hour {
+            --bg-base:    #000204;
+            --bg-card:    rgba(0,4,8,0.88);
+            --bg-raised:  rgba(0,5,10,0.92);
+            --t1: #c8d8e8; --t2: #4a6070; --t3: #1e2e38;
+            --green-1: #4af; --green-2: #38e; --green-3: #6bf;
+            --green-dim: rgba(68,170,255,0.1);
+            --border-subtle: rgba(68,170,255,0.08);
+            --border-soft:   rgba(68,170,255,0.15);
+            --border-mid:    rgba(68,170,255,0.25);
+        }
+        body.earth-hour .video-background video {
+            filter: hue-rotate(190deg) saturate(0.4) brightness(0.3);
+        }
+        body.earth-hour .aurora-band:nth-child(1) {
+            background: linear-gradient(180deg, transparent, rgba(30,80,140,0.2), transparent);
+        }
+        body.earth-hour .aurora-band:nth-child(2) {
+            background: linear-gradient(180deg, transparent, rgba(60,40,120,0.15), rgba(20,80,160,0.1), transparent);
+        }
+        /* Stars on earth-hour */
+        .star-field {
+            display: none;
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+        }
+        body.earth-hour .star-field { display: block; }
+        .star-dot {
+            position: absolute; border-radius: 50%;
+            background: #fff; animation: star-twinkle ease-in-out infinite alternate;
+        }
+        @keyframes star-twinkle {
+            from { opacity: 0.1; transform: scale(0.7); }
+            to   { opacity: 0.9; transform: scale(1.3); }
+        }
+        /* Earth Hour toggle button */
+        .eh-toggle {
+            position: fixed; bottom: 84px; left: 22px;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--bg-raised); border: 1px solid var(--border-subtle);
+            cursor: pointer; z-index: 800;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(12px);
+            transition: all 0.2s var(--ease);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+        }
+        .eh-toggle:hover { border-color: var(--border-mid); transform: scale(1.1); }
+        .eh-toggle svg { width: 18px; height: 18px; stroke: var(--t2); stroke-width: 2; }
+        body.earth-hour .eh-toggle { border-color: rgba(68,170,255,0.4); background: rgba(0,20,40,0.8); }
+        body.earth-hour .eh-toggle svg { stroke: #4af; }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  11. RADAR DETECTION ANIMATION                      ║
+           ╚══════════════════════════════════════════════════════╝ */
+        .radar-ring {
+            position: absolute; border-radius: 50%;
+            border: 2px solid var(--green-1);
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%) scale(0);
+            opacity: 0; pointer-events: none; z-index: 15;
+            animation: radar-pulse 1s ease-out forwards;
+        }
+        @keyframes radar-pulse {
+            0%   { transform: translate(-50%,-50%) scale(0.1); opacity: 0.9; }
+            100% { transform: translate(-50%,-50%) scale(2.5); opacity: 0; }
+        }
+        .radar-sweep {
+            position: absolute; inset: 0; border-radius: inherit;
+            z-index: 14; pointer-events: none; overflow: hidden;
+        }
+        .radar-sweep::after {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(30,219,110,0.15) 20deg, transparent 40deg);
+            animation: radar-spin 2s linear infinite;
+            transform-origin: center;
+        }
+        @keyframes radar-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  12. HOLOGRAPHIC BADGE EFFECT                       ║
+           ╚══════════════════════════════════════════════════════╝ */
+        .badge-card.unlocked {
+            --mx: 0deg; --my: 0deg;
+            transform: perspective(600px) rotateX(var(--mx)) rotateY(var(--my));
+            transition: transform 0.1s ease;
+        }
+        .badge-card.unlocked:not(:hover) {
+            transform: perspective(600px) rotateX(0) rotateY(0);
+            transition: transform 0.4s var(--ease);
+        }
+        /* Holographic shine layer */
+        .badge-card.unlocked::after {
+            content: '';
+            position: absolute; inset: 0; border-radius: inherit;
+            background: linear-gradient(
+                115deg,
+                transparent 20%,
+                rgba(255,255,255,0.06) 30%,
+                rgba(var(--holo-r,30),var(--holo-g,219),var(--holo-b,110),0.12) 40%,
+                rgba(255,255,255,0.04) 50%,
+                transparent 60%
+            );
+            background-size: 200% 200%;
+            background-position: var(--holo-pos, 0% 0%);
+            transition: background-position 0.1s ease;
+            pointer-events: none; z-index: 3;
+            mix-blend-mode: screen;
+        }
+        /* Sparkle overlay */
+        .badge-sparkle {
+            position: absolute; inset: 0; border-radius: inherit;
+            background-image:
+                radial-gradient(circle 1px at 20% 30%, rgba(255,255,255,0.6) 0%, transparent 1px),
+                radial-gradient(circle 1px at 70% 20%, rgba(255,255,255,0.5) 0%, transparent 1px),
+                radial-gradient(circle 1px at 50% 70%, rgba(255,255,255,0.5) 0%, transparent 1px),
+                radial-gradient(circle 1px at 80% 65%, rgba(255,255,255,0.4) 0%, transparent 1px);
+            opacity: 0; pointer-events: none; z-index: 4;
+            transition: opacity 0.2s;
+        }
+        .badge-card.unlocked:hover .badge-sparkle { opacity: 1; }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  13. SPLASH SCREEN                                  ║
+           ╚══════════════════════════════════════════════════════╝ */
+        .splash-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: radial-gradient(ellipse 100% 80% at 50% 60%, #020e05 0%, #000 100%);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 0;
+            animation: splash-exit 0.6s ease 2.2s forwards;
+            pointer-events: none;
+        }
+        @keyframes splash-exit {
+            0%   { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.04); pointer-events: none; }
+        }
+        .splash-logo {
+            width: 88px; height: 88px; border-radius: 22px;
+            background: linear-gradient(145deg, #071507, #0d230d);
+            border: 1.5px solid rgba(30,219,110,0.4);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 0 0 rgba(30,219,110,0.5);
+            animation: splash-logo-in 0.8s cubic-bezier(0.34,1.4,0.64,1) 0.1s both,
+                       splash-logo-glow 0.6s ease 0.9s both;
+        }
+        @keyframes splash-logo-in {
+            from { transform: scale(0) rotate(-90deg); opacity: 0; }
+            to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+        }
+        @keyframes splash-logo-glow {
+            0%   { box-shadow: 0 0 0 0 rgba(30,219,110,0.6); }
+            50%  { box-shadow: 0 0 0 20px rgba(30,219,110,0.15), 0 0 60px rgba(30,219,110,0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(30,219,110,0); }
+        }
+        .splash-logo svg { width: 44px; height: 44px; stroke: var(--green-1); stroke-width: 1.5; }
+        .splash-name {
+            font-family: 'Syne', sans-serif; font-size: 2.8em; font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, var(--green-1) 60%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            letter-spacing: -1px; margin-top: 20px;
+            animation: splash-name-in 0.7s var(--ease) 0.5s both;
+        }
+        @keyframes splash-name-in {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .splash-tagline {
+            font-size: 0.82em; color: rgba(30,219,110,0.5); letter-spacing: 2px;
+            text-transform: uppercase; font-weight: 600;
+            animation: splash-name-in 0.7s var(--ease) 0.8s both;
+        }
+        .splash-bar-wrap {
+            margin-top: 48px; width: 100px; height: 2px;
+            background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden;
+            animation: splash-name-in 0.5s var(--ease) 1.0s both;
+        }
+        .splash-bar {
+            height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, var(--green-2), var(--green-1));
+            animation: splash-fill 1.2s ease 1.0s both;
+        }
+        @keyframes splash-fill {
+            from { width: 0%; }
+            to   { width: 100%; }
+        }
+
+        /* ╔══════════════════════════════════════════════════════╗
+           ║  14. PULL-TO-REFRESH                                ║
+           ╚══════════════════════════════════════════════════════╝ */
+        .ptr-indicator {
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%) translateY(-60px);
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--bg-raised); border: 1px solid var(--border-mid);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 800; transition: transform 0.3s var(--ease), opacity 0.3s;
+            opacity: 0; backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4), var(--green-glow-sm);
+        }
+        .ptr-indicator.visible { opacity: 1; }
+        .ptr-indicator.releasing { border-color: var(--green-1); }
+        .ptr-indicator svg { width: 20px; height: 20px; stroke: var(--t2); stroke-width: 2; transition: stroke 0.2s; }
+        .ptr-indicator.releasing svg { stroke: var(--green-1); }
+        .ptr-indicator.refreshing svg { animation: spin 0.8s linear infinite; }
+
     </style>
 </head>
 <body>
+    <!-- SPLASH SCREEN (Feature 13) -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="splash-name">Nova</div>
+        <div class="splash-tagline">Recicla · Cuida · Transforma</div>
+        <div class="splash-bar-wrap"><div class="splash-bar"></div></div>
+    </div>
+
+    <!-- Custom Cursor (Feature 8) -->
+    <div id="nova-cursor">
+        <div class="nc-outer" id="ncOuter"></div>
+        <div class="nc-inner" id="ncInner"></div>
+    </div>
+
+    <!-- Pull-to-refresh (Feature 14) -->
+    <div class="ptr-indicator" id="ptrIndicator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <!-- Earth Hour toggle (Feature 10) -->
+    <button class="eh-toggle" id="ehToggle" onclick="toggleEarthHour()" title="Modo Earth Hour">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="12" x2="22" y2="12" stroke-width="1.5"/></svg>
+    </button>
+
     <!-- Offline Badge -->
     <div class="offline-badge" id="offlineBadge">📴 Modo sin conexión · Funciones básicas activas</div>
 
     <!-- Name Capture Screen -->
     <div class="name-screen" id="nameScreen">
+        <!-- Floating particles injected by JS -->
         <div class="name-card">
-            <div class="name-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="currentColor" style="stroke:none"/></svg>
+            <div class="ns-logo-wrap">
+                <div class="ns-ring"></div>
+                <div class="ns-ring"></div>
+                <div class="ns-ring"></div>
+                <div class="ns-logo-bg">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
             </div>
             <h2>Hola,<br><span>¿cómo te llamas?</span></h2>
             <p>Así Nova puede darte una bienvenida personalizada y llevar el registro de tu impacto ambiental.</p>
             <div class="name-input-wrap">
                 <span class="input-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="7" r="4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="7" r="4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
                 <input type="text" id="userNameInput" placeholder="Tu nombre o apodo..." maxlength="30"
                        onkeydown="if(event.key==='Enter') submitName()">
             </div>
             <button class="name-submit-btn" onclick="submitName()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M12 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Empezar mi aventura verde
             </button>
             <button class="name-skip" onclick="submitName(true)">Continuar sin nombre</button>
@@ -2645,6 +3174,16 @@
 
     <div class="video-mesh"></div>
     <div class="video-noise"></div>
+
+    <!-- Aurora Borealis (Feature 9) -->
+    <div class="aurora-layer" id="auroraLayer">
+        <div class="aurora-band"></div>
+        <div class="aurora-band"></div>
+        <div class="aurora-band"></div>
+    </div>
+
+    <!-- Star field (Feature 10) -->
+    <div class="star-field" id="starField"></div>
 
     <!-- Video de Fondo -->
     <div class="video-background">
@@ -2990,6 +3529,7 @@
 
                 <div class="media-container" id="realtimeContainer" style="display: none; margin-top: 20px;">
                     <div class="detection-burst" id="detectionBurst"></div>
+                    <div class="radar-sweep" id="radarSweep" style="display:none"></div>
                     <div class="scan-line"></div>
                     <div class="detection-grid"></div>
                     <video id="videoPreview" autoplay playsinline></video>
@@ -3490,6 +4030,8 @@
             // Feature 9: particle burst + category sound
             spawnDetectionBurst(info.tipo);
             playCategorySound(info.tipo);
+            // Feature 11: radar pulse
+            fireRadarPulse();
             
             overlay.classList.add('active');
             
@@ -3806,6 +4348,8 @@
             // Feature 9: burst + sound on upload result
             spawnDetectionBurst(info.tipo);
             playCategorySound(info.tipo);
+            // Feature 3: wrap in flip card
+            setTimeout(() => wrapResultInFlipCard(document.getElementById('resultUpload') || resultEl, info), 50);
         }
 
         // Gamificación
@@ -3920,6 +4464,8 @@
             animateValue('streakDisplay', gameData.streak + (gameData.streak === 1 ? ' día' : ' días'));
             animateValue('scansDisplay', gameData.totalDetections);
             animateValue('co2Display', gameData.ecoImpact.toFixed(1) + ' kg');
+            // Feature 6: rolling digit counter on impact number
+            rollingSetValue('impactNumber', gameData.ecoImpact, '');
 
             // Feature 10: animate impact counter
             animateImpactCounter(gameData.ecoImpact);
@@ -4182,6 +4728,12 @@
                     showAchievement(toastEmoji, badge.name, status + ' · ' + badge.points + ' pts');
                 });
 
+                // Feature 12: add holographic sparkle layer
+                if (isUnlocked) {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'badge-sparkle';
+                    card.appendChild(sparkle);
+                }
                 container.appendChild(card);
             });
 
@@ -5271,6 +5823,426 @@ out body;`;
             }
         }
 
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 1 — CINEMATIC NAME SCREEN PARTICLES
+        // ════════════════════════════════════════════════════════
+        function spawnNameScreenParticles() {
+            const screen = document.getElementById('nameScreen');
+            if (!screen) return;
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div');
+                p.className = 'ns-particle';
+                const size = 3 + Math.random() * 8;
+                p.style.cssText = `
+                    width:${size}px; height:${size}px;
+                    left:${Math.random() * 100}%;
+                    animation-duration:${6 + Math.random() * 8}s;
+                    animation-delay:${Math.random() * 6}s;
+                    opacity:0;
+                `;
+                screen.insertBefore(p, screen.firstChild);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 2 — SLIDE TRANSITIONS
+        // ════════════════════════════════════════════════════════
+        const TAB_ORDER = ['realtime','upload','historial','guide'];
+        let lastTabIndex = 0;
+
+        function switchTab(tab, btnEl) {
+            if (isDetecting) stopRealtime();
+
+            const newIdx  = TAB_ORDER.indexOf(tab);
+            const dir     = newIdx > lastTabIndex ? 'right' : 'left';
+            lastTabIndex  = newIdx;
+            currentTab    = tab;
+
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btnEl.classList.add('active');
+
+            // Move sliding tab indicator
+            if (typeof moveIndicator === 'function') {
+                requestAnimationFrame(() => requestAnimationFrame(moveIndicator));
+            }
+
+            // Animate out current, animate in new
+            const all    = document.querySelectorAll('.content-section');
+            const target = document.getElementById(tab + 'Section');
+
+            all.forEach(s => {
+                s.classList.remove('active','slide-in-right','slide-in-left');
+                s.style.display = 'none';
+            });
+
+            target.style.display = 'block';
+            target.classList.add(dir === 'right' ? 'slide-in-right' : 'slide-in-left');
+            setTimeout(() => target.classList.add('active'), 380);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 3 — FLIP CARD RESULT
+        // ════════════════════════════════════════════════════════
+        let flipState = {};
+
+        function wrapResultInFlipCard(resultEl, info) {
+            const ecoData = {
+                organico:              { co2: '0.3 kg CO₂', tip: 'Compostar residuos orgánicos evita emisión de metano, 25× más potente que el CO₂.' },
+                'inorganico-reciclable':   { co2: '0.8 kg CO₂', tip: 'Reciclar una lata de aluminio ahorra suficiente energía para cargar tu celular 3 veces.' },
+                'inorganico-no-reciclable':{ co2: '0.0 kg CO₂', tip: 'Reducir estos residuos desde la fuente es clave — tardan hasta 500 años en degradarse.' },
+            };
+            const eco = ecoData[info.tipo] || { co2: '0.5 kg CO₂', tip: 'Reciclar correctamente reduce tu huella de carbono.' };
+
+            const flipId = 'flip_' + Date.now();
+            flipState[flipId] = false;
+
+            const front  = resultEl.cloneNode(true);
+            front.className = 'result-flip-front ' + resultEl.className;
+
+            const wrap   = document.createElement('div');
+            wrap.className = 'result-flip-wrap';
+
+            const inner  = document.createElement('div');
+            inner.className = 'result-flip-inner';
+            inner.id = flipId;
+
+            const back   = document.createElement('div');
+            back.className = 'result-flip-back';
+            back.innerHTML = `
+                <div class="rfb-title">💚 Tu contribución</div>
+                <div class="rfb-co2">${eco.co2}</div>
+                <div class="rfb-sub">CO₂ evitado con este reciclaje</div>
+                <div class="rfb-tip">${eco.tip}</div>
+            `;
+
+            const btn = document.createElement('button');
+            btn.className = 'flip-toggle-btn';
+            btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg> Ver impacto de CO₂`;
+            btn.onclick = () => {
+                flipState[flipId] = !flipState[flipId];
+                inner.classList.toggle('flipped', flipState[flipId]);
+                btn.innerHTML = flipState[flipId]
+                    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg> Ver resultado`
+                    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg> Ver impacto de CO₂`;
+            };
+
+            inner.appendChild(front);
+            inner.appendChild(back);
+            wrap.appendChild(inner);
+            wrap.appendChild(btn);
+
+            resultEl.parentNode.replaceChild(wrap, resultEl);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 4 — HEADER PARALLAX
+        // ════════════════════════════════════════════════════════
+        function initParallax() {
+            const header = document.querySelector('.header');
+            const logo   = document.querySelector('.logo-icon');
+            if (!header) return;
+
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    if (header) {
+                        header.style.transform = `translateY(${scrollY * 0.22}px)`;
+                        header.style.opacity   = Math.max(0, 1 - scrollY / 320);
+                    }
+                    if (logo) {
+                        logo.style.transform = `translateY(${scrollY * -0.08}px)`;
+                    }
+                    ticking = false;
+                });
+            }, { passive: true });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 6 — ROLLING DIGIT COUNTER
+        // ════════════════════════════════════════════════════════
+        function buildRollingCounter(containerId, suffix) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            el.innerHTML = '';
+            el.className += ' rolling-counter';
+        }
+
+        function rollingSetValue(containerId, newVal, suffix = '') {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+
+            const valStr = typeof newVal === 'number' ? newVal.toFixed(1) : String(newVal);
+            const digits = (valStr + suffix).split('');
+
+            // If count matches, animate each digit roller
+            const existing = el.querySelectorAll('.rolling-digit');
+            if (existing.length !== digits.length) {
+                // Rebuild
+                el.innerHTML = digits.map((d, i) => `
+                    <span class="rolling-digit" style="display:inline-block">
+                        <span class="rolling-digit-inner" id="rdi_${containerId}_${i}">
+                            <span>${d}</span>
+                        </span>
+                    </span>`).join('');
+                return;
+            }
+            digits.forEach((d, i) => {
+                const inner = document.getElementById(`rdi_${containerId}_${i}`);
+                if (!inner) return;
+                const current = inner.querySelector('span')?.textContent;
+                if (current === d) return;
+                const oldSpan = document.createElement('span');
+                oldSpan.textContent = current || d;
+                const newSpan = document.createElement('span');
+                newSpan.textContent = d;
+                inner.innerHTML = '';
+                inner.appendChild(oldSpan);
+                inner.appendChild(newSpan);
+                inner.style.transition = 'none';
+                inner.style.transform = 'translateY(0)';
+                requestAnimationFrame(() => {
+                    inner.style.transition = 'transform 0.45s cubic-bezier(0.22,1,0.36,1)';
+                    inner.style.transform  = 'translateY(-50%)';
+                });
+            });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 8 — CUSTOM CURSOR
+        // ════════════════════════════════════════════════════════
+        function initCustomCursor() {
+            const outer  = document.getElementById('ncOuter');
+            const inner  = document.getElementById('ncInner');
+            if (!outer || !inner) return;
+
+            let mx = 0, my = 0, ox = 0, oy = 0;
+            let trailTimer = null;
+
+            document.addEventListener('mousemove', e => {
+                mx = e.clientX; my = e.clientY;
+                inner.style.left = mx + 'px';
+                inner.style.top  = my + 'px';
+
+                // Outer follows with slight lag
+                if (!trailTimer) {
+                    trailTimer = requestAnimationFrame(() => {
+                        ox += (mx - ox) * 0.18;
+                        oy += (my - oy) * 0.18;
+                        outer.style.left = ox + 'px';
+                        outer.style.top  = oy + 'px';
+                        trailTimer = null;
+                    });
+                }
+
+                // Spawn trail particle
+                if (Math.random() < 0.25) {
+                    const t = document.createElement('div');
+                    t.className = 'nc-trail';
+                    const s = 4 + Math.random() * 6;
+                    t.style.cssText = `left:${mx}px;top:${my}px;width:${s}px;height:${s}px;`;
+                    document.body.appendChild(t);
+                    setTimeout(() => t.remove(), 700);
+                }
+            });
+
+            // Hover effect on interactive elements
+            const hoverEls = 'button, a, [role=button], input, .tab, .badge-card, .glass-card, .tut-fab';
+            document.addEventListener('mouseover', e => {
+                if (e.target.closest(hoverEls)) outer.classList.add('hovering');
+            });
+            document.addEventListener('mouseout', e => {
+                if (e.target.closest(hoverEls)) outer.classList.remove('hovering');
+            });
+
+            // Smooth outer loop
+            function animateOuter() {
+                ox += (mx - ox) * 0.12;
+                oy += (my - oy) * 0.12;
+                outer.style.left = ox + 'px';
+                outer.style.top  = oy + 'px';
+                requestAnimationFrame(animateOuter);
+            }
+            animateOuter();
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 9 — AURORA BOREALIS
+        // ════════════════════════════════════════════════════════
+        function initAurora() {
+            const layer = document.getElementById('auroraLayer');
+            if (!layer) return;
+            // CSS handles the animation; just ensure it's present
+            layer.style.display = 'block';
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 10 — EARTH HOUR + STAR FIELD
+        // ════════════════════════════════════════════════════════
+        let earthHourActive = false;
+
+        function initStarField() {
+            const field = document.getElementById('starField');
+            if (!field || field.children.length > 0) return;
+            for (let i = 0; i < 120; i++) {
+                const s = document.createElement('div');
+                s.className = 'star-dot';
+                const size = 0.8 + Math.random() * 2;
+                s.style.cssText = `
+                    width:${size}px; height:${size}px;
+                    left:${Math.random() * 100}%;
+                    top:${Math.random() * 100}%;
+                    animation-duration:${2 + Math.random() * 4}s;
+                    animation-delay:${Math.random() * 4}s;
+                `;
+                field.appendChild(s);
+            }
+        }
+
+        function toggleEarthHour() {
+            earthHourActive = !earthHourActive;
+            document.body.classList.toggle('earth-hour', earthHourActive);
+            if (earthHourActive) {
+                document.body.classList.remove('dark-mode');
+                initStarField();
+                showAchievement('🌍', 'Earth Hour activo', 'Modo ultra-oscuro de noche activado');
+            } else {
+                showAchievement('💡', 'Earth Hour desactivado', 'Volviendo al tema normal');
+            }
+            try { localStorage.setItem('novaEarthHour', earthHourActive ? '1' : '0'); } catch(e) {}
+        }
+
+        function checkEarthHourPref() {
+            try {
+                if (localStorage.getItem('novaEarthHour') === '1') {
+                    earthHourActive = true;
+                    document.body.classList.add('earth-hour');
+                    initStarField();
+                }
+            } catch(e) {}
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 11 — RADAR PULSE ON DETECTION
+        // ════════════════════════════════════════════════════════
+        function fireRadarPulse() {
+            const container = document.getElementById('realtimeContainer');
+            if (!container) return;
+
+            // Show radar sweep
+            const sweep = document.getElementById('radarSweep');
+            if (sweep) sweep.style.display = 'block';
+
+            // Create expanding ring
+            const ring = document.createElement('div');
+            ring.className = 'radar-ring';
+            const size = Math.min(container.clientWidth, container.clientHeight) * 0.6;
+            ring.style.width  = size + 'px';
+            ring.style.height = size + 'px';
+            container.appendChild(ring);
+            setTimeout(() => ring.remove(), 1100);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 12 — HOLOGRAPHIC BADGES
+        // ════════════════════════════════════════════════════════
+        function initHoloBadges() {
+            document.addEventListener('mousemove', e => {
+                document.querySelectorAll('.badge-card.unlocked').forEach(card => {
+                    const r   = card.getBoundingClientRect();
+                    const cx  = r.left + r.width  / 2;
+                    const cy  = r.top  + r.height / 2;
+                    const dx  = (e.clientX - cx) / (r.width  / 2);  // -1 to 1
+                    const dy  = (e.clientY - cy) / (r.height / 2);
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+
+                    if (dist < 1.5) {
+                        const rx = dy * -10;
+                        const ry = dx *  10;
+                        card.style.setProperty('--mx', rx + 'deg');
+                        card.style.setProperty('--my', ry + 'deg');
+                        card.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+
+                        // Shift holographic gradient
+                        const px = ((dx + 1) / 2 * 100).toFixed(0);
+                        const py = ((dy + 1) / 2 * 100).toFixed(0);
+                        card.style.setProperty('--holo-pos', `${px}% ${py}%`);
+                    } else {
+                        card.style.transform = '';
+                        card.style.setProperty('--holo-pos', '50% 50%');
+                    }
+                });
+            });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 13 — SPLASH SCREEN
+        // ════════════════════════════════════════════════════════
+        function hideSplash() {
+            const splash = document.getElementById('splashScreen');
+            if (!splash) return;
+            // CSS animation handles fade-out at 2.2s
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 2900); // remove from DOM after animation
+        }
+
+        // ════════════════════════════════════════════════════════
+        // FEATURE 14 — PULL-TO-REFRESH
+        // ════════════════════════════════════════════════════════
+        function initPullToRefresh() {
+            let startY = 0, pulling = false, threshold = 80;
+            const indicator = document.getElementById('ptrIndicator');
+            if (!indicator) return;
+
+            document.addEventListener('touchstart', e => {
+                if (window.scrollY === 0) {
+                    startY   = e.touches[0].clientY;
+                    pulling  = true;
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchmove', e => {
+                if (!pulling) return;
+                const dy = e.touches[0].clientY - startY;
+                if (dy <= 0) return;
+
+                const progress = Math.min(dy / threshold, 1);
+                indicator.style.transform = `translateX(-50%) translateY(${Math.min(dy * 0.5, 52)}px)`;
+                indicator.style.opacity   = progress;
+                indicator.classList.add('visible');
+                indicator.classList.toggle('releasing', dy >= threshold);
+            }, { passive: true });
+
+            document.addEventListener('touchend', () => {
+                if (!pulling) return;
+                pulling = false;
+
+                const isReleasing = indicator.classList.contains('releasing');
+                if (isReleasing) {
+                    indicator.classList.add('refreshing');
+                    indicator.style.transform = 'translateX(-50%) translateY(52px)';
+
+                    // Simulate refresh
+                    setTimeout(() => {
+                        renderActivityChart();
+                        updateComparison();
+                        showAchievement('✅', 'Actualizado', 'Datos refrescados');
+                        indicator.style.transform = 'translateX(-50%) translateY(-60px)';
+                        indicator.style.opacity = '0';
+                        indicator.classList.remove('visible', 'releasing', 'refreshing');
+                    }, 1000);
+                } else {
+                    indicator.style.transform = 'translateX(-50%) translateY(-60px)';
+                    indicator.style.opacity = '0';
+                    indicator.classList.remove('visible', 'releasing');
+                }
+            });
+        }
+
         // Inicializar
         window.onload = () => {
             createEnergyParticles();
@@ -5339,6 +6311,17 @@ out body;`;
             lucide.createIcons();
             // Init visual systems
             initVisuals();
+            // Init new visual features
+            spawnNameScreenParticles();
+            initCustomCursor();
+            initParallax();
+            initHoloBadges();
+            initAurora();
+            initPullToRefresh();
+            checkEarthHourPref();
+            hideSplash();
+            // Init rolling counter
+            buildRollingCounter('impactNumber', '');
         };
 
         // ════════════════════════════════════════════════════════
