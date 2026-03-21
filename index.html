@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&amp;family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#00ff00">
+    <meta name="theme-color" content="#3dba7a">
     <!-- Lucide (needed at startup) -->
     <script src="https://unpkg.com/lucide@0.378.0/dist/umd/lucide.min.js"></script>
     <!-- Firebase + Leaflet loaded lazily on demand -->
@@ -27,18 +27,18 @@
             --bg-input:   rgba(6, 18, 6, 0.9);
 
             /* Borders */
-            --border-subtle: rgba(30, 180, 80, 0.10);
-            --border-soft:   rgba(30, 180, 80, 0.18);
-            --border-mid:    rgba(30, 180, 80, 0.30);
-            --border-vivid:  rgba(30, 219, 110, 0.55);
+            --border-subtle: rgba(61, 186, 122, 0.09);
+            --border-soft:   rgba(61, 186, 122, 0.17);
+            --border-mid:    rgba(61, 186, 122, 0.28);
+            --border-vivid:  rgba(61, 186, 122, 0.52);
 
             /* Brand greens */
-            --green-1: #1edb6e;   /* primary action */
-            --green-2: #0fcc5a;   /* darker action */
-            --green-3: #34d48a;   /* light / hover */
-            --green-dim: rgba(30, 219, 110, 0.14);
-            --green-glow: 0 0 28px rgba(30, 219, 110, 0.28);
-            --green-glow-sm: 0 0 12px rgba(30, 219, 110, 0.22);
+            --green-1: #3dba7a;   /* primary action — verde natural */
+            --green-2: #2ea368;   /* darker action */
+            --green-3: #5ecb8f;   /* light / hover */
+            --green-dim: rgba(61, 186, 122, 0.14);
+            --green-glow: 0 0 28px rgba(61, 186, 122, 0.25);
+            --green-glow-sm: 0 0 12px rgba(61, 186, 122, 0.18);
 
             /* Text */
             --t1: #dff2df;
@@ -47,8 +47,8 @@
             --t4: #223422;
 
             /* Status */
-            --status-active:  #1edb6e;
-            --status-organic: #1edb6e;
+            --status-active:  #3dba7a;
+            --status-organic: #3dba7a;
             --status-recycle: #22d3ee;
             --status-waste:   #f87171;
             --status-expired: #f87171;
@@ -282,7 +282,12 @@
             gap: 12px;
             margin-bottom: 16px;
         }
-        @media (max-width: 700px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 700px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .stat-card { padding: 20px 16px 18px; }
+            .stat-value { font-size: 2.1em; }
+            .stat-header span { font-size: 0.8em; }
+        }
 
         .stat-card {
             padding: 18px 16px 16px;
@@ -1420,13 +1425,13 @@
         .impact-widget::before {
             content: '';
             position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(var(--impact-accent-rgb, 30,219,110), 0.5), transparent);
+            background: linear-gradient(90deg, transparent, rgba(var(--impact-accent-rgb, 61,186,122), 0.5), transparent);
         }
         .impact-widget::after {
             content: '';
             position: absolute; top: -60px; right: -60px;
             width: 200px; height: 200px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(var(--impact-accent-rgb, 30,219,110), 0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(var(--impact-accent-rgb, 61,186,122), 0.08) 0%, transparent 70%);
             pointer-events: none;
         }
         .impact-top-row {
@@ -1449,7 +1454,7 @@
             animation: live-pulse 1.8s ease-out infinite;
         }
         @keyframes live-pulse {
-            0%   { box-shadow: 0 0 0 0 rgba(var(--impact-accent-rgb, 30,219,110), 0.6); }
+            0%   { box-shadow: 0 0 0 0 rgba(var(--impact-accent-rgb, 61,186,122), 0.6); }
             70%  { box-shadow: 0 0 0 8px rgba(var(--impact-accent-rgb, 30,219,110), 0); }
             100% { box-shadow: 0 0 0 0 rgba(var(--impact-accent-rgb, 30,219,110), 0); }
         }
@@ -1475,7 +1480,7 @@
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
         }
         .impact-equiv {
-            background: rgba(var(--impact-accent-rgb, 30,219,110), 0.06); border: 1px solid var(--border-subtle);
+            background: rgba(var(--impact-accent-rgb, 61,186, 122), 0.06); border: 1px solid var(--border-subtle);
             border-radius: var(--r-md); padding: 10px 8px; text-align: center;
         }
         .impact-equiv .eq-icon  { font-size: 1.4em; display: block; margin-bottom: 4px; }
@@ -1493,10 +1498,10 @@
             color: var(--t2); cursor: pointer; width: 100%;
             transition: all 0.15s var(--ease);
         }
-        .notif-btn:hover { border-color: var(--border-mid); color: var(--t1); background: rgba(var(--impact-accent-rgb, 30,219,110), 0.04); }
-        .notif-btn.enabled { border-color: rgba(var(--impact-accent-rgb, 30,219,110), 0.3); color: var(--green-1); background: rgba(var(--impact-accent-rgb, 30,219,110), 0.07); }
+        .notif-btn:hover { border-color: var(--border-mid); color: var(--t1); background: rgba(var(--impact-accent-rgb, 61,186,122), 0.04); }
+        .notif-btn.enabled { border-color: rgba(var(--impact-accent-rgb, 61,186,122), 0.3); color: var(--green-1); background: rgba(var(--impact-accent-rgb, 61,186,122), 0.07); }
         .notif-btn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--t3); flex-shrink: 0; transition: all 0.2s; }
-        .notif-btn.enabled .notif-btn-dot { background: var(--green-1); box-shadow: 0 0 6px rgba(var(--impact-accent-rgb, 30,219,110), 0.6); }
+        .notif-btn.enabled .notif-btn-dot { background: var(--green-1); box-shadow: 0 0 6px rgba(var(--impact-accent-rgb, 61,186,122), 0.6); }
 
         /* ── LUCIDE ICONS ── */
         .icon {
@@ -1719,7 +1724,7 @@
 
         /* FAB — floating help button */
         .tut-fab {
-            position: fixed; bottom: 28px; right: 22px;
+            position: fixed; bottom: 28px; left: 22px;
             width: 48px; height: 48px;
             background: linear-gradient(135deg, var(--green-1), var(--green-2));
             border: none; border-radius: 50%;
@@ -1744,23 +1749,23 @@
         /* ── TUTORIAL PANEL (side drawer) ── */
         .tut-panel {
             position: fixed; top: 0; right: 0;
-            width: 360px; max-width: 100vw;
+            width: 380px; max-width: 100vw;
             height: 100vh;
-            background: var(--bg-raised);
+            background: rgba(5, 12, 5, 0.97);
             border-left: 1px solid var(--border-soft);
             z-index: 8000;
             display: flex; flex-direction: column;
             transform: translateX(110%);
             transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
-            box-shadow: -12px 0 48px rgba(0,0,0,0.6);
+            box-shadow: -20px 0 60px rgba(0,0,0,0.7), -1px 0 0 rgba(61,186,122,0.12);
+            backdrop-filter: blur(24px);
         }
         .tut-panel.open { transform: translateX(0); }
 
-        /* Panel backdrop */
+        /* Panel backdrop — sin blur para que el contenido sea visible */
         .tut-backdrop {
             position: fixed; inset: 0;
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.28);
             z-index: 7999;
             opacity: 0; pointer-events: none;
             transition: opacity 0.35s ease;
@@ -1769,89 +1774,116 @@
 
         /* Panel header */
         .tut-panel-head {
-            padding: 22px 22px 18px;
-            border-bottom: 1px solid var(--border-subtle);
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid rgba(61,186,122,0.1);
             display: flex; align-items: center; gap: 12px;
             flex-shrink: 0;
+            position: relative;
+        }
+        /* Gradient top accent line */
+        .tut-panel-head::after {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--green-1), transparent);
+            opacity: 0.6;
         }
         .tut-panel-head-icon {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            background: var(--green-dim);
-            border: 1px solid var(--border-soft);
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, rgba(61,186,122,0.2), rgba(61,186,122,0.08));
+            border: 1px solid rgba(61,186,122,0.3);
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(61,186,122,0.15);
         }
-        .tut-panel-head-icon svg { width: 18px; height: 18px; stroke: var(--green-1); stroke-width: 2; }
+        .tut-panel-head-icon svg { width: 19px; height: 19px; stroke: var(--green-1); stroke-width: 2; }
         .tut-panel-head-text { flex: 1; }
         .tut-panel-head-text h3 {
             font-family: 'Syne', sans-serif;
             font-size: 1em; font-weight: 700; color: var(--t1);
-            margin-bottom: 2px;
+            margin-bottom: 2px; letter-spacing: -0.2px;
         }
-        .tut-panel-head-text p { font-size: 0.74em; color: var(--t3); }
+        .tut-panel-head-text p { font-size: 0.73em; color: var(--t3); }
         .tut-close-btn {
-            width: 32px; height: 32px;
-            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            width: 30px; height: 30px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
             border-radius: 50%; cursor: pointer; color: var(--t3);
             display: flex; align-items: center; justify-content: center;
             transition: all 0.15s; flex-shrink: 0;
         }
-        .tut-close-btn:hover { border-color: var(--border-mid); color: var(--t1); }
-        .tut-close-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.5; }
+        .tut-close-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--t1); background: rgba(255,255,255,0.08); }
+        .tut-close-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; }
 
         /* Progress bar at top */
         .tut-progress-bar {
-            height: 3px;
-            background: rgba(30,219,110,0.1);
+            height: 2px;
+            background: rgba(61,186,122,0.08);
             flex-shrink: 0;
         }
         .tut-progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--green-2), var(--green-1));
-            transition: width 0.5s var(--ease);
+            background: linear-gradient(90deg, var(--green-2), var(--green-1), #5ecb8f);
+            transition: width 0.6s var(--ease);
+            box-shadow: 0 0 6px rgba(61,186,122,0.5);
         }
 
         /* Steps list */
         .tut-steps-list {
             flex: 1; overflow-y: auto;
-            padding: 16px 16px 8px;
+            padding: 12px 14px 8px;
             scrollbar-width: thin;
-            scrollbar-color: var(--border-soft) transparent;
+            scrollbar-color: rgba(61,186,122,0.2) transparent;
         }
         .tut-steps-list::-webkit-scrollbar { width: 3px; }
-        .tut-steps-list::-webkit-scrollbar-thumb { background: var(--border-soft); border-radius: 3px; }
+        .tut-steps-list::-webkit-scrollbar-thumb { background: rgba(61,186,122,0.2); border-radius: 3px; }
 
         .tut-step-item {
-            display: flex; gap: 14px; align-items: flex-start;
-            padding: 14px 12px;
+            display: flex; gap: 12px; align-items: flex-start;
+            padding: 12px 14px;
             border-radius: var(--r-md);
             cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
             border: 1px solid transparent;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             position: relative;
         }
-        .tut-step-item:hover   { background: rgba(30,219,110,0.05); border-color: var(--border-subtle); }
-        .tut-step-item.active  { background: rgba(30,219,110,0.08); border-color: var(--border-soft); }
-        .tut-step-item.done    { opacity: 0.6; }
-        .tut-step-item.done .tut-step-num { background: var(--green-1); border-color: var(--green-1); }
+        .tut-step-item:hover:not(.active):not(.done) {
+            background: rgba(61,186,122,0.04);
+            border-color: rgba(61,186,122,0.12);
+            transform: translateX(2px);
+        }
+        .tut-step-item.active {
+            background: rgba(61,186,122,0.1);
+            border-color: rgba(61,186,122,0.25);
+            box-shadow: 0 2px 12px rgba(61,186,122,0.08);
+        }
+        .tut-step-item.done {
+            opacity: 0.55;
+        }
+        .tut-step-item.done .tut-step-num {
+            background: var(--green-1);
+            border-color: var(--green-1);
+            box-shadow: 0 0 8px rgba(61,186,122,0.4);
+        }
         .tut-step-item.done .tut-step-num svg { stroke: #030d03; }
         .tut-step-item.done .tut-step-num span { display: none; }
         .tut-step-item.done .tut-step-num .done-check { display: flex !important; }
 
         .tut-step-num {
-            width: 32px; height: 32px; flex-shrink: 0;
+            width: 30px; height: 30px; flex-shrink: 0;
             border-radius: 50%;
-            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
             display: flex; align-items: center; justify-content: center;
             font-family: 'Syne', sans-serif;
-            font-size: 0.8em; font-weight: 700; color: var(--t3);
-            transition: all 0.2s;
+            font-size: 0.78em; font-weight: 700; color: var(--t3);
+            transition: all 0.25s var(--ease);
             position: relative;
         }
         .tut-step-item.active .tut-step-num {
-            background: var(--green-dim); border-color: var(--border-mid); color: var(--green-1);
+            background: rgba(61,186,122,0.15);
+            border-color: rgba(61,186,122,0.4);
+            color: var(--green-1);
+            box-shadow: 0 0 0 3px rgba(61,186,122,0.1);
         }
         .done-check {
             display: none; position: absolute; inset: 0;
@@ -1859,17 +1891,22 @@
         }
         .done-check svg { width: 14px; height: 14px; stroke: #030d03; stroke-width: 3; }
 
-        .tut-step-body { flex: 1; min-width: 0; }
+        .tut-step-body { flex: 1; min-width: 0; padding-top: 2px; }
         .tut-step-title {
-            font-size: 0.88em; font-weight: 700; color: var(--t1);
-            margin-bottom: 4px; line-height: 1.3;
+            font-size: 0.87em; font-weight: 600; color: rgba(224,255,224,0.65);
+            margin-bottom: 0; line-height: 1.3;
+            transition: color 0.2s;
         }
-        .tut-step-item.active .tut-step-title { color: var(--green-1); }
+        .tut-step-item.active .tut-step-title {
+            color: var(--green-1);
+            font-weight: 700;
+        }
+        .tut-step-item.done .tut-step-title { color: rgba(224,255,224,0.4); }
         .tut-step-desc {
-            font-size: 0.78em; color: var(--t3); line-height: 1.55;
-            display: none;
+            font-size: 0.8em; color: var(--t2); line-height: 1.6;
+            display: none; margin-top: 6px;
         }
-        .tut-step-item.active .tut-step-desc { display: block; color: var(--t2); }
+        .tut-step-item.active .tut-step-desc { display: block; }
 
         /* Tag chips on steps */
         .tut-step-tag {
@@ -1886,33 +1923,53 @@
         /* Step action button */
         .tut-step-action {
             display: none; margin-top: 10px;
-            padding: 9px 16px;
+            padding: 9px 14px;
             background: linear-gradient(135deg, var(--green-1), var(--green-2));
             color: #030d03; border: none; border-radius: var(--r-sm);
-            font-family: 'DM Sans', sans-serif; font-size: 0.8em; font-weight: 700;
+            font-family: 'DM Sans', sans-serif; font-size: 0.79em; font-weight: 700;
             cursor: pointer; width: 100%;
             transition: transform 0.15s, box-shadow 0.15s;
-            box-shadow: 0 3px 12px rgba(30,219,110,0.3);
+            box-shadow: 0 3px 14px rgba(61,186,122,0.35);
+            letter-spacing: 0.1px;
         }
         .tut-step-item.active .tut-step-action { display: block; }
-        .tut-step-action:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(30,219,110,0.45); }
+        .tut-step-action:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(61,186,122,0.5); }
+        /* "Entendido" secondary action */
+        .tut-step-action.secondary-action {
+            background: transparent;
+            border: 1px solid rgba(61,186,122,0.25);
+            color: var(--green-1);
+            box-shadow: none;
+            margin-top: 6px;
+        }
+        .tut-step-action.secondary-action:hover {
+            background: rgba(61,186,122,0.06);
+            box-shadow: none;
+            transform: none;
+        }
 
         /* Panel footer */
         .tut-panel-footer {
-            padding: 16px;
-            border-top: 1px solid var(--border-subtle);
+            padding: 14px 18px;
+            border-top: 1px solid rgba(61,186,122,0.08);
             flex-shrink: 0;
+            background: rgba(0,0,0,0.15);
         }
         .tut-restart-btn {
-            width: 100%; padding: 11px;
-            background: transparent; border: 1px solid var(--border-subtle);
+            width: 100%; padding: 10px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.07);
             border-radius: var(--r-md); color: var(--t3);
-            font-family: 'DM Sans', sans-serif; font-size: 0.82em; font-weight: 600;
+            font-family: 'DM Sans', sans-serif; font-size: 0.79em; font-weight: 600;
             cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
             transition: all 0.15s;
         }
-        .tut-restart-btn:hover { border-color: var(--border-mid); color: var(--t2); }
-        .tut-restart-btn svg { width: 14px; height: 14px; stroke: currentColor; }
+        .tut-restart-btn:hover {
+            border-color: rgba(61,186,122,0.2);
+            color: var(--t2);
+            background: rgba(61,186,122,0.04);
+        }
+        .tut-restart-btn svg { width: 13px; height: 13px; stroke: currentColor; }
 
         /* ── ENHANCED SPOTLIGHT TOOLTIP ── */
         .tutorial-tooltip {
@@ -2944,17 +3001,17 @@
         }
         /* Earth Hour toggle button */
         .eh-toggle {
-            position: fixed; bottom: 84px; left: 22px;
-            width: 44px; height: 44px; border-radius: 50%;
+            position: fixed; bottom: 28px; right: 22px;
+            width: 48px; height: 48px; border-radius: 50%;
             background: var(--bg-raised); border: 1px solid var(--border-subtle);
             cursor: pointer; z-index: 800;
             display: flex; align-items: center; justify-content: center;
             backdrop-filter: blur(12px);
             transition: all 0.2s var(--ease);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.35);
         }
         .eh-toggle:hover { border-color: var(--border-mid); transform: scale(1.1); }
-        .eh-toggle svg { width: 18px; height: 18px; stroke: var(--t2); stroke-width: 2; }
+        .eh-toggle svg { width: 20px; height: 20px; stroke: var(--t2); stroke-width: 2; }
         body.earth-hour .eh-toggle { border-color: rgba(68,170,255,0.4); background: rgba(0,20,40,0.8); }
         body.earth-hour .eh-toggle svg { stroke: #4af; }
 
@@ -3195,6 +3252,239 @@
         .perf-badge.mid  { color: #fbbf24; border-color: rgba(251,191,36,0.3); }
         .perf-badge.high { color: var(--green-1); border-color: var(--border-soft); }
 
+
+        /* ══════════════════════════════════════════════════════
+           1. OBJECT PREVIEW on detection result
+        ══════════════════════════════════════════════════════ */
+        .result-obj-preview {
+            display: flex; align-items: center; gap: 14px;
+            padding: 12px 14px; margin-bottom: 14px;
+            background: var(--bg-raised);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--r-md);
+            animation: slideUpFade 0.4s var(--ease);
+        }
+        .result-obj-icon {
+            width: 56px; height: 56px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2em; flex-shrink: 0;
+            position: relative;
+        }
+        .result-obj-icon.organico       { background: rgba(61,186,122,0.15); border: 1px solid rgba(61,186,122,0.3); }
+        .result-obj-icon.reciclable     { background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.28); }
+        .result-obj-icon.no-reciclable  { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.28); }
+        .result-obj-label { flex: 1; }
+        .result-obj-name  { font-family: 'Syne', sans-serif; font-size: 1em; font-weight: 700; color: var(--t1); }
+        .result-obj-type  { font-size: 0.75em; color: var(--t3); margin-top: 2px; }
+        .result-obj-conf  {
+            font-size: 0.72em; font-weight: 700; padding: 3px 10px;
+            border-radius: 999px; flex-shrink: 0;
+        }
+        .result-obj-conf.organico      { background: rgba(61,186,122,0.15); color: var(--green-1); }
+        .result-obj-conf.reciclable    { background: rgba(34,211,238,0.12); color: #22d3ee; }
+        .result-obj-conf.no-reciclable { background: rgba(248,113,113,0.12); color: #f87171; }
+
+        /* ══════════════════════════════════════════════════════
+           3. GUIDE CARDS with SVG illustrations
+        ══════════════════════════════════════════════════════ */
+        .guide-card {
+            position: relative; overflow: hidden;
+        }
+        .guide-illustration {
+            position: absolute; right: -8px; top: 50%; transform: translateY(-50%);
+            opacity: 0.12; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .guide-card:hover .guide-illustration { opacity: 0.2; }
+        .guide-illustration svg { width: 90px; height: 90px; }
+        .guide-card.organic  .guide-illustration svg { stroke: var(--green-1); }
+        .guide-card.recycle  .guide-illustration svg { stroke: #22d3ee; }
+        .guide-card.waste    .guide-illustration svg { stroke: #f87171; }
+
+        /* ══════════════════════════════════════════════════════
+           4. EMPTY STATE animation for activity chart
+        ══════════════════════════════════════════════════════ */
+        .activity-empty-wave {
+            width: 100%; height: 44px; position: relative; overflow: hidden;
+            margin: 8px 0;
+        }
+        .activity-empty-wave svg {
+            position: absolute; bottom: 0; left: 0;
+            animation: wave-scroll 4s linear infinite;
+        }
+        @keyframes wave-scroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .activity-empty-text {
+            font-size: 0.78em; color: var(--t3); text-align: center;
+            margin-top: 6px; font-weight: 500;
+        }
+
+        /* ══════════════════════════════════════════════════════
+           7. DECORATIVE SECTION DIVIDERS
+        ══════════════════════════════════════════════════════ */
+        .section-divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 4px 0;
+            opacity: 0.5;
+        }
+        .section-divider-line {
+            flex: 1; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+        }
+        .section-divider-icon {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: var(--bg-raised);
+            border: 1px solid var(--border-subtle);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .section-divider-icon svg { width: 10px; height: 10px; stroke: var(--t3); stroke-width: 2; }
+
+        /* ══════════════════════════════════════════════════════
+           8. USER PROFILE PHOTO in header
+        ══════════════════════════════════════════════════════ */
+        .header-profile {
+            display: none;
+            align-items: center; justify-content: center;
+            gap: 10px; margin-bottom: 8px;
+            animation: ns-text-enter 0.5s var(--ease) both;
+        }
+        .header-profile.visible { display: flex; }
+        .header-profile-avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 2px solid var(--border-mid);
+            overflow: hidden; flex-shrink: 0;
+            box-shadow: 0 0 0 3px rgba(61,186,122,0.15), var(--green-glow-sm);
+        }
+        .header-profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .header-profile-text { text-align: left; }
+        .header-profile-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.88em; font-weight: 700; color: var(--t1);
+        }
+        .header-profile-status {
+            font-size: 0.7em; color: var(--t3); margin-top: 1px;
+        }
+
+        /* ══════════════════════════════════════════════════════
+           10. BOTTOM NAVIGATION BAR
+        ══════════════════════════════════════════════════════ */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            height: 64px;
+            background: rgba(4,10,4,0.92);
+            border-top: 1px solid rgba(61,186,122,0.1);
+            backdrop-filter: blur(20px);
+            z-index: 700;
+            display: none;
+            align-items: center; justify-content: space-around;
+            padding: 0 8px;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        @media (max-width: 768px) { .bottom-nav { display: flex; } }
+        @media (max-width: 768px) { .container { padding-bottom: 80px; } }
+        @media (max-width: 768px) { .tabs { display: none; } } /* hide top tabs on mobile */
+
+        .bnav-item {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 3px;
+            padding: 6px 4px;
+            cursor: pointer; border: none; background: none;
+            transition: all 0.2s var(--ease);
+            position: relative; border-radius: var(--r-sm);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bnav-item svg { width: 20px; height: 20px; stroke: var(--t3); stroke-width: 2; transition: stroke 0.2s, transform 0.2s; }
+        .bnav-item span { font-size: 0.62em; font-weight: 600; color: var(--t3); transition: color 0.2s; letter-spacing: 0.2px; }
+        .bnav-item.active svg   { stroke: var(--green-1); transform: scale(1.1); }
+        .bnav-item.active span  { color: var(--green-1); }
+        /* Active indicator dot */
+        .bnav-item.active::after {
+            content: ''; position: absolute; bottom: 2px;
+            width: 4px; height: 4px; border-radius: 50%;
+            background: var(--green-1);
+            box-shadow: 0 0 6px rgba(61,186,122,0.7);
+        }
+
+        /* ══════════════════════════════════════════════════════
+           11. SWIPE GESTURE indicator
+        ══════════════════════════════════════════════════════ */
+        .swipe-hint {
+            display: none; text-align: center;
+            font-size: 0.68em; color: var(--t3); margin-bottom: 6px;
+            animation: hint-fade 3s ease 1.5s both;
+        }
+        @media (max-width: 768px) { .swipe-hint { display: block; } }
+
+        /* ══════════════════════════════════════════════════════
+           12. LANDSCAPE MODE
+        ══════════════════════════════════════════════════════ */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .container { padding: 12px 16px 16px; }
+            .header    { padding: 16px 4px 12px; flex-direction: row; gap: 16px; align-items: center; text-align: left; }
+            .header .logo-icon { width: 56px; height: 56px; margin: 0; flex-shrink: 0; }
+            .header .logo-ring-1, .header .logo-ring-2, .header .logo-ring-3 { display: none; }
+            .header h1  { font-size: 1.8em; margin-bottom: 4px; }
+            .header p, .header-eyebrow { display: none; }
+            .stats-grid { grid-template-columns: repeat(4,1fr); }
+            .bottom-nav { height: 52px; }
+            .impact-widget { padding: 16px; }
+            .impact-number { font-size: 2.4em; }
+        }
+
+        /* ══════════════════════════════════════════════════════
+           13. FLOATING POINTS TOAST
+        ══════════════════════════════════════════════════════ */
+        .pts-float {
+            position: fixed;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1em; font-weight: 800;
+            color: var(--green-1);
+            text-shadow: 0 0 12px rgba(61,186,122,0.6);
+            pointer-events: none; z-index: 9000;
+            animation: pts-rise 1.2s var(--ease) forwards;
+        }
+        @keyframes pts-rise {
+            0%   { opacity: 1; transform: translateY(0)   scale(1); }
+            40%  { opacity: 1; transform: translateY(-28px) scale(1.15); }
+            100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+        }
+
+        /* ══════════════════════════════════════════════════════
+           14. FULL-SCREEN DETECTION RIPPLE
+        ══════════════════════════════════════════════════════ */
+        .detect-ripple {
+            position: fixed; border-radius: 50%;
+            pointer-events: none; z-index: 0;
+            background: transparent;
+            border: 2px solid rgba(61,186,122,0.35);
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%) scale(0);
+            animation: detect-expand 0.9s ease-out forwards;
+        }
+        .detect-ripple.reciclable   { border-color: rgba(34,211,238,0.3); }
+        .detect-ripple.no-reciclable { border-color: rgba(248,113,113,0.3); }
+        @keyframes detect-expand {
+            0%   { transform: translate(-50%,-50%) scale(0);   opacity: 0.8; }
+            100% { transform: translate(-50%,-50%) scale(4);   opacity: 0; }
+        }
+
+        /* ══════════════════════════════════════════════════════
+           15. TYPEWRITER in header greeting
+        ══════════════════════════════════════════════════════ */
+        .typewriter-cursor {
+            display: inline-block; width: 2px; height: 1em;
+            background: var(--green-1); margin-left: 2px;
+            vertical-align: middle;
+            animation: blink-cursor 0.9s step-end infinite;
+        }
+        @keyframes blink-cursor {
+            0%,100% { opacity: 1; } 50% { opacity: 0; }
+        }
+
     </style>
 </head>
 <body>
@@ -3318,12 +3608,12 @@
                 <div class="onboarding-slide">
                     <div class="ob-icon-ring green"><span class="icon"><i data-lucide="recycle"></i></span></div>
                     <div class="ob-step-label">Bienvenido a Nova</div>
-                    <h2>Recicla bien.<br>Cuida el planeta.</h2>
-                    <p>Nova usa inteligencia artificial para identificar tus residuos al instante y guiarte sobre cómo clasificarlos para reducir tu impacto ambiental.</p>
+                    <h2>¿Esa lata va<br>en la basura?</h2>
+                    <p>Espera — apunta la cámara y Nova te dice en 2 segundos exactamente dónde va cada residuo. Sin adivinar, sin dudar.</p>
                     <div class="ob-features">
-                        <div class="ob-feature-row"><span class="icon"><i data-lucide="camera"></i></span><span>Detección en tiempo real con tu cámara</span></div>
-                        <div class="ob-feature-row"><span class="icon"><i data-lucide="zap"></i></span><span>Conoce exactamente cuánto CO₂ evitas con cada acción</span></div>
-                        <div class="ob-feature-row"><span class="icon"><i data-lucide="lock"></i></span><span>100% privado · Todo corre en tu dispositivo</span></div>
+                        <div class="ob-feature-row"><span class="icon"><i data-lucide="camera"></i></span><span>En 2 segundos sabes dónde va cada residuo</span></div>
+                        <div class="ob-feature-row"><span class="icon"><i data-lucide="zap"></i></span><span>Ve tu impacto real: CO₂ evitado y árboles salvados</span></div>
+                        <div class="ob-feature-row"><span class="icon"><i data-lucide="lock"></i></span><span>Sin internet, sin cuenta — funciona desde el primer segundo</span></div>
                     </div>
                 </div>
 
@@ -3331,8 +3621,8 @@
                 <div class="onboarding-slide">
                     <div class="ob-icon-ring cyan"><span class="icon"><i data-lucide="cpu"></i></span></div>
                     <div class="ob-step-label">Cómo funciona</div>
-                    <h2>IA que aprende<br>de lo que ves.</h2>
-                    <p>Usamos MobileNet, una red neuronal entrenada con millones de imágenes. Apunta la cámara a cualquier objeto y Nova lo clasifica en menos de 2 segundos.</p>
+                    <h2>Apunta.<br>Nova lo resuelve.</h2>
+                    <p>Sin registros, sin subir fotos a la nube. Todo pasa en tu teléfono, al instante. Solo enfoca el objeto y listo.</p>
                     <div class="ob-features">
                         <div class="ob-feature-row"><span style="width:10px;height:10px;border-radius:50%;background:var(--green-1);display:inline-block;flex-shrink:0"></span><span><strong>Orgánico</strong> — Contenedor verde</span></div>
                         <div class="ob-feature-row"><span style="width:10px;height:10px;border-radius:50%;background:#22d3ee;display:inline-block;flex-shrink:0"></span><span><strong>Reciclable</strong> — Azul o amarillo</span></div>
@@ -3344,12 +3634,12 @@
                 <div class="onboarding-slide">
                     <div class="ob-icon-ring amber"><span class="icon"><i data-lucide="trophy"></i></span></div>
                     <div class="ob-step-label">Gana mientras reciclas</div>
-                    <h2>Cada escaneo<br>suma puntos.</h2>
-                    <p>Sube de nivel, desbloquea logros y mantén tu racha diaria. Compara tu huella ambiental positiva con la del promedio y motiva a otros.</p>
+                    <h2>Cada lata cuenta.<br>De verdad.</h2>
+                    <p>Nova lleva la cuenta de tu impacto real: cuánto CO₂ evitaste, tu racha diaria y cuántos árboles has salvado. Pequeñas acciones, resultado visible.</p>
                     <div class="ob-features">
-                        <div class="ob-feature-row"><span class="icon"><i data-lucide="leaf"></i></span><span>Racha diaria — recicla cada día y crece tu impacto ambiental</span></div>
+                        <div class="ob-feature-row"><span class="icon"><i data-lucide="leaf"></i></span><span>Racha diaria — un hábito pequeño que cambia todo</span></div>
                         <div class="ob-feature-row"><span class="icon"><i data-lucide="bar-chart-2"></i></span><span>Historial completo de tus detecciones</span></div>
-                        <div class="ob-feature-row"><span class="icon"><i data-lucide="upload"></i></span><span>Analiza hasta 10 fotos a la vez con el modo galería</span></div>
+                        <div class="ob-feature-row"><span class="icon"><i data-lucide="upload"></i></span><span>Analiza fotos de tu galería — hasta 10 a la vez</span></div>
                     </div>
                 </div>
             </div>
@@ -3405,6 +3695,13 @@
                 <div class="logo-ring-3"></div>
                 <img src="nova-logo.png" alt="Nova Logo" style="display: none;" id="logoImage">
                 <div class="logo-icon-placeholder" id="logoPlaceholder"><span class="icon icon-3xl" style="opacity:0.7"><i data-lucide="sparkles"></i></span></div>
+            </div>
+            <div class="header-profile" id="headerProfile">
+                <div class="header-profile-avatar" id="headerProfileAvatar"></div>
+                <div class="header-profile-text">
+                    <div class="header-profile-name" id="headerProfileName"></div>
+                    <div class="header-profile-status" id="headerProfileStatus"></div>
+                </div>
             </div>
             <div class="header-greeting" id="headerGreeting"></div>
             <div class="model-status loading" id="modelStatus"><div class="model-status-dot"></div><span id="modelStatusText">Cargando IA...</span></div>
@@ -3495,6 +3792,13 @@
             </button>
         </div>
 
+        <!-- Divider -->
+        <div class="section-divider">
+            <div class="section-divider-line"></div>
+            <div class="section-divider-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="section-divider-line"></div>
+        </div>
+
         <!-- FEATURE 5: Weekly Activity Chart -->
         <div class="activity-section glass-card reveal" id="activitySection">
             <div class="logros-header">
@@ -3507,6 +3811,13 @@
             </div>
         </div>
 
+        <!-- Divider -->
+        <div class="section-divider">
+            <div class="section-divider-line"></div>
+            <div class="section-divider-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="6" stroke-width="2"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="section-divider-line"></div>
+        </div>
+
         <!-- Logros Section -->
         <div class="logros-section glass-card reveal">
             <div class="logros-header">
@@ -3514,6 +3825,13 @@
                 <span class="logros-counter" id="badgeCounter">0/8</span>
             </div>
             <div class="badges-grid" id="badgesGrid"></div>
+        </div>
+
+        <!-- Divider -->
+        <div class="section-divider">
+            <div class="section-divider-line"></div>
+            <div class="section-divider-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="20" x2="12" y2="4" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="20" x2="6" y2="14" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="section-divider-line"></div>
         </div>
 
         <!-- Comparador Section -->
@@ -3543,7 +3861,7 @@
             
             <div class="comparison-message" id="comparisonMessage">
                 <div class="icon"><span class="icon"><i data-lucide="rocket"></i></span></div>
-                <div class="text">¡Empieza a reciclar para ver tu impacto ambiental real!</div>
+                <div class="text">Escanea tu primer residuo y empieza a ver tu huella ambiental positiva en tiempo real</div>
             </div>
         </div>
 
@@ -3594,6 +3912,9 @@
                 <span>Guía</span>
             </button>
         </div>
+
+        <!-- Swipe hint (mobile) -->
+        <p class="swipe-hint">← Desliza para cambiar sección →</p>
 
         <!-- Content Card -->
         <div class="content-card glass-card reveal">
@@ -3695,6 +4016,14 @@
                 <h2>Guía de Reciclaje Energético</h2>
 
                 <div class="guide-card organic">
+                    <div class="guide-illustration">
+                        <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M40 70 C40 70 20 55 20 38 C20 27 29 18 40 18 C51 18 60 27 60 38 C60 55 40 70 40 70Z"/>
+                            <path d="M40 30 C40 30 32 22 26 24"/>
+                            <path d="M40 36 C40 36 48 28 54 30"/>
+                            <line x1="40" y1="18" x2="40" y2="70"/>
+                        </svg>
+                    </div>
                     <h3><span class="icon"><i data-lucide="leaf"></i></span> Residuos Orgánicos</h3>
                     <p><strong style="color:var(--t1)">Contenedor:</strong> Verde</p>
                     <p>Frutas, verduras, cáscaras, restos de comida, café, té, hojas, flores</p>
@@ -3702,6 +4031,13 @@
                 </div>
 
                 <div class="guide-card recycle">
+                    <div class="guide-illustration">
+                        <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="18" y="28" width="44" height="38" rx="4"/>
+                            <path d="M28 28V22a12 12 0 0 1 24 0v6"/>
+                            <path d="M32 48 L36 44 L40 52 L44 40 L48 48"/>
+                        </svg>
+                    </div>
                     <h3><span class="icon"><i data-lucide="recycle"></i></span> Residuos Reciclables</h3>
                     <p><strong style="color:var(--t1)">Contenedor:</strong> Azul / Amarillo</p>
                     <p>Plásticos, vidrio, papel, cartón, metales, latas, botellas, envases</p>
@@ -3709,6 +4045,16 @@
                 </div>
 
                 <div class="guide-card waste">
+                    <div class="guide-illustration">
+                        <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16,28 20,68 60,68 64,28"/>
+                            <line x1="12" y1="28" x2="68" y2="28"/>
+                            <path d="M30 28V22a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6"/>
+                            <line x1="32" y1="40" x2="32" y2="58"/>
+                            <line x1="40" y1="38" x2="40" y2="60"/>
+                            <line x1="48" y1="40" x2="48" y2="58"/>
+                        </svg>
+                    </div>
                     <h3><span class="icon"><i data-lucide="trash-2"></i></span> Residuos No Reciclables</h3>
                     <p><strong style="color:var(--t1)">Contenedor:</strong> Gris / Negro</p>
                     <p>Papel higiénico, pañales, colillas, chicles, unicel, empaques mixtos</p>
@@ -3758,8 +4104,8 @@
 
         // Definición de Badges
         const availableBadges = [
-            { id: 'first', name: 'Primer Paso', lucideIcon: 'sprout', iconColor: '#1edb6e', rarity: 'common', requirement: 1, points: 10, desc: '1 detección' },
-            { id: 'bronze', name: 'Explorador', lucideIcon: 'compass', iconColor: '#1edb6e', rarity: 'common', requirement: 10, points: 50, desc: '10 detecciones' },
+            { id: 'first', name: 'Primer Paso', lucideIcon: 'sprout', iconColor: '#3dba7a', rarity: 'common', requirement: 1, points: 10, desc: '1 detección' },
+            { id: 'bronze', name: 'Explorador', lucideIcon: 'compass', iconColor: '#3dba7a', rarity: 'common', requirement: 10, points: 50, desc: '10 detecciones' },
             { id: 'silver', name: 'Reciclador Plata', lucideIcon: 'recycle', iconColor: '#22d3ee', rarity: 'rare', requirement: 50, points: 100, desc: '50 detecciones' },
             { id: 'gold', name: 'Reciclador Oro', lucideIcon: 'trophy', iconColor: '#fbbf24', rarity: 'epic', requirement: 100, points: 200, desc: '100 detecciones' },
             { id: 'streak7', name: 'Racha Semanal', lucideIcon: 'flame', iconColor: '#22d3ee', rarity: 'rare', requirement: 7, points: 150, desc: '7 días seguidos', type: 'streak' },
@@ -3926,10 +4272,10 @@
             try {
                 const tutorialCompleted = localStorage.getItem('novaTutorialCompleted');
                 if (!tutorialCompleted) {
-                    setTimeout(() => startTutorial(), 800);
+                    scheduleIdleTutorial();
                 }
             } catch (e) {
-                setTimeout(() => startTutorial(), 800);
+                scheduleIdleTutorial();
             }
         }
 
@@ -4120,11 +4466,13 @@
                 typeEl.textContent = 'No Reciclable';
                 typeEl.className = 'detection-type no-reciclable';
             }
-            // Feature 9: particle burst + category sound
+            // Feature 9: burst + sound
             spawnDetectionBurst(info.tipo);
             playCategorySound(info.tipo);
             // Feature 11: radar pulse
             fireRadarPulse();
+            // Feature 14: screen ripple
+            spawnDetectRipple(info.tipo);
             
             overlay.classList.add('active');
             
@@ -4438,10 +4786,14 @@
             `;
 
             resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            // Feature 9: burst + sound on upload result
+            // Feature 9: burst + sound
             spawnDetectionBurst(info.tipo);
             playCategorySound(info.tipo);
-            // Feature 3: wrap in flip card
+            // Feature 14: full-screen ripple
+            spawnDetectRipple(info.tipo);
+            // Feature 1: object preview
+            injectObjectPreview(resultEl, objeto, info, confianza);
+            // Feature 3: flip card
             setTimeout(() => wrapResultInFlipCard(document.getElementById('resultUpload') || resultEl, info), 50);
         }
 
@@ -4467,7 +4819,13 @@
         function addPoints(points, type, objectName) {
             gameData.totalPoints += points;
             gameData.currentExp += points;
-            gameData.ecoImpact += 0.8;
+            // Impacto real por categoría
+            const ecoByType = {
+                'organico':               0.3,
+                'inorganico-reciclable':  0.8,
+                'inorganico-no-reciclable': 0.1
+            };
+            gameData.ecoImpact += ecoByType[type] || 0.3;
             gameData.totalDetections++;
 
             // — Racha diaria real —
@@ -4504,7 +4862,9 @@
             updateGameUI();
             updateComparison();
             renderHistory();
-            // Sync to cloud (Feature 12)
+            // Feature 13: floating points
+            spawnFloatingPoints(points, type);
+            // Sync to cloud
             if (currentUser) pushToFirestore(currentUser.uid);
         }
 
@@ -4647,24 +5007,24 @@
                 const topPercent = Math.max(1, Math.min(100 - Math.floor(userImpact / 10), 99));
                 messageEl.innerHTML = `
                     <div class="icon">🏆</div>
-                    <div class="text">¡Increíble! Tu impacto es ${diff}% MAYOR que el promedio</div>
+                    <div class="text">¡Eres un ejemplo! Reciclas ${diff}% más que la mayoría de personas</div>
                     <div class="ranking-badge">TOP ${topPercent}% Estrella</div>
                 `;
             } else if (userImpact > promedio) {
                 const diff = ((userImpact / promedio - 1) * 100).toFixed(0);
                 messageEl.innerHTML = `
                     <div class="icon">⭐</div>
-                    <div class="text">¡Excelente! Tu impacto ambiental supera al promedio en un ${diff}%</div>
+                    <div class="text">¡Bien hecho! Ya superas al promedio — cada residuo que clasificas bien marca la diferencia</div>
                 `;
             } else if (userImpact >= promedio * 0.5) {
                 messageEl.innerHTML = `
                     <div class="icon">💪</div>
-                    <div class="text">¡Vas bien! Sigue reciclando para superar al promedio</div>
+                    <div class="text">Vas por buen camino — recicla una cosa más hoy y ya superas al promedio</div>
                 `;
             } else if (userImpact > 0) {
                 messageEl.innerHTML = `
                     <div class="icon"><span class="icon"><i data-lucide="rocket"></i></span></div>
-                    <div class="text">¡Comienza a escanear! Cada residuo bien clasificado suma</div>
+                    <div class="text">Cada lata, cada cartón, cada cáscara que clasificas bien es CO₂ que no llega a la atmósfera</div>
                 `;
             }
         }
@@ -4996,16 +5356,45 @@
             setTimeout(() => openTutorialPanel(), 800);
         }
 
-        function checkTutorial() {
+        let idleTutorialTimer = null;
+
+        function scheduleIdleTutorial() {
+            clearTimeout(idleTutorialTimer);
+            idleTutorialTimer = setTimeout(() => {
+                try {
+                    const completed = localStorage.getItem('novaTutorialCompleted');
+                    if (!completed) startTutorial();
+                } catch(e) { startTutorial(); }
+            }, 5000); // 5 segundos de inactividad
+        }
+
+        // Reset idle timer on any user interaction
+        function resetIdleTimer() {
             try {
                 const completed = localStorage.getItem('novaTutorialCompleted');
+                const shown     = localStorage.getItem('novaWelcomeShown');
+                if (!completed && shown) {
+                    clearTimeout(idleTutorialTimer);
+                    idleTutorialTimer = setTimeout(() => {
+                        try { if (!localStorage.getItem('novaTutorialCompleted')) startTutorial(); } catch(e) {}
+                    }, 5000);
+                }
+            } catch(e) {}
+        }
+
+        function checkTutorial() {
+            try {
+                const completed    = localStorage.getItem('novaTutorialCompleted');
                 const welcomeShown = localStorage.getItem('novaWelcomeShown');
-                
                 if (!completed && welcomeShown) {
-                    setTimeout(() => startTutorial(), 500);
+                    scheduleIdleTutorial();
+                    // Watch for user activity to reset the idle countdown
+                    ['mousemove','touchstart','keydown','scroll','click'].forEach(ev =>
+                        document.addEventListener(ev, resetIdleTimer, { passive: true, once: false })
+                    );
                 }
             } catch (e) {
-                setTimeout(() => startTutorial(), 500);
+                scheduleIdleTutorial();
             }
         }
 
@@ -5034,9 +5423,11 @@
             const el = document.getElementById('headerGreeting');
             if (!el) return;
             if (userName) {
-                const hour = new Date().getHours();
+                const hour   = new Date().getHours();
                 const saludo = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
-                el.innerHTML = `${saludo}, <strong>${userName}</strong> 👋`;
+                const text   = `${saludo}, ${userName} 👋`;
+                // Feature 15: typewriter effect
+                typewriterGreeting(el, text, 38);
             } else {
                 el.innerHTML = '';
             }
@@ -5115,7 +5506,7 @@
             const burst = document.getElementById('detectionBurst');
             if (!burst) return;
             const colorMap = {
-                'organico': ['#1edb6e','#34d48a','#a3f0c4'],
+                'organico': ['#3dba7a','#5ecb8f','#a8e6c3'],
                 'inorganico-reciclable': ['#22d3ee','#67e8f9','#0891b2'],
                 'inorganico-no-reciclable': ['#f87171','#fca5a5','#dc2626']
             };
@@ -5474,7 +5865,7 @@ out body;`;
         }
 
         function makeMarkerIcon(type) {
-            const colors = { recycling: '#22d3ee', organic: '#1edb6e', hazard: '#f87171' };
+            const colors = { recycling: '#22d3ee', organic: '#3dba7a', hazard: '#f87171' };
             const color = colors[type] || '#22d3ee';
             const emoji = { recycling: '♻️', organic: '🌱', hazard: '⚠️' }[type] || '♻️';
             return L.divIcon({
@@ -5775,6 +6166,8 @@ out body;`;
         }
 
         function updateSyncBar(user) {
+            // Feature 8: update header profile photo
+            updateHeaderProfile(user);
             const bar    = document.getElementById('syncBar');
             const avatar = document.getElementById('syncAvatar');
             const label  = document.getElementById('syncLabel');
@@ -5928,6 +6321,8 @@ out body;`;
             target.style.display = 'block';
             target.classList.add(dir === 'right' ? 'slide-in-right' : 'slide-in-left');
             setTimeout(() => target.classList.add('active'), 380);
+            // Sync bottom nav
+            syncBottomNav(tab);
         }
 
         // ════════════════════════════════════════════════════════
@@ -6678,6 +7073,7 @@ out body;`;
         function initScrollReveal() {
             if (perfTier === 'low') {
                 document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+                animateStatsCountUp();
                 return;
             }
             const observer = new IntersectionObserver((entries) => {
@@ -6685,6 +7081,10 @@ out body;`;
                     if (entry.isIntersecting) {
                         const delay = parseFloat(entry.target.dataset.delay || 0);
                         setTimeout(() => entry.target.classList.add('visible'), delay);
+                        // Feature 6: count-up when stats become visible
+                        if (entry.target.classList.contains('stats-grid')) {
+                            setTimeout(animateStatsCountUp, delay + 100);
+                        }
                         observer.unobserve(entry.target);
                     }
                 });
@@ -6730,6 +7130,269 @@ out body;`;
                     [...energyParticles].slice(0, energyParticles.length - maxP).forEach(p => p.remove());
                 }
             }, 8000);
+        }
+
+
+        // ════════════════════════════════════════════════════════
+        // 1. OBJECT PREVIEW — emoji map for known objects
+        // ════════════════════════════════════════════════════════
+        const OBJ_EMOJI = {
+            banana:'🍌', apple:'🍎', orange:'🍊', lemon:'🍋', pineapple:'🍍',
+            strawberry:'🍓', broccoli:'🥦', mushroom:'🍄', corn:'🌽', pizza:'🍕',
+            hotdog:'🌭', hamburger:'🍔', sandwich:'🥪', carrot:'🥕',
+            bottle:'🍶', 'water bottle':'💧', 'wine bottle':'🍷', 'beer bottle':'🍺',
+            'pop bottle':'🥤', can:'🥫', cup:'🥤', 'plastic bag':'🛍️',
+            'paper towel':'🧻', notebook:'📓', 'cellular telephone':'📱',
+            laptop:'💻', toothbrush:'🪥', television:'📺', cardboard:'📦',
+            backpack:'🎒', book:'📚', default:'♻️'
+        };
+
+        function getObjEmoji(name) {
+            const key = (name || '').toLowerCase();
+            for (const k of Object.keys(OBJ_EMOJI)) {
+                if (key.includes(k)) return OBJ_EMOJI[k];
+            }
+            return OBJ_EMOJI.default;
+        }
+
+        function injectObjectPreview(resultEl, name, info, confianza) {
+            const cssMap = { organico:'organico', 'inorganico-reciclable':'reciclable', 'inorganico-no-reciclable':'no-reciclable' };
+            const typeLabel = { organico:'Orgánico', 'inorganico-reciclable':'Reciclable', 'inorganico-no-reciclable':'No Reciclable' };
+            const css  = cssMap[info.tipo] || 'organico';
+            const emoji = getObjEmoji(name);
+
+            const prev = document.createElement('div');
+            prev.className = 'result-obj-preview';
+            prev.innerHTML = `
+                <div class="result-obj-icon ${css}">${emoji}</div>
+                <div class="result-obj-label">
+                    <div class="result-obj-name">${name ? name.charAt(0).toUpperCase()+name.slice(1) : 'Objeto'}</div>
+                    <div class="result-obj-type">${info.contenedor || typeLabel[info.tipo]}</div>
+                </div>
+                <span class="result-obj-conf ${css}">${confianza}%</span>
+            `;
+
+            // Insert before result card
+            if (resultEl.parentNode) {
+                resultEl.parentNode.insertBefore(prev, resultEl);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // 4. EMPTY STATE wave for activity chart
+        // ════════════════════════════════════════════════════════
+        function renderActivityChart() {
+            const container = document.getElementById('activityChart');
+            const weeklyEl  = document.getElementById('weeklyTotal');
+            if (!container) return;
+
+            const days  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+            const today = new Date();
+            const buckets = Array(7).fill(0);
+
+            gameData.detectionHistory.forEach(item => {
+                const d = new Date(item.date);
+                const diffDays = Math.floor((today - d) / 86400000);
+                if (diffDays >= 0 && diffDays < 7) buckets[6 - diffDays]++;
+            });
+
+            const maxVal   = Math.max(...buckets, 1);
+            const weekTotal = buckets.reduce((a,b)=>a+b,0);
+            if (weeklyEl) weeklyEl.textContent = `${weekTotal} esta semana`;
+
+            if (weekTotal === 0) {
+                // Feature 4: animated empty wave
+                container.innerHTML = `
+                    <div style="width:100%;padding:8px 0">
+                        <div class="activity-empty-wave">
+                            <svg width="200%" height="44" viewBox="0 0 800 44" preserveAspectRatio="none">
+                                <path d="M0,22 C50,6 100,38 150,22 C200,6 250,38 300,22 C350,6 400,38 450,22 C500,6 550,38 600,22 C650,6 700,38 750,22 C800,6 850,38 800,22"
+                                      stroke="rgba(61,186,122,0.25)" stroke-width="2" fill="none"/>
+                                <path d="M0,28 C60,12 110,44 160,28 C210,12 260,44 310,28 C360,12 410,44 460,28 C510,12 560,44 610,28 C660,12 710,44 760,28 C810,12 860,44 800,28"
+                                      stroke="rgba(61,186,122,0.12)" stroke-width="1.5" fill="none"/>
+                            </svg>
+                        </div>
+                        <div class="activity-empty-text">Escanea tu primer residuo para ver tu actividad</div>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = buckets.map((val, i) => {
+                const dayIdx = (today.getDay() - (6-i) + 7) % 7;
+                const label  = i === 6 ? 'Hoy' : days[dayIdx];
+                const pct    = Math.round((val / maxVal) * 100);
+                const height = Math.max(4, pct * 0.6);
+                return `<div class="activity-bar-col">
+                    <div class="activity-bar${val===0?' empty':''}" style="height:${height}px;animation-delay:${i*60}ms" data-tip="${val} detección${val!==1?'es':''}"></div>
+                    <span class="activity-day-label">${label}</span>
+                </div>`;
+            }).join('');
+        }
+
+        // ════════════════════════════════════════════════════════
+        // 6. STAT COUNT-UP on first load
+        // ════════════════════════════════════════════════════════
+        let statsAnimated = false;
+        function animateStatsCountUp() {
+            if (statsAnimated) return;
+            statsAnimated = true;
+
+            const targets = [
+                { id: 'levelDisplay',  val: gameData.level,                   suffix: '',      decimals: 0 },
+                { id: 'scansDisplay',  val: gameData.totalDetections,          suffix: '',      decimals: 0 },
+                { id: 'co2Display',    val: gameData.ecoImpact,                suffix: ' kg',   decimals: 1 },
+            ];
+
+            targets.forEach(({ id, val, suffix, decimals }) => {
+                const el = document.getElementById(id);
+                if (!el || val === 0) return;
+                const duration = 1000;
+                const start    = performance.now();
+                const step = now => {
+                    const p    = Math.min((now - start) / duration, 1);
+                    const ease = 1 - Math.pow(1 - p, 3);
+                    const curr = val * ease;
+                    el.textContent = decimals ? curr.toFixed(decimals) + suffix : Math.round(curr) + suffix;
+                    if (p < 1) requestAnimationFrame(step);
+                };
+                requestAnimationFrame(step);
+            });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // 8. PROFILE PHOTO in header from Firebase
+        // ════════════════════════════════════════════════════════
+        function updateHeaderProfile(user) {
+            const wrap   = document.getElementById('headerProfile');
+            const avatar = document.getElementById('headerProfileAvatar');
+            const name   = document.getElementById('headerProfileName');
+            const status = document.getElementById('headerProfileStatus');
+            if (!wrap) return;
+
+            if (user && user.photoURL) {
+                avatar.innerHTML = `<img src="${user.photoURL}" alt="${user.displayName || ''}">`;
+                name.textContent  = user.displayName?.split(' ')[0] || 'Usuario';
+                const pts = gameData.totalPoints || 0;
+                status.textContent = `${pts} pts · Nivel ${gameData.level}`;
+                wrap.classList.add('visible');
+                // Hide plain greeting when profile is shown
+                const greetEl = document.getElementById('headerGreeting');
+                if (greetEl) greetEl.style.display = 'none';
+            } else {
+                wrap.classList.remove('visible');
+                const greetEl = document.getElementById('headerGreeting');
+                if (greetEl) greetEl.style.display = '';
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // 10. BOTTOM NAV sync
+        // ════════════════════════════════════════════════════════
+        function switchTabFromNav(tab, btnEl) {
+            // Sync top tabs too
+            const topTab = document.querySelector(`.tab[onclick*="'${tab}'"]`);
+            if (topTab) switchTab(tab, topTab);
+            else { currentTab = tab; document.getElementById(tab+'Section')?.classList.add('active'); }
+
+            // Update bottom nav active state
+            document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+        }
+
+        function syncBottomNav(tab) {
+            document.querySelectorAll('.bnav-item').forEach(b => {
+                b.classList.toggle('active', b.dataset.tab === tab);
+            });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // 11. SWIPE GESTURE between tabs
+        // ════════════════════════════════════════════════════════
+        function initSwipeGesture() {
+            const card = document.querySelector('.content-card');
+            if (!card) return;
+
+            let startX = 0, startY = 0;
+
+            card.addEventListener('touchstart', e => {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            }, { passive: true });
+
+            card.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].clientX - startX;
+                const dy = e.changedTouches[0].clientY - startY;
+                if (Math.abs(dx) < 40 || Math.abs(dy) > Math.abs(dx) * 0.8) return;
+
+                const tabs = ['realtime','upload','historial','guide'];
+                const curr = tabs.indexOf(currentTab);
+                let next = curr + (dx < 0 ? 1 : -1);
+                next = Math.max(0, Math.min(next, tabs.length - 1));
+                if (next === curr) return;
+
+                const nextTab = tabs[next];
+                const topBtn  = document.querySelector(`.tab[onclick*="'${nextTab}'"]`);
+                if (topBtn) switchTab(nextTab, topBtn);
+                syncBottomNav(nextTab);
+            }, { passive: true });
+        }
+
+        // ════════════════════════════════════════════════════════
+        // 13. FLOATING POINTS TOAST
+        // ════════════════════════════════════════════════════════
+        function spawnFloatingPoints(pts, tipo) {
+            const colors = { organico: '#3dba7a', 'inorganico-reciclable': '#22d3ee', 'inorganico-no-reciclable': '#f87171' };
+            const el = document.createElement('div');
+            el.className = 'pts-float';
+            el.textContent = `+${pts} pts`;
+            el.style.color = colors[tipo] || '#3dba7a';
+            el.style.textShadow = `0 0 12px ${colors[tipo] || '#3dba7a'}88`;
+
+            // Position near the camera / center of screen
+            const x = window.innerWidth  / 2 + (Math.random() - 0.5) * 80;
+            const y = window.innerHeight / 2;
+            el.style.left = x + 'px';
+            el.style.top  = y + 'px';
+            el.style.position = 'fixed';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1300);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // 14. FULL-SCREEN DETECTION RIPPLE
+        // ════════════════════════════════════════════════════════
+        function spawnDetectRipple(tipo) {
+            if (perfTier === 'low') return;
+            const cssMap = { 'inorganico-reciclable': 'reciclable', 'inorganico-no-reciclable': 'no-reciclable' };
+            const el = document.createElement('div');
+            el.className = 'detect-ripple ' + (cssMap[tipo] || '');
+            const size = Math.max(window.innerWidth, window.innerHeight) * 1.2;
+            el.style.width  = size + 'px';
+            el.style.height = size + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // 15. TYPEWRITER for greeting
+        // ════════════════════════════════════════════════════════
+        function typewriterGreeting(el, text, speed = 40) {
+            el.innerHTML = '';
+            const cursor = document.createElement('span');
+            cursor.className = 'typewriter-cursor';
+
+            let i = 0;
+            function tick() {
+                if (i < text.length) {
+                    el.textContent = text.slice(0, ++i);
+                    el.appendChild(cursor);
+                    setTimeout(tick, speed);
+                } else {
+                    // Remove cursor after 2s
+                    setTimeout(() => cursor.remove(), 2000);
+                }
+            }
+            tick();
         }
 
         // Inicializar
@@ -6805,6 +7468,8 @@ out body;`;
             initVisuals();
             // Memory cleanup
             initMemoryCleanup();
+            // Feature 11: swipe gestures
+            initSwipeGesture();
             // Init new visual features
             spawnNameScreenParticles();
             initCustomCursor();
@@ -7023,7 +7688,7 @@ out body;`;
                             ${step.desc}
                             ${tagHtml}
                             ${actionHtml}
-                            ${isActive ? `<button class="tut-step-action" style="margin-top:8px;background:transparent;border:1px solid var(--border-mid);color:var(--green-1);box-shadow:none" onclick="advanceTutPanelStep()">✓ Entendido, siguiente</button>` : ''}
+                            ${isActive ? `<button class="tut-step-action secondary-action" onclick="advanceTutPanelStep()">✓ Entendido, siguiente</button>` : ''}
                         </div>
                     </div>
                 </div>`;
@@ -7370,5 +8035,26 @@ out body;`;
             </div>
         </div>
     </div>
+
+    <!-- Bottom Navigation (Feature 10) -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="bnav-item active" data-tab="realtime" onclick="switchTabFromNav('realtime',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2" stroke-width="2"/></svg>
+            <span>Cámara</span>
+        </button>
+        <button class="bnav-item" data-tab="upload" onclick="switchTabFromNav('upload',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="2"/><polyline points="21 15 16 10 5 21" stroke-width="2" stroke-linecap="round"/></svg>
+            <span>Galería</span>
+        </button>
+        <button class="bnav-item" data-tab="historial" onclick="switchTabFromNav('historial',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-width="2"/><polyline points="12 6 12 12 16 14" stroke-width="2" stroke-linecap="round"/></svg>
+            <span>Historial</span>
+        </button>
+        <button class="bnav-item" data-tab="guide" onclick="switchTabFromNav('guide',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Guía</span>
+        </button>
+    </nav>
+
 </body>
 </html>
