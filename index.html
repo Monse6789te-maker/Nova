@@ -5654,39 +5654,24 @@
 
         async function loadModel() {
             setModelStatus('loading', 'Cargando IA...');
+
+            // Clean up any incompatible IndexedDB cache from previous versions
+            // (MobileNet is a GraphModel — tf.loadLayersModel() can't restore it)
             try {
-                // Try IndexedDB cache first
-                const cached = await tf.io.listModels();
-                if (cached['indexeddb://' + MODEL_CACHE_KEY]) {
-                    console.log('✅ Modelo desde caché local');
-                    model = await tf.loadLayersModel('indexeddb://' + MODEL_CACHE_KEY);
-                    // Wrap in mobilenet-compatible API
-                    model.classify = async (img, topK = 3) => {
-                        return await mobileNetClassifyWithModel(model, img, topK);
-                    };
-                    setModelStatus('cached', 'IA lista (offline)');
-                    showAchievement('⚡', 'IA cargada offline', 'Modelo guardado localmente');
-                    return;
+                const models = await tf.io.listModels();
+                if (models['indexeddb://' + MODEL_CACHE_KEY]) {
+                    await tf.io.removeModel('indexeddb://' + MODEL_CACHE_KEY);
+                    console.log('Caché antigua eliminada (formato incompatible)');
                 }
-            } catch(e) {
-                console.warn('Cache miss, cargando desde red:', e.message);
-            }
+            } catch(e) { /* ignore */ }
 
             try {
-                console.log('Cargando MobileNet desde red...');
+                console.log('Cargando MobileNet...');
+                // MobileNet is cached automatically by the browser HTTP cache
+                // (CDN serves with long cache headers — no re-download on repeat visits)
                 model = await mobilenet.load({ version: 2, alpha: 1.0 });
-
-                // Save to IndexedDB for next time
-                try {
-                    await model.model.save('indexeddb://' + MODEL_CACHE_KEY);
-                    console.log('✅ Modelo guardado en IndexedDB');
-                    setModelStatus('cached', 'IA lista (guardada offline)');
-                } catch(saveErr) {
-                    console.warn('No se pudo guardar el modelo:', saveErr.message);
-                    setModelStatus('online', 'IA lista');
-                }
-
-                showAchievement('🤖', 'IA Lista', 'MobileNet cargado exitosamente');
+                setModelStatus('cached', 'IA lista');
+                showAchievement('🤖', 'IA Lista', 'Modelo cargado exitosamente');
             } catch (error) {
                 console.error('Error cargando modelo:', error);
                 setModelStatus('loading', 'Error — recarga la página');
@@ -7213,8 +7198,10 @@ out body;`;
 
             // — Registro de Service Worker (PWA offline) —
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js')
-                    .then(() => console.log('SW registrado ✓'))
+                // Detect base path for GitHub Pages subdirectory support
+                const swBase = location.pathname.replace(/\/[^\/]*$/, '/');
+                navigator.serviceWorker.register(swBase + 'sw.js', { scope: swBase })
+                    .then(() => console.log('SW registrado ✓ scope:', swBase))
                     .catch(err => console.warn('SW no disponible:', err));
             }
 
