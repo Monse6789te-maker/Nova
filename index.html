@@ -3981,6 +3981,13 @@
 
                 <!-- Batch queue list -->
                 <div class="batch-queue" id="batchQueue"></div>
+
+                <!-- Result area (used by analyzeImage) -->
+                <div class="loading" id="loadingUpload" style="display:none;">
+                    <div class="spinner"></div>
+                    <p style="color:var(--t2)">Analizando con IA...</p>
+                </div>
+                <div class="result" id="resultUpload"></div>
             </div>
 
             <!-- Historial Section -->
@@ -4298,18 +4305,7 @@
         }
 
         // Tabs
-        function switchTab(tab, btnEl) {
-            if (isDetecting) {
-                stopRealtime();
-            }
-            
-            currentTab = tab;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            
-            btnEl.classList.add('active');
-            document.getElementById(tab + 'Section').classList.add('active');
-        }
+        // switchTab — optimized version defined below
 
         // Cargar modelo MobileNet
         async function loadModel() {
@@ -5538,41 +5534,7 @@
         // ═══════════════════════════════════════
         // FEATURE 5: WEEKLY ACTIVITY CHART
         // ═══════════════════════════════════════
-        function renderActivityChart() {
-            const container = document.getElementById('activityChart');
-            const weeklyEl  = document.getElementById('weeklyTotal');
-            if (!container) return;
-
-            const days = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-            const today = new Date();
-            const buckets = Array(7).fill(0);
-
-            gameData.detectionHistory.forEach(item => {
-                const d = new Date(item.date);
-                const diffDays = Math.floor((today - d) / 86400000);
-                if (diffDays >= 0 && diffDays < 7) {
-                    buckets[6 - diffDays]++;
-                }
-            });
-
-            const maxVal = Math.max(...buckets, 1);
-            const weekTotal = buckets.reduce((a, b) => a + b, 0);
-            weeklyEl.textContent = `${weekTotal} esta semana`;
-
-            container.innerHTML = buckets.map((val, i) => {
-                const dayIdx = (today.getDay() - (6 - i) + 7) % 7;
-                const label  = i === 6 ? 'Hoy' : days[dayIdx];
-                const pct    = Math.round((val / maxVal) * 100);
-                const height = Math.max(4, pct * 0.6); // max 60px
-                const isEmpty = val === 0;
-                return `<div class="activity-bar-col">
-                    <div class="activity-bar${isEmpty ? ' empty' : ''}"
-                         style="height:${height}px"
-                         data-tip="${val} detección${val !== 1 ? 'es' : ''}"></div>
-                    <span class="activity-day-label">${label}</span>
-                </div>`;
-            }).join('');
-        }
+        // renderActivityChart — optimized version defined below
 
         // ═══════════════════════════════════════
         // FEATURE 10: ANIMATED IMPACT COUNTER
@@ -6269,23 +6231,7 @@ out body;`;
         // ════════════════════════════════════════════════════════
         // FEATURE 1 — CINEMATIC NAME SCREEN PARTICLES
         // ════════════════════════════════════════════════════════
-        function spawnNameScreenParticles() {
-            const screen = document.getElementById('nameScreen');
-            if (!screen) return;
-            for (let i = 0; i < 18; i++) {
-                const p = document.createElement('div');
-                p.className = 'ns-particle';
-                const size = 3 + Math.random() * 8;
-                p.style.cssText = `
-                    width:${size}px; height:${size}px;
-                    left:${Math.random() * 100}%;
-                    animation-duration:${6 + Math.random() * 8}s;
-                    animation-delay:${Math.random() * 6}s;
-                    opacity:0;
-                `;
-                screen.insertBefore(p, screen.firstChild);
-            }
-        }
+        // spawnNameScreenParticles — optimized version defined below
 
         // ════════════════════════════════════════════════════════
         // FEATURE 2 — SLIDE TRANSITIONS
@@ -6382,28 +6328,7 @@ out body;`;
         // ════════════════════════════════════════════════════════
         // FEATURE 4 — HEADER PARALLAX
         // ════════════════════════════════════════════════════════
-        function initParallax() {
-            const header = document.querySelector('.header');
-            const logo   = document.querySelector('.logo-icon');
-            if (!header) return;
-
-            let ticking = false;
-            window.addEventListener('scroll', () => {
-                if (ticking) return;
-                ticking = true;
-                requestAnimationFrame(() => {
-                    const scrollY = window.scrollY;
-                    if (header) {
-                        header.style.transform = `translateY(${scrollY * 0.22}px)`;
-                        header.style.opacity   = Math.max(0, 1 - scrollY / 320);
-                    }
-                    if (logo) {
-                        logo.style.transform = `translateY(${scrollY * -0.08}px)`;
-                    }
-                    ticking = false;
-                });
-            }, { passive: true });
-        }
+        // initParallax — optimized version defined below
 
         // ════════════════════════════════════════════════════════
         // FEATURE 6 — ROLLING DIGIT COUNTER
@@ -6458,93 +6383,19 @@ out body;`;
         // ════════════════════════════════════════════════════════
         // FEATURE 8 — CUSTOM CURSOR
         // ════════════════════════════════════════════════════════
-        function initCustomCursor() {
-            const outer  = document.getElementById('ncOuter');
-            const inner  = document.getElementById('ncInner');
-            if (!outer || !inner) return;
-
-            let mx = 0, my = 0, ox = 0, oy = 0;
-            let trailTimer = null;
-
-            document.addEventListener('mousemove', e => {
-                mx = e.clientX; my = e.clientY;
-                inner.style.left = mx + 'px';
-                inner.style.top  = my + 'px';
-
-                // Outer follows with slight lag
-                if (!trailTimer) {
-                    trailTimer = requestAnimationFrame(() => {
-                        ox += (mx - ox) * 0.18;
-                        oy += (my - oy) * 0.18;
-                        outer.style.left = ox + 'px';
-                        outer.style.top  = oy + 'px';
-                        trailTimer = null;
-                    });
-                }
-
-                // Spawn trail particle
-                if (Math.random() < 0.25) {
-                    const t = document.createElement('div');
-                    t.className = 'nc-trail';
-                    const s = 4 + Math.random() * 6;
-                    t.style.cssText = `left:${mx}px;top:${my}px;width:${s}px;height:${s}px;`;
-                    document.body.appendChild(t);
-                    setTimeout(() => t.remove(), 700);
-                }
-            });
-
-            // Hover effect on interactive elements
-            const hoverEls = 'button, a, [role=button], input, .tab, .badge-card, .glass-card, .tut-fab';
-            document.addEventListener('mouseover', e => {
-                if (e.target.closest(hoverEls)) outer.classList.add('hovering');
-            });
-            document.addEventListener('mouseout', e => {
-                if (e.target.closest(hoverEls)) outer.classList.remove('hovering');
-            });
-
-            // Smooth outer loop
-            function animateOuter() {
-                ox += (mx - ox) * 0.12;
-                oy += (my - oy) * 0.12;
-                outer.style.left = ox + 'px';
-                outer.style.top  = oy + 'px';
-                requestAnimationFrame(animateOuter);
-            }
-            animateOuter();
-        }
+        // initCustomCursor — optimized version defined below
 
         // ════════════════════════════════════════════════════════
         // FEATURE 9 — AURORA BOREALIS
         // ════════════════════════════════════════════════════════
-        function initAurora() {
-            const layer = document.getElementById('auroraLayer');
-            if (!layer) return;
-            // CSS handles the animation; just ensure it's present
-            layer.style.display = 'block';
-        }
+        // initAurora — optimized version defined below
 
         // ════════════════════════════════════════════════════════
         // FEATURE 10 — EARTH HOUR + STAR FIELD
         // ════════════════════════════════════════════════════════
         let earthHourActive = false;
 
-        function initStarField() {
-            const field = document.getElementById('starField');
-            if (!field || field.children.length > 0) return;
-            for (let i = 0; i < 120; i++) {
-                const s = document.createElement('div');
-                s.className = 'star-dot';
-                const size = 0.8 + Math.random() * 2;
-                s.style.cssText = `
-                    width:${size}px; height:${size}px;
-                    left:${Math.random() * 100}%;
-                    top:${Math.random() * 100}%;
-                    animation-duration:${2 + Math.random() * 4}s;
-                    animation-delay:${Math.random() * 4}s;
-                `;
-                field.appendChild(s);
-            }
-        }
+        // initStarField — optimized version defined below
 
         function toggleEarthHour() {
             earthHourActive = !earthHourActive;
@@ -6593,34 +6444,7 @@ out body;`;
         // ════════════════════════════════════════════════════════
         // FEATURE 12 — HOLOGRAPHIC BADGES
         // ════════════════════════════════════════════════════════
-        function initHoloBadges() {
-            document.addEventListener('mousemove', e => {
-                document.querySelectorAll('.badge-card.unlocked').forEach(card => {
-                    const r   = card.getBoundingClientRect();
-                    const cx  = r.left + r.width  / 2;
-                    const cy  = r.top  + r.height / 2;
-                    const dx  = (e.clientX - cx) / (r.width  / 2);  // -1 to 1
-                    const dy  = (e.clientY - cy) / (r.height / 2);
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-
-                    if (dist < 1.5) {
-                        const rx = dy * -10;
-                        const ry = dx *  10;
-                        card.style.setProperty('--mx', rx + 'deg');
-                        card.style.setProperty('--my', ry + 'deg');
-                        card.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-
-                        // Shift holographic gradient
-                        const px = ((dx + 1) / 2 * 100).toFixed(0);
-                        const py = ((dy + 1) / 2 * 100).toFixed(0);
-                        card.style.setProperty('--holo-pos', `${px}% ${py}%`);
-                    } else {
-                        card.style.transform = '';
-                        card.style.setProperty('--holo-pos', '50% 50%');
-                    }
-                });
-            });
-        }
+        // initHoloBadges — optimized version defined below
 
         // ════════════════════════════════════════════════════════
         // FEATURE 13 — SPLASH SCREEN
@@ -6971,18 +6795,7 @@ out body;`;
         // ════════════════════════════════════════════════════════
         // OPTIMIZED TILT — passive + only high tier
         // ════════════════════════════════════════════════════════
-        function initTilt() {
-            if (perfTier === 'low' || 'ontouchstart' in window) return;
-            document.querySelectorAll('.glass-card, .impact-widget').forEach(card => {
-                card.addEventListener('mousemove', e => {
-                    const r  = card.getBoundingClientRect();
-                    const x  = (e.clientX - r.left) / r.width  - 0.5;
-                    const y  = (e.clientY - r.top)  / r.height - 0.5;
-                    card.style.transform = `perspective(800px) rotateX(${y*-5}deg) rotateY(${x*5}deg) translateY(-3px)`;
-                }, { passive: true });
-                card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-            });
-        }
+        // initTilt — optimized version defined below
 
         // ════════════════════════════════════════════════════════
         // LAZY FIREBASE INIT — only when user clicks sync bar
@@ -7070,29 +6883,7 @@ out body;`;
         // SCROLL REVEAL — uses IntersectionObserver (already set)
         // Patch: skip on low tier
         // ════════════════════════════════════════════════════════
-        function initScrollReveal() {
-            if (perfTier === 'low') {
-                document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-                animateStatsCountUp();
-                return;
-            }
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const delay = parseFloat(entry.target.dataset.delay || 0);
-                        setTimeout(() => entry.target.classList.add('visible'), delay);
-                        // Feature 6: count-up when stats become visible
-                        if (entry.target.classList.contains('stats-grid')) {
-                            setTimeout(animateStatsCountUp, delay + 100);
-                        }
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
-
-            document.querySelectorAll('.stat-card').forEach((el, i) => { el.dataset.delay = i * 80; });
-            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-        }
+        // initScrollReveal — optimized version defined below
 
         // ════════════════════════════════════════════════════════
         // NAME SCREEN PARTICLES — only on high
@@ -7114,8 +6905,10 @@ out body;`;
         // ════════════════════════════════════════════════════════
         // MEMORY CLEANUP — purge orphan DOM nodes periodically
         // ════════════════════════════════════════════════════════
+        let memCleanupInterval = null;
         function initMemoryCleanup() {
-            setInterval(() => {
+            if (memCleanupInterval) clearInterval(memCleanupInterval);
+            memCleanupInterval = setInterval(() => {
                 // Remove any stray confetti/burst/trail particles older than expected
                 const stale = document.querySelectorAll('.confetti, .burst-particle, .nc-trail, .cursor-particle');
                 stale.forEach(el => {
@@ -7130,6 +6923,11 @@ out body;`;
                     [...energyParticles].slice(0, energyParticles.length - maxP).forEach(p => p.remove());
                 }
             }, 8000);
+            // Clear interval when tab is hidden
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) { clearInterval(memCleanupInterval); memCleanupInterval = null; }
+                else initMemoryCleanup();
+            }, { once: false });
         }
 
 
