@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nova - Detector de Residuos en Tiempo Real</title>
+    <link rel="icon" type="image/png" href="nova-logo.png">
+    <link rel="apple-touch-icon" href="nova-logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&amp;family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&amp;display=swap" rel="stylesheet">
@@ -241,7 +243,7 @@
         }
         .logo-icon-placeholder { font-size: 2.8em; filter: drop-shadow(0 0 12px rgba(30,219,110,0.9)); display:flex; align-items:center; justify-content:center; }
         .logo-icon-placeholder svg { width: 48px; height: 48px; stroke: var(--green-1); stroke-width: 1.5; filter: drop-shadow(0 0 12px rgba(30,219,110,0.9)); }
-        .logo-icon img { display: none; }
+        .logo-icon img { display: block; }
 
         .header-eyebrow {
             display: inline-flex; align-items: center; gap: 6px;
@@ -2999,21 +3001,66 @@
             from { opacity: 0.1; transform: scale(0.7); }
             to   { opacity: 0.9; transform: scale(1.3); }
         }
-        /* Earth Hour toggle button */
+        /* ── EARTH HOUR / ECO BUTTON — pill with 3 states ── */
         .eh-toggle {
             position: fixed; bottom: 28px; right: 22px;
-            width: 48px; height: 48px; border-radius: 50%;
-            background: var(--bg-raised); border: 1px solid var(--border-subtle);
+            height: 44px;
+            border-radius: 999px;
+            background: var(--bg-raised);
+            border: 1px solid var(--border-subtle);
             cursor: pointer; z-index: 800;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(12px);
-            transition: all 0.2s var(--ease);
+            display: flex; align-items: center; gap: 7px;
+            padding: 0 14px 0 10px;
+            backdrop-filter: blur(14px);
+            transition: all 0.3s var(--ease);
             box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75em; font-weight: 700;
+            color: var(--t3);
+            white-space: nowrap;
+            user-select: none;
         }
-        .eh-toggle:hover { border-color: var(--border-mid); transform: scale(1.1); }
-        .eh-toggle svg { width: 20px; height: 20px; stroke: var(--t2); stroke-width: 2; }
-        body.earth-hour .eh-toggle { border-color: rgba(68,170,255,0.4); background: rgba(0,20,40,0.8); }
+        .eh-toggle:hover {
+            border-color: var(--border-mid);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(0,0,0,0.4);
+        }
+        .eh-toggle svg { width: 17px; height: 17px; stroke: var(--t3); stroke-width: 2; flex-shrink: 0; transition: stroke 0.3s; }
+        .eh-toggle .eh-label { transition: color 0.3s; }
+
+        /* State: earth-hour (dark + eco) */
+        body.earth-hour .eh-toggle {
+            border-color: rgba(68,170,255,0.45);
+            background: rgba(0,12,30,0.85);
+            color: #4af;
+            box-shadow: 0 4px 20px rgba(44,120,255,0.2);
+        }
         body.earth-hour .eh-toggle svg { stroke: #4af; }
+
+        /* State: perf-low only (no earth-hour) */
+        body.perf-low:not(.earth-hour) .eh-toggle {
+            border-color: rgba(61,186,122,0.4);
+            background: rgba(0,16,6,0.85);
+            color: var(--green-1);
+        }
+        body.perf-low:not(.earth-hour) .eh-toggle svg { stroke: var(--green-1); }
+
+        /* Indicator dot inside button */
+        .eh-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--t3); flex-shrink: 0;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        body.earth-hour .eh-dot {
+            background: #4af;
+            box-shadow: 0 0 6px rgba(68,170,255,0.8);
+            animation: pip-blink 2s ease-in-out infinite;
+        }
+        body.perf-low:not(.earth-hour) .eh-dot {
+            background: var(--green-1);
+            box-shadow: 0 0 6px rgba(61,186,122,0.8);
+            animation: pip-blink 2s ease-in-out infinite;
+        }
 
         /* ╔══════════════════════════════════════════════════════╗
            ║  11. RADAR DETECTION ANIMATION                      ║
@@ -3121,7 +3168,7 @@
             50%  { box-shadow: 0 0 0 20px rgba(30,219,110,0.15), 0 0 60px rgba(30,219,110,0.3); }
             100% { box-shadow: 0 0 0 0 rgba(30,219,110,0); }
         }
-        .splash-logo svg { width: 44px; height: 44px; stroke: var(--green-1); stroke-width: 1.5; }
+        .splash-logo img { width: 64px; height: 64px; object-fit: contain; filter: drop-shadow(0 0 16px rgba(61,186,122,0.5)); }
         .splash-name {
             font-family: 'Syne', sans-serif; font-size: 2.8em; font-weight: 800;
             background: linear-gradient(135deg, #fff 0%, var(--green-1) 60%);
@@ -3485,16 +3532,144 @@
             0%,100% { opacity: 1; } 50% { opacity: 0; }
         }
 
+
+        /* ══════════════════════════════════════════════════════
+           TUTORIAL PANEL — MINI MODE (for bottom-corner steps)
+        ══════════════════════════════════════════════════════ */
+        /* mini-mode sizing handled via JS inline styles */
+        .tut-panel.mini-mode {
+            border-top: 1px solid var(--border-soft) !important;
+            border-radius: var(--r-xl) 0 0 0 !important;
+            box-shadow: -8px -8px 40px rgba(0,0,0,0.5), var(--green-glow-sm) !important;
+        }
+        .tut-panel.mini-mode .tut-steps-list {
+            display: none;
+        }
+        .tut-panel.mini-mode .tut-panel-footer {
+            display: none;
+        }
+        /* Mini active card — shown instead of list */
+        .tut-mini-card {
+            display: none;
+            padding: 14px 18px 18px;
+            flex: 1;
+            overflow: hidden;
+        }
+        .tut-panel.mini-mode .tut-mini-card { display: flex; flex-direction: column; gap: 10px; }
+
+        .tut-mini-step-label {
+            font-size: 0.68em; font-weight: 800; letter-spacing: 0.8px;
+            text-transform: uppercase; color: var(--t3);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .tut-mini-step-label::before {
+            content: '';
+            display: block; width: 16px; height: 1px;
+            background: var(--border-mid);
+        }
+        .tut-mini-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1em; font-weight: 700; color: var(--t1);
+            line-height: 1.3;
+        }
+        .tut-mini-desc {
+            font-size: 0.8em; color: var(--t2); line-height: 1.5;
+        }
+        .tut-mini-actions {
+            display: flex; gap: 8px; align-items: center; margin-top: 2px;
+        }
+        .tut-mini-btn-next {
+            padding: 9px 18px;
+            background: linear-gradient(135deg, var(--green-1), var(--green-2));
+            color: #030d03; border: none; border-radius: var(--r-sm);
+            font-family: 'DM Sans', sans-serif; font-size: 0.82em; font-weight: 700;
+            cursor: pointer; transition: all 0.15s;
+            box-shadow: 0 3px 12px rgba(61,186,122,0.35);
+        }
+        .tut-mini-btn-next:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(61,186,122,0.5); }
+        .tut-mini-progress {
+            font-size: 0.72em; color: var(--t3); flex: 1; text-align: right;
+        }
+
+        /* ══════════════════════════════════════════════════════
+           TUTORIAL PANEL — VISUAL IMPROVEMENTS
+        ══════════════════════════════════════════════════════ */
+
+        /* Smoother step transitions */
+        .tut-step-item {
+            transition: background 0.22s, border-color 0.22s, transform 0.18s, opacity 0.2s;
+        }
+        /* Stagger done steps */
+        .tut-step-item.done { opacity: 0.45; }
+
+        /* Better active step card with left accent line */
+        .tut-step-item.active {
+            border-left: 2px solid var(--green-1) !important;
+            padding-left: 12px;
+        }
+
+        /* Animated check on done step number */
+        .tut-step-item.done .tut-step-num {
+            animation: badge-pop 0.4s var(--ease) both;
+        }
+
+        /* Step description with better line breaks */
+        .tut-step-desc {
+            white-space: pre-line;
+        }
+
+        /* Glassmorphism panel header upgrade */
+        .tut-panel-head {
+            background: linear-gradient(180deg, rgba(61,186,122,0.05) 0%, transparent 100%);
+        }
+
+        /* Progress bar shimmer */
+        .tut-progress-fill::after {
+            content: '';
+            position: absolute; top: 0; right: 0; bottom: 0; width: 40px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer-slide 2s ease-in-out infinite;
+        }
+        .tut-progress-fill { position: relative; overflow: hidden; }
+        @keyframes shimmer-slide {
+            0%   { transform: translateX(-60px); }
+            100% { transform: translateX(60px); }
+        }
+
+        /* Improve active step icon wrap */
+        .tut-step-item.active .tut-step-num {
+            box-shadow: 0 0 0 3px rgba(61,186,122,0.1), 0 0 12px rgba(61,186,122,0.15);
+        }
+
+        /* Step action button hover lift */
+        .tut-step-action:not(.secondary-action) {
+            position: relative; overflow: hidden;
+        }
+        .tut-step-action:not(.secondary-action)::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+        }
+
+
+        /* Tutorial pulse ring — gentle highlight without overlay */
+        .tut-pulse-ring {
+            animation: tut-pulse 1s ease-out 3;
+            position: relative; z-index: 900;
+        }
+        @keyframes tut-pulse {
+            0%   { box-shadow: 0 0 0 0 rgba(61,186,122,0.8), 0 0 0 0 rgba(61,186,122,0.4); }
+            50%  { box-shadow: 0 0 0 8px rgba(61,186,122,0.3), 0 0 0 16px rgba(61,186,122,0.1); }
+            100% { box-shadow: 0 0 0 0 rgba(61,186,122,0), 0 0 0 0 rgba(61,186,122,0); }
+        }
+
     </style>
 </head>
 <body>
     <!-- SPLASH SCREEN (Feature 13) -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <img src="nova-logo.png" alt="Nova" style="width:60px;height:60px;object-fit:contain;border-radius:0">
         </div>
         <div class="splash-name">Nova</div>
         <div class="splash-tagline">Recicla · Cuida · Transforma</div>
@@ -3513,15 +3688,17 @@
     </div>
 
     <!-- Earth Hour toggle (Feature 10) -->
-    <button class="eh-toggle" id="ehToggle" onclick="toggleEarthHour()" title="Modo Earth Hour">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="12" x2="22" y2="12" stroke-width="1.5"/></svg>
+    <button class="eh-toggle" id="ehToggle" onclick="toggleEarthHour()" aria-label="Cambiar modo de rendimiento">
+        <div class="eh-dot" id="ehDot"></div>
+        <svg id="ehIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="12" x2="22" y2="12" stroke-width="1.5"/></svg>
+        <span class="eh-label" id="ehLabel">Eco</span>
     </button>
 
     <!-- Performance badge -->
     <div class="perf-badge" id="perfBadge"></div>
 
     <!-- Offline Badge -->
-    <div class="offline-badge" id="offlineBadge">📴 Modo sin conexión · Funciones básicas activas</div>
+    <div class="offline-badge" id="offlineBadge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/> style="opacity:0.5"</svg> Modo sin conexión · Funciones básicas activas</div>
 
     <!-- Name Capture Screen -->
     <div class="name-screen" id="nameScreen">
@@ -3532,10 +3709,7 @@
                 <div class="ns-ring"></div>
                 <div class="ns-ring"></div>
                 <div class="ns-logo-bg">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <img src="nova-logo.png" alt="Nova" style="width:54px;height:54px;object-fit:contain;border-radius:0">
                 </div>
             </div>
             <h2>Hola,<br><span>¿cómo te llamas?</span></h2>
@@ -3606,7 +3780,7 @@
 
                 <!-- Slide 1 -->
                 <div class="onboarding-slide">
-                    <div class="ob-icon-ring green"><span class="icon"><i data-lucide="recycle"></i></span></div>
+                    <div class="ob-icon-ring green" style="overflow:visible"><img src="nova-logo.png" alt="Nova" style="width:60px;height:60px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(61,186,122,0.5))"></div>
                     <div class="ob-step-label">Bienvenido a Nova</div>
                     <h2>¿Esa lata va<br>en la basura?</h2>
                     <p>Espera — apunta la cámara y Nova te dice en 2 segundos exactamente dónde va cada residuo. Sin adivinar, sin dudar.</p>
@@ -3693,7 +3867,7 @@
                 <div class="logo-ring-1"></div>
                 <div class="logo-ring-2"></div>
                 <div class="logo-ring-3"></div>
-                <img src="nova-logo.png" alt="Nova Logo" style="display: none;" id="logoImage">
+                <img src="nova-logo.png" alt="Nova Logo" id="logoImage">
                 <div class="logo-icon-placeholder" id="logoPlaceholder"><span class="icon icon-3xl" style="opacity:0.7"><i data-lucide="sparkles"></i></span></div>
             </div>
             <div class="header-profile" id="headerProfile">
@@ -3977,7 +4151,7 @@
                 </div>
 
                 <!-- Queue controls -->
-                <button class="batch-clear-btn" id="batchClearBtn" onclick="clearBatchQueue()">✕ Limpiar cola</button>
+                <button class="batch-clear-btn" id="batchClearBtn" onclick="clearBatchQueue()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Limpiar cola</button>
 
                 <!-- Batch queue list -->
                 <div class="batch-queue" id="batchQueue"></div>
@@ -4001,15 +4175,15 @@
                 <div class="history-stats-row">
                     <div class="history-mini-stat">
                         <div class="hms-value" id="histOrgCount">0</div>
-                        <div class="hms-label">🟢 Orgánicos</div>
+                        <div class="hms-label"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--green-1);vertical-align:middle;flex-shrink:0"></span> Orgánicos</div>
                     </div>
                     <div class="history-mini-stat">
                         <div class="hms-value" id="histRecCount">0</div>
-                        <div class="hms-label">🔵 Reciclables</div>
+                        <div class="hms-label"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22d3ee;vertical-align:middle;flex-shrink:0"></span> Reciclables</div>
                     </div>
                     <div class="history-mini-stat">
                         <div class="hms-value" id="histNoCount">0</div>
-                        <div class="hms-label">🔴 No Recicl.</div>
+                        <div class="hms-label"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f87171;vertical-align:middle;flex-shrink:0"></span> No Recicl.</div>
                     </div>
                 </div>
 
@@ -4034,7 +4208,7 @@
                     <h3><span class="icon"><i data-lucide="leaf"></i></span> Residuos Orgánicos</h3>
                     <p><strong style="color:var(--t1)">Contenedor:</strong> Verde</p>
                     <p>Frutas, verduras, cáscaras, restos de comida, café, té, hojas, flores</p>
-                    <p style="margin-top:8px;color:var(--green-1);font-weight:600;font-size:0.8em">🌍 El compostaje evita la emisión de metano, un gas 25× más potente que el CO₂</p>
+                    <p style="margin-top:8px;color:var(--green-1);font-weight:600;font-size:0.8em"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> El compostaje evita la emisión de metano, un gas 25× más potente que el CO₂</p>
                 </div>
 
                 <div class="guide-card recycle">
@@ -4048,7 +4222,7 @@
                     <h3><span class="icon"><i data-lucide="recycle"></i></span> Residuos Reciclables</h3>
                     <p><strong style="color:var(--t1)">Contenedor:</strong> Azul / Amarillo</p>
                     <p>Plásticos, vidrio, papel, cartón, metales, latas, botellas, envases</p>
-                    <p style="margin-top:8px;color:#22d3ee;font-weight:600;font-size:0.8em">🌍 Reciclar una lata de aluminio evita la extracción de 4 kg de bauxita y sus residuos tóxicos</p>
+                    <p style="margin-top:8px;color:#22d3ee;font-weight:600;font-size:0.8em"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Reciclar una lata de aluminio evita la extracción de 4 kg de bauxita y sus residuos tóxicos</p>
                 </div>
 
                 <div class="guide-card waste">
@@ -4065,7 +4239,7 @@
                     <h3><span class="icon"><i data-lucide="trash-2"></i></span> Residuos No Reciclables</h3>
                     <p><strong style="color:var(--t1)">Contenedor:</strong> Gris / Negro</p>
                     <p>Papel higiénico, pañales, colillas, chicles, unicel, empaques mixtos</p>
-                    <p style="margin-top:8px;color:#f87171;font-weight:600;font-size:0.8em">🌍 Reducir residuos no reciclables es clave: tardan hasta 500 años en descomponerse</p>
+                    <p style="margin-top:8px;color:#f87171;font-weight:600;font-size:0.8em"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Reducir residuos no reciclables es clave: tardan hasta 500 años en descomponerse</p>
                 </div>
 
                 <div class="info-message" style="margin-top:14px">
@@ -4101,12 +4275,12 @@
 
         // Definición de Hitos
         const milestones = [
-            { id: 'milestone_10', threshold: 10, icon: '🌱', title: 'Primera Marca', message: '¡Has ahorrado 10 kWh! Equivale a 20 horas de TV' },
-            { id: 'milestone_50', threshold: 50, icon: '⚡', title: 'Medio Camino', message: '¡50 kWh ahorrados! Equivale a 100 horas de TV' },
-            { id: 'milestone_100', threshold: 100, icon: '🏆', title: '100 kWh Alcanzados', message: '¡Increíble! 100 kWh = 200 horas de TV' },
-            { id: 'milestone_250', threshold: 250, icon: '✨', title: 'Eco Warrior', message: '¡250 kWh! Eres un guerrero ecológico. 500 horas de TV' },
-            { id: 'milestone_500', threshold: 500, icon: '👑', title: 'Rey de la Energía', message: '¡500 kWh! Eres royalty ecológica. 1000 horas de TV' },
-            { id: 'milestone_1000', threshold: 1000, icon: '🌎', title: 'Leyenda', message: '¡LEYENDA! 1000 kWh ahorrados. 2000 horas de TV' }
+            { id: 'milestone_10',   threshold: 10,   icon: '🌱', title: 'Primera Huella',      message: '¡Has evitado 10 kg de CO₂! Equivale a plantar 1 árbol joven' },
+            { id: 'milestone_50',   threshold: 50,   icon: '♻️', title: 'Guardián Verde',       message: '¡50 kg de CO₂ evitados! Equivale a 5 árboles salvados' },
+            { id: 'milestone_100',  threshold: 100,  icon: '🏆', title: 'Héroe del Reciclaje',  message: '¡100 kg de CO₂! Equivale a no conducir 400 km' },
+            { id: 'milestone_250',  threshold: 250,  icon: '⭐', title: 'Eco Warrior',           message: '¡250 kg de CO₂ evitados! Eres un guerrero ecológico' },
+            { id: 'milestone_500',  threshold: 500,  icon: '👑', title: 'Leyenda Verde',         message: '¡500 kg de CO₂! Equivale a plantar 50 árboles' },
+            { id: 'milestone_1000', threshold: 1000, icon: '🌍', title: 'Guardián del Planeta',  message: '¡LEYENDA! 1000 kg de CO₂ evitados. ¡Eres increíble!' }
         ];
 
         // Definición de Badges
@@ -4316,7 +4490,7 @@
                     alpha: 1.0
                 });
                 console.log('MobileNet cargado');
-                showAchievement('🤖', 'IA Lista', 'MobileNet cargado exitosamente');
+                showAchievement('⚡', 'IA Lista', 'MobileNet cargado exitosamente');
             } catch (error) {
                 console.error('Error cargando modelo:', error);
                 alert('Error al cargar la IA. Recarga la página.');
@@ -4447,7 +4621,7 @@
             label.textContent = name.charAt(0).toUpperCase() + name.slice(1);
             confEl.textContent = `Confianza: ${confidence}%`;
             
-            // ✅ VIBRACIÓN EN MÓVILES (NUEVO)
+            // <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> VIBRACIÓN EN MÓVILES (NUEVO)
             if (navigator.vibrate && confidence > 70) {
                 navigator.vibrate(200); // Vibra 200ms cuando confianza > 70%
             }
@@ -4472,7 +4646,7 @@
             
             overlay.classList.add('active');
             
-            // ✅ BORDES DE COLOR EN EL VIDEO (NUEVO)
+            // <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> BORDES DE COLOR EN EL VIDEO (NUEVO)
             const video = document.getElementById('videoPreview');
             
             // Remover clases anteriores
@@ -4536,7 +4710,7 @@
         function addFilesToBatch(files) {
             const remaining = 10 - batchQueue.length;
             const toAdd = files.slice(0, remaining);
-            if (toAdd.length === 0) { showAchievement('⚠️', 'Cola llena', 'Máximo 10 imágenes a la vez'); return; }
+            if (toAdd.length === 0) { showAchievement('⚡', 'Cola llena', 'Máximo 10 imágenes a la vez'); return; }
 
             toAdd.forEach(file => {
                 const id = 'batch_' + Date.now() + '_' + Math.random().toString(36).slice(2);
@@ -4554,7 +4728,7 @@
             container.innerHTML = batchQueue.map(item => {
                 const statusLabel = { pending: 'En cola...', analyzing: 'Analizando...', done: item.resultLabel || 'Completado', error: 'Error' }[item.status];
                 return `<div class="batch-item ${item.status}" id="${item.id}">
-                    ${item.thumb ? `<img class="batch-thumb" src="${item.thumb}">` : `<div class="batch-thumb" style="background:var(--bg-raised);display:flex;align-items:center;justify-content:center;font-size:1.4em">🖼️</div>`}
+                    ${item.thumb ? `<img class="batch-thumb" src="${item.thumb}">` : `<div class="batch-thumb" style="background:var(--bg-raised);display:flex;align-items:center;justify-content:center;font-size:1.4em"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
                     <div class="batch-info">
                         <div class="batch-name">${item.file.name}</div>
                         <div class="batch-status ${item.status}">${statusLabel}</div>
@@ -4743,13 +4917,13 @@
 
             let icono, titulo;
             if (info.tipo === 'organico') {
-                icono = '🟢';
+                icono = '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--green-1);vertical-align:middle;flex-shrink:0"></span>';
                 titulo = 'Residuo Orgánico';
             } else if (info.tipo === 'inorganico-reciclable') {
-                icono = '🔵';
+                icono = '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22d3ee;vertical-align:middle;flex-shrink:0"></span>';
                 titulo = 'Residuo Reciclable';
             } else {
-                icono = '🔴';
+                icono = '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f87171;vertical-align:middle;flex-shrink:0"></span>';
                 titulo = 'Residuo No Reciclable';
             }
 
@@ -4869,7 +5043,7 @@
             gameData.currentExp -= gameData.maxExp;
             gameData.maxExp = Math.floor(gameData.maxExp * 1.5);
             playSound('levelup');
-            showAchievement('🎉', '¡Nivel ' + gameData.level + '!', 'Has subido de nivel');
+            showAchievement('⚡', '¡Nivel ' + gameData.level + '!', 'Has subido de nivel');
                         // Vibración al subir de nivel
             if (navigator.vibrate) {
                 navigator.vibrate([100, 50, 100, 50, 200]);
@@ -4944,12 +5118,12 @@
         }
 
         function showMilestone(milestone) {
-            document.getElementById('milestoneIcon').textContent = milestone.icon;
+            document.getElementById('milestoneIcon').innerHTML = milestone.icon;
             document.getElementById('milestoneTitle').textContent = milestone.title;
             document.getElementById('milestoneMessage').textContent = milestone.message;
             
             const tvHours = (milestone.threshold * 2).toFixed(0);
-            document.getElementById('milestoneEquivalence').textContent = `Equivalente a ${tvHours} horas de TV 📺`;
+            document.getElementById('milestoneEquivalence').textContent = `Equivalente a ${tvHours} horas · ${treesVal} árboles jóvenes`;
             
             document.getElementById('milestoneModal').classList.add('active');
             
@@ -5002,19 +5176,19 @@
                 const diff = ((userImpact / promedio - 1) * 100).toFixed(0);
                 const topPercent = Math.max(1, Math.min(100 - Math.floor(userImpact / 10), 99));
                 messageEl.innerHTML = `
-                    <div class="icon">🏆</div>
+                    <div class="icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></div>
                     <div class="text">¡Eres un ejemplo! Reciclas ${diff}% más que la mayoría de personas</div>
                     <div class="ranking-badge">TOP ${topPercent}% Estrella</div>
                 `;
             } else if (userImpact > promedio) {
                 const diff = ((userImpact / promedio - 1) * 100).toFixed(0);
                 messageEl.innerHTML = `
-                    <div class="icon">⭐</div>
+                    <div class="icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
                     <div class="text">¡Bien hecho! Ya superas al promedio — cada residuo que clasificas bien marca la diferencia</div>
                 `;
             } else if (userImpact >= promedio * 0.5) {
                 messageEl.innerHTML = `
-                    <div class="icon">💪</div>
+                    <div class="icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></div>
                     <div class="text">Vas por buen camino — recicla una cosa más hoy y ya superas al promedio</div>
                 `;
             } else if (userImpact > 0) {
@@ -5033,7 +5207,7 @@
             const url = window.location.href;
             
             return {
-                text: `¡He evitado ${kwh} kg de CO₂ con Nova! 🌍\n\nNivel: ${nivel}\nEquivalente a plantar ${Math.round(kwh/10)} árboles\nDetector de residuos con IA\n\n¡Únete al reciclaje inteligente!`,
+                text: `¡He evitado ${kwh} kg de CO₂ con Nova! <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>\n\nNivel: ${nivel}\nEquivalente a plantar ${Math.round(kwh/10)} árboles\nDetector de residuos con IA\n\n¡Únete al reciclaje inteligente!`,
                 url: url
             };
         }
@@ -5062,7 +5236,7 @@
             
             try {
                 await navigator.clipboard.writeText(fullText);
-                showAchievement('✅', '¡Copiado!', 'Link copiado al portapapeles');
+                showAchievement('⚡', '¡Copiado!', 'Link copiado al portapapeles');
             } catch (err) {
                 const textarea = document.createElement('textarea');
                 textarea.value = fullText;
@@ -5070,7 +5244,7 @@
                 textarea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
-                showAchievement('✅', '¡Copiado!', 'Link copiado al portapapeles');
+                showAchievement('⚡', '¡Copiado!', 'Link copiado al portapapeles');
             }
         }
 
@@ -5092,7 +5266,7 @@
             if (elNo)  elNo.textContent  = noR;
 
             if (history.length === 0) {
-                list.innerHTML = `<div class="history-empty"><div class="he-icon">📋</div><p>Aún no hay detecciones.<br>¡Empieza a escanear para llenar tu historial!</p></div>`;
+                list.innerHTML = `<div class="history-empty"><div class="he-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1" ry="1"/></svg></div><p>Aún no hay detecciones.<br>¡Empieza a escanear para llenar tu historial!</p></div>`;
                 return;
             }
 
@@ -5121,7 +5295,7 @@
             gameData.detectionHistory = [];
             saveGameData();
             renderHistory();
-            showAchievement('🗑', 'Historial borrado', 'Tu historial fue limpiado');
+            showAchievement('⚡', 'Historial borrado', 'Tu historial fue limpiado');
         }
 
         function updateBadges() {
@@ -5158,7 +5332,7 @@
                 card.addEventListener('click', () => {
                     const status = isUnlocked ? '¡Desbloqueado!' : `Meta: ${badge.desc}`;
                     // Use a contextual emoji for achievement toast
-                    const toastEmoji = { common: '✅', rare: '⭐', epic: '🏆', legendary: '👑' }[rarity] || '🎖️';
+                    const toastEmoji = { common: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>', rare: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>', epic: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>', legendary: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>' }[rarity] || '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>';
                     showAchievement(toastEmoji, badge.name, status + ' · ' + badge.points + ' pts');
                 });
 
@@ -5177,7 +5351,7 @@
         }
 
         function showAchievement(icon, title, desc) {
-            document.getElementById('achievementIcon').textContent = icon;
+            document.getElementById('achievementIcon').innerHTML = icon;
             document.getElementById('achievementTitle').textContent = title;
             document.getElementById('achievementDesc').textContent = desc;
             
@@ -5297,7 +5471,7 @@
             tooltip.style.display = 'block';
 
             lucide.createIcons();
-            // ✅ Mostrar el spotlight AHORA (tenía display:none al inicio)
+            // <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Mostrar el spotlight AHORA (tenía display:none al inicio)
             spotlight.style.display = 'block';
 
             // Calcular posiciones con el DOM ya renderizado
@@ -5345,7 +5519,7 @@
 
             try { localStorage.setItem('novaTutorialCompleted', 'true'); } catch (e) {}
 
-            showAchievement('✅', 'Tour rápido completado', 'Abre el botón ? para el tutorial completo');
+            showAchievement('⚡', 'Tour rápido completado', 'Abre el botón ? para el tutorial completo');
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
             // Offer the full panel tutorial
@@ -5596,7 +5770,7 @@
 
         async function toggleNotifications() {
             if (!('Notification' in window)) {
-                showAchievement('⚠️', 'No disponible', 'Tu navegador no soporta notificaciones');
+                showAchievement('⚡', 'No disponible', 'Tu navegador no soporta notificaciones');
                 return;
             }
             if (notifEnabled) {
@@ -5609,9 +5783,9 @@
                 notifEnabled = true;
                 updateNotifBtn();
                 scheduleStreakReminder();
-                showAchievement('🔔', '¡Recordatorios activos!', 'Te avisaremos para cuidar el planeta cada día');
+                showAchievement('⚡', '¡Recordatorios activos!', 'Te avisaremos para cuidar el planeta cada día');
             } else {
-                showAchievement('❌', 'Permiso denegado', 'Puedes activarlo desde ajustes del navegador');
+                showAchievement('⚡', 'Permiso denegado', 'Puedes activarlo desde ajustes del navegador');
             }
         }
 
@@ -5623,8 +5797,8 @@
                 navigator.serviceWorker.ready.then(reg => {
                     // Tag-based notification via showNotification
                     const title = streakDays > 0
-                        ? `🔥 ¡Mantén tu racha de ${streakDays} día${streakDays > 1 ? 's' : ''}!`
-                        : '♻️ ¡Es hora de reciclar con Nova!';
+                        ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg> ¡Mantén tu racha de ${streakDays} día${streakDays > 1 ? 's' : ''}!`
+                        : '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="1.5 8.5 1.5 3.5 6.5 3.5"/><path d="M1.5 3.5 8 10"/><polyline points="22.5 15.5 22.5 20.5 17.5 20.5"/><path d="M22.5 20.5 16 14"/><path d="M4 22l3.5-3.5 3-3 3 3 3-3 3 3"/></svg> ¡Es hora de reciclar con Nova!';
                     // We trigger a test notification immediately, real daily scheduling
                     // would need a server-side push service (VAPID)
                     reg.showNotification(title, {
@@ -5671,7 +5845,7 @@
                 // (CDN serves with long cache headers — no re-download on repeat visits)
                 model = await mobilenet.load({ version: 2, alpha: 1.0 });
                 setModelStatus('cached', 'IA lista');
-                showAchievement('🤖', 'IA Lista', 'Modelo cargado exitosamente');
+                showAchievement('⚡', 'IA Lista', 'Modelo cargado exitosamente');
             } catch (error) {
                 console.error('Error cargando modelo:', error);
                 setModelStatus('loading', 'Error — recarga la página');
@@ -5757,7 +5931,7 @@
                 iconSize: [16, 16], iconAnchor: [8, 8]
             });
             userMarker = L.marker(latlng, { icon: userIcon }).addTo(novaMap);
-            userMarker.bindPopup('<div class="map-point-info"><div class="map-point-name">📍 Tu ubicación</div></div>');
+            userMarker.bindPopup('<div class="map-point-info"><div class="map-point-name"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Tu ubicación</div></div>');
         }
 
         function centerMapOnUser() {
@@ -5814,7 +5988,7 @@ out body;`;
         function makeMarkerIcon(type) {
             const colors = { recycling: '#22d3ee', organic: '#3dba7a', hazard: '#f87171' };
             const color = colors[type] || '#22d3ee';
-            const emoji = { recycling: '♻️', organic: '🌱', hazard: '⚠️' }[type] || '♻️';
+            const emoji = { recycling: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="1.5 8.5 1.5 3.5 6.5 3.5"/><path d="M1.5 3.5 8 10"/><polyline points="22.5 15.5 22.5 20.5 17.5 20.5"/><path d="M22.5 20.5 16 14"/><path d="M4 22l3.5-3.5 3-3 3 3 3-3 3 3"/></svg>', organic: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>', hazard: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' }[type] || '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="1.5 8.5 1.5 3.5 6.5 3.5"/><path d="M1.5 3.5 8 10"/><polyline points="22.5 15.5 22.5 20.5 17.5 20.5"/><path d="M22.5 20.5 16 14"/><path d="M4 22l3.5-3.5 3-3 3 3 3-3 3 3"/></svg>';
             return L.divIcon({
                 className: '',
                 html: `<div style="width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.8);border:2px solid ${color};display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.5),0 0 0 3px ${color}33">${emoji}</div>`,
@@ -5850,7 +6024,7 @@ out body;`;
                     <div class="map-point-info">
                         <span class="map-point-type ${type}">${typeLabels[type] || 'Reciclaje'}</span>
                         <div class="map-point-name">${name}</div>
-                        ${dist ? `<div class="map-point-dist">📍 ${dist} de ti</div>` : ''}
+                        ${dist ? `<div class="map-point-dist"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${dist} de ti</div>` : ''}
                     </div>`);
                 mapMarkers.push(m);
             });
@@ -6047,7 +6221,7 @@ out body;`;
                         const css     = cssMap[tipo] || 'idle';
 
                         document.getElementById('qsIconWrap').className = 'qs-result-icon-wrap ' + css;
-                        document.getElementById('qsIconWrap').textContent = { organico:'🌱', 'inorganico-reciclable':'♻️', 'inorganico-no-reciclable':'🗑️' }[tipo] || '📦';
+                        document.getElementById('qsIconWrap').innerHTML = { organico:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>', 'inorganico-reciclable':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="1.5 8.5 1.5 3.5 6.5 3.5"/><path d="M1.5 3.5 8 10"/><polyline points="22.5 15.5 22.5 20.5 17.5 20.5"/><path d="M22.5 20.5 16 14"/><path d="M4 22l3.5-3.5 3-3 3 3 3-3 3 3"/></svg>', 'inorganico-no-reciclable':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>️' }[tipo] || '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>';
                         document.getElementById('qsResultName').textContent = match.name.charAt(0).toUpperCase() + match.name.slice(1);
                         document.getElementById('qsResultContainer').textContent = contenedor + ' · ' + conf + '%';
 
@@ -6072,7 +6246,7 @@ out body;`;
         // ════════════════════════════════════════════════════════
         // FEATURE 12 — FIREBASE SYNC
         // ════════════════════════════════════════════════════════
-        // ⚠️  CONFIGURA aquí tu proyecto de Firebase
+        // <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>  CONFIGURA aquí tu proyecto de Firebase
         //     Ve a console.firebase.google.com → Configuración del proyecto → Tu app web
         const FIREBASE_CONFIG = {
             apiKey:            "AIzaSyBN8TsFvvVIzLt94QZgqdnxwyypn_iTqXY",
@@ -6144,7 +6318,7 @@ out body;`;
                 // Already logged in — offer sign out
                 if (confirm('¿Cerrar sesión y dejar de sincronizar?')) {
                     await firebaseAuth.signOut();
-                    showAchievement('👋', 'Sesión cerrada', 'Tus datos locales se mantienen');
+                    showAchievement('⚡', 'Sesión cerrada', 'Tus datos locales se mantienen');
                 }
             } else {
                 await signInWithGoogle();
@@ -6156,11 +6330,11 @@ out body;`;
             try {
                 const provider = new firebase.auth.GoogleAuthProvider();
                 await firebaseAuth.signInWithPopup(provider);
-                showAchievement('✅', '¡Sesión iniciada!', 'Tus datos se sincronizarán automáticamente');
+                showAchievement('⚡', '¡Sesión iniciada!', 'Tus datos se sincronizarán automáticamente');
             } catch(e) {
                 if (e.code !== 'auth/popup-closed-by-user') {
                     console.error('Sign-in error:', e);
-                    showAchievement('❌', 'Error al iniciar sesión', e.message);
+                    showAchievement('⚡', 'Error al iniciar sesión', e.message);
                 }
             }
         }
@@ -6198,7 +6372,7 @@ out body;`;
                             updateGameUI();
                             updateBadges();
                             renderHistory();
-                            showAchievement('☁️', 'Datos sincronizados', 'Tu progreso está actualizado');
+                            showAchievement('⚡', 'Datos sincronizados', 'Tu progreso está actualizado');
                         }
                     }
                     if (data.userName && !userName) {
@@ -6285,7 +6459,7 @@ out body;`;
             const back   = document.createElement('div');
             back.className = 'result-flip-back';
             back.innerHTML = `
-                <div class="rfb-title">💚 Tu contribución</div>
+                <div class="rfb-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg> Tu contribución</div>
                 <div class="rfb-co2">${eco.co2}</div>
                 <div class="rfb-sub">CO₂ evitado con este reciclaje</div>
                 <div class="rfb-tip">${eco.tip}</div>
@@ -6382,25 +6556,67 @@ out body;`;
 
         // initStarField — optimized version defined below
 
-        function toggleEarthHour() {
-            earthHourActive = !earthHourActive;
-            document.body.classList.toggle('earth-hour', earthHourActive);
-            if (earthHourActive) {
-                document.body.classList.remove('dark-mode');
-                initStarField();
-                showAchievement('🌍', 'Earth Hour activo', 'Modo ultra-oscuro de noche activado');
+        // eco-mode state: 0 = normal, 1 = earth-hour+eco, 2 = eco-only
+        let ecoState = 0;
+
+        function updateEhButton() {
+            const label = document.getElementById('ehLabel');
+            const icon  = document.getElementById('ehIcon');
+            if (!label || !icon) return;
+
+            if (ecoState === 0) {
+                label.textContent = 'Eco';
+                icon.innerHTML    = `<circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="12" x2="22" y2="12" stroke-width="1.5"/>`;
+            } else if (ecoState === 1) {
+                label.textContent = 'Earth Hour';
+                icon.innerHTML    = `<circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="12" x2="22" y2="12" stroke-width="1.5"/>`;
             } else {
-                showAchievement('💡', 'Earth Hour desactivado', 'Volviendo al tema normal');
+                label.textContent = 'Rápido';
+                icon.innerHTML    = `<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
             }
-            try { localStorage.setItem('novaEarthHour', earthHourActive ? '1' : '0'); } catch(e) {}
+        }
+
+        function toggleEarthHour() {
+            ecoState = (ecoState + 1) % 3;
+
+            // Apply visual + performance changes per state
+            if (ecoState === 0) {
+                // NORMAL — restore original tier
+                earthHourActive = false;
+                document.body.classList.remove('earth-hour');
+                perfTier = 'high';
+                applyPerfTier('high');
+                showAchievement('⚡', 'Modo normal', 'Todos los efectos activados');
+
+            } else if (ecoState === 1) {
+                // EARTH HOUR + ECO — dark + low performance
+                earthHourActive = true;
+                document.body.classList.remove('dark-mode');
+                document.body.classList.add('earth-hour');
+                initStarField();
+                perfTier = 'low';
+                applyPerfTier('low');
+                showAchievement('🌍', 'Earth Hour + Eco', 'Tema oscuro · Efectos mínimos · Máximo rendimiento');
+
+            } else {
+                // ECO ONLY — no dark theme, just kill effects
+                earthHourActive = false;
+                document.body.classList.remove('earth-hour');
+                perfTier = 'low';
+                applyPerfTier('low');
+                showAchievement('⚡', 'Modo Eco activado', 'Efectos reducidos · Mejor rendimiento en dispositivos lentos');
+            }
+
+            updateEhButton();
+            try { localStorage.setItem('novaEcoState', ecoState); } catch(e) {}
         }
 
         function checkEarthHourPref() {
             try {
-                if (localStorage.getItem('novaEarthHour') === '1') {
-                    earthHourActive = true;
-                    document.body.classList.add('earth-hour');
-                    initStarField();
+                const saved = parseInt(localStorage.getItem('novaEcoState') || '0');
+                if (saved > 0) {
+                    ecoState = saved - 1; // will be incremented back by toggleEarthHour
+                    toggleEarthHour();
                 }
             } catch(e) {}
         }
@@ -6483,7 +6699,7 @@ out body;`;
                     setTimeout(() => {
                         renderActivityChart();
                         updateComparison();
-                        showAchievement('✅', 'Actualizado', 'Datos refrescados');
+                        showAchievement('⚡', 'Actualizado', 'Datos refrescados');
                         indicator.style.transform = 'translateX(-50%) translateY(-60px)';
                         indicator.style.opacity = '0';
                         indicator.classList.remove('visible', 'releasing', 'refreshing');
@@ -6557,7 +6773,7 @@ out body;`;
 
             const badge = document.getElementById('perfBadge');
             if (badge) {
-                const labels = { low: '⚡ Modo Eco', mid: '⚡ Modo Balanced', high: '⚡ Modo Full' };
+                const labels = { low: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Modo Eco', mid: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Modo Balanced', high: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Modo Full' };
                 badge.textContent = labels[tier] || '';
                 badge.className   = `perf-badge ${tier}`;
                 badge.classList.add('visible');
@@ -6821,7 +7037,7 @@ out body;`;
             if (currentUser) {
                 if (confirm('¿Cerrar sesión y dejar de sincronizar?')) {
                     await firebaseAuth.signOut();
-                    showAchievement('👋', 'Sesión cerrada', 'Tus datos locales se mantienen');
+                    showAchievement('⚡', 'Sesión cerrada', 'Tus datos locales se mantienen');
                 }
             } else {
                 await signInWithGoogle();
@@ -6926,8 +7142,8 @@ out body;`;
             bottle:'🍶', 'water bottle':'💧', 'wine bottle':'🍷', 'beer bottle':'🍺',
             'pop bottle':'🥤', can:'🥫', cup:'🥤', 'plastic bag':'🛍️',
             'paper towel':'🧻', notebook:'📓', 'cellular telephone':'📱',
-            laptop:'💻', toothbrush:'🪥', television:'📺', cardboard:'📦',
-            backpack:'🎒', book:'📚', default:'♻️'
+            laptop:'💻', toothbrush:'🪥', television:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>', cardboard:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>',
+            backpack:'🎒', book:'📚', default:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="1.5 8.5 1.5 3.5 6.5 3.5"/><path d="M1.5 3.5 8 10"/><polyline points="22.5 15.5 22.5 20.5 17.5 20.5"/><path d="M22.5 20.5 16 14"/><path d="M4 22l3.5-3.5 3-3 3 3 3-3 3 3"/></svg>'
         };
 
         function getObjEmoji(name) {
@@ -7167,7 +7383,7 @@ out body;`;
             let i = 0;
             function tick() {
                 if (i < text.length) {
-                    el.textContent = text.slice(0, ++i);
+                    el.innerHTML = text.slice(0, ++i);
                     el.appendChild(cursor);
                     setTimeout(tick, speed);
                 } else {
@@ -7362,6 +7578,26 @@ out body;`;
                 tagColor: 'blue',
                 spotlight: '.share-section',
                 action: null
+            },
+            {
+                id: 'eco-button',
+                icon: 'zap',
+                title: 'Botón Eco — 3 modos de rendimiento',
+                desc: 'El botón redondo abajo a la derecha cambia el rendimiento con cada toque:\n\n⚡ <strong>1er clic:</strong> Earth Hour — tema oscuro + efectos mínimos, ideal de noche.\n\n⚡ <strong>2do clic:</strong> Modo Eco — efectos reducidos sin cambiar el tema.\n\n☀️ <strong>3er clic:</strong> Normal — todos los efectos completos.',
+                tag: 'Rendimiento',
+                tagColor: '',
+                spotlight: '#ehToggle',
+                action: null
+            },
+            {
+                id: 'map',
+                icon: 'map-pin',
+                title: 'Mapa de puntos de reciclaje',
+                desc: 'Dentro del widget de impacto encontrarás el botón "Ver puntos de reciclaje cercanos". Al tocarlo, Nova obtiene tu ubicación y busca contenedores, composterías y centros de acopio en un radio de 2 km usando datos de OpenStreetMap.',
+                tag: 'Mapa',
+                tagColor: 'blue',
+                spotlight: '#impactWidget',
+                action: null
             }
         ];
 
@@ -7398,22 +7634,70 @@ out body;`;
             setTutPanelStep(0);
         }
 
+        // Steps that need mini-mode (element is in bottom corner)
+        const MINI_MODE_STEPS = new Set(['eco-button']);
+
         function setTutPanelStep(idx) {
             tutPanelCurrentStep = idx;
-            renderTutorialPanel();
+            const step  = tutorialPanelSteps[idx];
+            const panel = document.getElementById('tutPanel');
+            const isMini = MINI_MODE_STEPS.has(step.id);
 
-            // Scroll step into view inside panel
-            setTimeout(() => {
-                const items = document.querySelectorAll('.tut-step-item');
-                if (items[idx]) items[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 80);
+            if (isMini) {
+                enterMiniMode(step, idx);
+            } else {
+                exitMiniMode();
+                renderTutorialPanel();
+                // Scroll step into view inside panel
+                setTimeout(() => {
+                    const items = document.querySelectorAll('.tut-step-item');
+                    if (items[idx]) items[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 80);
+            }
 
             // Highlight element on page with spotlight
-            const step = tutorialPanelSteps[idx];
             if (step.spotlight) highlightElement(step.spotlight);
         }
 
+        function enterMiniMode(step, idx) {
+            const panel = document.getElementById('tutPanel');
+            const total = tutorialPanelSteps.length;
+
+            // Populate mini-card
+            const label    = document.getElementById('tutMiniLabel');
+            const title    = document.getElementById('tutMiniTitle');
+            const desc     = document.getElementById('tutMiniDesc');
+            const progress = document.getElementById('tutMiniProgress');
+            if (label)    label.textContent    = `Paso ${idx + 1} de ${total}`;
+            if (title)    title.textContent    = step.title;
+            if (desc)     desc.innerHTML       = step.desc;
+            if (progress) progress.textContent = `${tutPanelDoneSteps.size} completados`;
+
+            // Apply mini-mode inline styles — stay at top:0, just shrink height
+            panel.classList.add('mini-mode');
+            panel.style.top       = '0';
+            panel.style.bottom    = 'auto';
+            panel.style.height    = '52vh';
+            panel.style.maxHeight = '52vh';
+            panel.style.overflowY = 'hidden';
+            // Note: do NOT call closeTutorialSpotlight() here —
+            // highlightElement() in setTutPanelStep will spotlight the button normally
+        }
+
+        function exitMiniMode() {
+            const panel = document.getElementById('tutPanel');
+            panel.classList.remove('mini-mode');
+            // Restore base styles
+            panel.style.top       = '';
+            panel.style.bottom    = '';
+            panel.style.height    = '';
+            panel.style.maxHeight = '';
+            panel.style.borderLeft = '';
+            panel.style.overflowY = '';
+        }
+
         function advanceTutPanelStep() {
+            exitMiniMode();
             tutPanelDoneSteps.add(tutPanelCurrentStep);
             const next = tutPanelCurrentStep + 1;
             if (next < tutorialPanelSteps.length) {
@@ -7425,7 +7709,7 @@ out body;`;
                 updateTutPanelSubtitle();
                 closeTutorialSpotlight();
                 setTimeout(() => {
-                    showAchievement('🎓', '¡Tutorial Completado!', 'Ya eres un experto en reciclaje con Nova');
+                    showAchievement('⚡', '¡Tutorial Completado!', 'Ya eres un experto en reciclaje con Nova');
                     try { localStorage.setItem('novaTutorialCompleted', 'true'); } catch(e) {}
                 }, 300);
             }
@@ -7454,7 +7738,7 @@ out body;`;
                     ? `<span class="tut-step-tag ${step.tagColor || ''}">${step.tag}</span>`
                     : '';
                 const actionHtml = step.action
-                    ? `<button class="tut-step-action" onclick="${step.action.fn}; setTutPanelStep(${i})">${step.action.label} →</button>`
+                    ? `<button class="tut-step-action" onclick="event.stopPropagation();${step.action.fn}; setTutPanelStep(${i})">${step.action.label} →</button>`
                     : '';
 
                 return `
@@ -7473,7 +7757,7 @@ out body;`;
                             ${step.desc}
                             ${tagHtml}
                             ${actionHtml}
-                            ${isActive ? `<button class="tut-step-action secondary-action" onclick="advanceTutPanelStep()">✓ Entendido, siguiente</button>` : ''}
+                            ${isActive ? `<button class="tut-step-action secondary-action" onclick="event.stopPropagation();advanceTutPanelStep()">✓ Entendido, siguiente</button>` : ''}
                         </div>
                     </div>
                 </div>`;
@@ -7488,7 +7772,7 @@ out body;`;
             const total = tutorialPanelSteps.length;
             if (!el) return;
             if (done === 0)     el.textContent = 'Aprende a reciclar con IA en minutos';
-            else if (done === total) el.textContent = '¡Tutorial completado! 🎉';
+            else if (done === total) el.innerHTML = '¡Tutorial completado! 🎉';
             else el.textContent = `${done} de ${total} pasos completados`;
         }
 
@@ -7724,9 +8008,7 @@ out body;`;
         <!-- Header -->
         <div class="tut-panel-head">
             <div class="tut-panel-head-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M12 16v-4M12 8h.01" stroke-width="2.5" stroke-linecap="round"/>
-                </svg>
+                <img src="nova-logo.png" alt="Nova" style="width:24px;height:24px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(61,186,122,0.4))">
             </div>
             <div class="tut-panel-head-text">
                 <h3>Tutorial de Nova</h3>
@@ -7738,6 +8020,17 @@ out body;`;
         </div>
 
         <!-- Steps list -->
+        <!-- Mini card shown in mini-mode instead of full list -->
+        <div class="tut-mini-card" id="tutMiniCard">
+            <div class="tut-mini-step-label" id="tutMiniLabel">Paso 1 de 11</div>
+            <div class="tut-mini-title" id="tutMiniTitle"></div>
+            <div class="tut-mini-desc" id="tutMiniDesc"></div>
+            <div class="tut-mini-actions">
+                <button class="tut-mini-btn-next" onclick="event.stopPropagation();advanceTutPanelStep()">✓ Entendido, siguiente</button>
+                <span class="tut-mini-progress" id="tutMiniProgress"></span>
+            </div>
+        </div>
+
         <div class="tut-steps-list" id="tutStepsList">
             <!-- Generated by JS -->
         </div>
@@ -7776,9 +8069,9 @@ out body;`;
             </div>
             <div class="map-controls">
                 <button class="map-filter-btn active" data-filter="all" onclick="filterMapPoints(this,'all')">Todos</button>
-                <button class="map-filter-btn" data-filter="recycling" onclick="filterMapPoints(this,'recycling')">♻️ Reciclaje</button>
-                <button class="map-filter-btn" data-filter="organic" onclick="filterMapPoints(this,'organic')">🌱 Orgánico</button>
-                <button class="map-filter-btn" data-filter="hazard" onclick="filterMapPoints(this,'hazard')">⚠️ Peligrosos</button>
+                <button class="map-filter-btn" data-filter="recycling" onclick="filterMapPoints(this,'recycling')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="1.5 8.5 1.5 3.5 6.5 3.5"/><path d="M1.5 3.5 8 10"/><polyline points="22.5 15.5 22.5 20.5 17.5 20.5"/><path d="M22.5 20.5 16 14"/><path d="M4 22l3.5-3.5 3-3 3 3 3-3 3 3"/></svg> Reciclaje</button>
+                <button class="map-filter-btn" data-filter="organic" onclick="filterMapPoints(this,'organic')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg> Orgánico</button>
+                <button class="map-filter-btn" data-filter="hazard" onclick="filterMapPoints(this,'hazard')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Peligrosos</button>
             </div>
             <div id="novaMap" style="min-height:300px;flex:1"></div>
             <button class="map-locate-btn" onclick="centerMapOnUser()" title="Mi ubicación">
@@ -7811,7 +8104,7 @@ out body;`;
             </div>
 
             <div class="qs-result-bar">
-                <div class="qs-result-icon-wrap idle" id="qsIconWrap">📷</div>
+                <div class="qs-result-icon-wrap idle" id="qsIconWrap"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
                 <div class="qs-result-info">
                     <div class="qs-result-name" id="qsResultName">Apunta la cámara</div>
                     <div class="qs-result-container" id="qsResultContainer">Nova clasificará el objeto automáticamente</div>
