@@ -3663,6 +3663,74 @@
             100% { box-shadow: 0 0 0 0 rgba(61,186,122,0), 0 0 0 0 rgba(61,186,122,0); }
         }
 
+
+        /* ── DAILY CHALLENGES ── */
+        .challenges-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--r-xl);
+            padding: 20px;
+            margin-bottom: 14px;
+            backdrop-filter: blur(12px);
+            position: relative; overflow: hidden;
+        }
+        .challenges-section::before {
+            content: '';
+            position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(61,186,122,0.4), transparent);
+        }
+        .challenges-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .challenges-header h2 {
+            font-family: 'Syne', sans-serif; font-size: 0.9em; font-weight: 700;
+            color: var(--t1); display: flex; align-items: center; gap: 8px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .challenge-reset-timer {
+            font-size: 0.72em; color: var(--t3); font-weight: 600;
+            background: var(--bg-raised); border: 1px solid var(--border-subtle);
+            padding: 3px 10px; border-radius: 999px;
+        }
+        .challenge-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px; border-radius: var(--r-md);
+            border: 1px solid var(--border-subtle);
+            background: rgba(255,255,255,0.02);
+            margin-bottom: 8px; transition: all 0.2s;
+        }
+        .challenge-item.done {
+            border-color: rgba(61,186,122,0.3);
+            background: rgba(61,186,122,0.06);
+        }
+        .challenge-icon {
+            width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--green-dim); border: 1px solid var(--border-soft);
+            font-size: 1.1em;
+        }
+        .challenge-item.done .challenge-icon { background: rgba(61,186,122,0.2); }
+        .challenge-body { flex: 1; min-width: 0; }
+        .challenge-title { font-size: 0.85em; font-weight: 700; color: var(--t1); margin-bottom: 4px; }
+        .challenge-item.done .challenge-title { color: var(--green-1); }
+        .challenge-progress-bar {
+            height: 4px; background: rgba(255,255,255,0.06);
+            border-radius: 2px; overflow: hidden;
+        }
+        .challenge-progress-fill {
+            height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, var(--green-2), var(--green-1));
+            transition: width 0.5s var(--ease);
+        }
+        .challenge-item.done .challenge-progress-fill { background: var(--green-1); }
+        .challenge-reward {
+            font-size: 0.72em; font-weight: 700; color: var(--t3);
+            background: var(--bg-raised); border: 1px solid var(--border-subtle);
+            padding: 3px 9px; border-radius: 999px; flex-shrink: 0;
+        }
+        .challenge-item.done .challenge-reward { color: var(--green-1); border-color: var(--border-soft); }
+
     </style>
 </head>
 <body>
@@ -3973,6 +4041,16 @@
             <div class="section-divider-line"></div>
         </div>
 
+
+        <!-- Daily Challenges -->
+        <div class="challenges-section reveal" id="challengesSection">
+            <div class="challenges-header">
+                <h2><span class="icon"><i data-lucide="target"></i></span> Retos de hoy</h2>
+                <span class="challenge-reset-timer" id="challengeTimer">Cargando...</span>
+            </div>
+            <div id="challengesList"></div>
+        </div>
+
         <!-- FEATURE 5: Weekly Activity Chart -->
         <div class="activity-section glass-card reveal" id="activitySection">
             <div class="logros-header">
@@ -4268,6 +4346,9 @@
             ecoImpact: 0,
             streak: 0,
             lastDetectionDate: null,
+            orgCount: 0,
+            recCount: 0,
+            noCount: 0,
             badges: [],
             detectionHistory: [],
             milestonesReached: []
@@ -4667,6 +4748,9 @@
                 addPoints(10, info.tipo, name);
             } else {
                 gameData.totalDetections++;
+            if (type === 'organico')               gameData.orgCount = (gameData.orgCount||0) + 1;
+            else if (type === 'inorganico-reciclable')  gameData.recCount = (gameData.recCount||0) + 1;
+            else if (type === 'inorganico-no-reciclable') gameData.noCount  = (gameData.noCount||0)  + 1;
                 gameData.detectionHistory.push({ date: new Date().toISOString(), type: info.tipo, name: name, points: 0 });
                 if (gameData.detectionHistory.length > 200) gameData.detectionHistory.shift();
 
@@ -5034,6 +5118,8 @@
             renderHistory();
             // Feature 13: floating points
             spawnFloatingPoints(points, type);
+            // Fix 4: daily challenge progress
+            updateChallengeProgress(type);
             // Sync to cloud
             if (currentUser) pushToFirestore(currentUser.uid);
         }
@@ -5255,9 +5341,10 @@
 
             const history = [...gameData.detectionHistory].reverse();
 
-            const org = history.filter(d => d.type === 'organico').length;
-            const rec = history.filter(d => d.type === 'inorganico-reciclable').length;
-            const noR = history.filter(d => d.type === 'inorganico-no-reciclable').length;
+            // Use persistent counters (not affected by 200-entry cap)
+            const org = gameData.orgCount || history.filter(d => d.type === 'organico').length;
+            const rec = gameData.recCount || history.filter(d => d.type === 'inorganico-reciclable').length;
+            const noR = gameData.noCount  || history.filter(d => d.type === 'inorganico-no-reciclable').length;
             const elOrg = document.getElementById('histOrgCount');
             const elRec = document.getElementById('histRecCount');
             const elNo  = document.getElementById('histNoCount');
@@ -5293,6 +5380,7 @@
         function clearHistory() {
             if (!confirm('¿Borrar todo el historial de detecciones?')) return;
             gameData.detectionHistory = [];
+            gameData.orgCount = 0; gameData.recCount = 0; gameData.noCount = 0;
             saveGameData();
             renderHistory();
             showAchievement('⚡', 'Historial borrado', 'Tu historial fue limpiado');
@@ -5829,43 +5917,47 @@
         async function loadModel() {
             setModelStatus('loading', 'Cargando IA...');
 
-            // Clean up any incompatible IndexedDB cache from previous versions
-            // (MobileNet is a GraphModel — tf.loadLayersModel() can't restore it)
+            // Clean up stale IndexedDB cache (incompatible format)
             try {
                 const models = await tf.io.listModels();
                 if (models['indexeddb://' + MODEL_CACHE_KEY]) {
                     await tf.io.removeModel('indexeddb://' + MODEL_CACHE_KEY);
-                    console.log('Caché antigua eliminada (formato incompatible)');
                 }
             } catch(e) { /* ignore */ }
 
+            // Check connectivity before trying
+            if (!navigator.onLine) {
+                setModelStatus('loading', 'Sin conexión — IA no disponible');
+                showAchievement('⚡', 'Sin internet', 'Conecta a internet para cargar la IA');
+                // Listen for reconnection and retry automatically
+                window.addEventListener('online', async () => {
+                    showAchievement('⚡', 'Conexión restaurada', 'Cargando IA...');
+                    await loadModel();
+                }, { once: true });
+                return;
+            }
+
             try {
                 console.log('Cargando MobileNet...');
-                // MobileNet is cached automatically by the browser HTTP cache
-                // (CDN serves with long cache headers — no re-download on repeat visits)
                 model = await mobilenet.load({ version: 2, alpha: 1.0 });
                 setModelStatus('cached', 'IA lista');
-                showAchievement('⚡', 'IA Lista', 'Modelo cargado exitosamente');
+                showAchievement('⚡', 'IA Lista', 'Modelo cargado correctamente');
             } catch (error) {
                 console.error('Error cargando modelo:', error);
-                setModelStatus('loading', 'Error — recarga la página');
-                alert('Error al cargar la IA. Verifica tu conexión y recarga.');
+                setModelStatus('loading', 'Error — reintentando...');
+                // Auto-retry once after 3s
+                setTimeout(async () => {
+                    try {
+                        model = await mobilenet.load({ version: 2, alpha: 1.0 });
+                        setModelStatus('cached', 'IA lista');
+                    } catch(e2) {
+                        setModelStatus('loading', 'Error — sin conexión');
+                    }
+                }, 3000);
             }
         }
 
-        // Fallback classify for cached raw model
-        async function mobileNetClassifyWithModel(rawModel, img, topK) {
-            try {
-                // If it's a real mobilenet instance, use its classify method
-                if (rawModel.classify) return await rawModel.classify(img, topK);
-                // Otherwise use standard mobilenet
-                const freshModel = await mobilenet.load({ version: 2, alpha: 1.0 });
-                model = freshModel;
-                return await freshModel.classify(img, topK);
-            } catch(e) {
-                return [];
-            }
-        }
+        // mobileNetClassifyWithModel removed (dead code)
 
         // ════════════════════════════════════════════════════════
         // FEATURE 4 — NEARBY RECYCLING MAP (Leaflet + Overpass)
@@ -6558,6 +6650,7 @@ out body;`;
 
         // eco-mode state: 0 = normal, 1 = earth-hour+eco, 2 = eco-only
         let ecoState = 0;
+        let themeBeforeEco = 'light'; // remember theme before eco mode
 
         function updateEhButton() {
             const label = document.getElementById('ehLabel');
@@ -6581,15 +6674,24 @@ out body;`;
 
             // Apply visual + performance changes per state
             if (ecoState === 0) {
-                // NORMAL — restore original tier
+                // NORMAL — restore previous theme and tier
                 earthHourActive = false;
                 document.body.classList.remove('earth-hour');
+                // Restore the theme that was active before eco mode
+                if (themeBeforeEco === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    applyThemeUI(true);
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    applyThemeUI(false);
+                }
                 perfTier = 'high';
                 applyPerfTier('high');
                 showAchievement('⚡', 'Modo normal', 'Todos los efectos activados');
 
             } else if (ecoState === 1) {
-                // EARTH HOUR + ECO — dark + low performance
+                // EARTH HOUR + ECO — remember current theme first
+                themeBeforeEco = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
                 earthHourActive = true;
                 document.body.classList.remove('dark-mode');
                 document.body.classList.add('earth-hour');
@@ -6773,8 +6875,8 @@ out body;`;
 
             const badge = document.getElementById('perfBadge');
             if (badge) {
-                const labels = { low: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Modo Eco', mid: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Modo Balanced', high: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Modo Full' };
-                badge.textContent = labels[tier] || '';
+                const labels = { low: '⚡ Modo Eco', mid: '⚡ Modo Balanced', high: '✦ Modo Full' };
+                badge.innerHTML = labels[tier] || '';
                 badge.className   = `perf-badge ${tier}`;
                 badge.classList.add('visible');
                 setTimeout(() => badge.classList.remove('visible'), 3500);
@@ -7217,8 +7319,11 @@ out body;`;
             }
 
             container.innerHTML = buckets.map((val, i) => {
-                const dayIdx = (today.getDay() - (6-i) + 7) % 7;
-                const label  = i === 6 ? 'Hoy' : days[dayIdx];
+                // i=0 is 6 days ago, i=6 is today
+                // Correct: subtract (6-i) days from today
+                const pastDate = new Date(today);
+                pastDate.setDate(today.getDate() - (6 - i));
+                const label = i === 6 ? 'Hoy' : days[pastDate.getDay()];
                 const pct    = Math.round((val / maxVal) * 100);
                 const height = Math.max(4, pct * 0.6);
                 return `<div class="activity-bar-col">
@@ -7394,6 +7499,102 @@ out body;`;
             tick();
         }
 
+
+        // ════════════════════════════════════════════════════════
+        // FIX 4 — DAILY CHALLENGES
+        // ════════════════════════════════════════════════════════
+        const CHALLENGE_DEFS = [
+            { id: 'c_organic3',   icon: '🌱', title: 'Clasifica 3 orgánicos hoy',    type: 'organico',               goal: 3,  xp: 30  },
+            { id: 'c_recycle2',   icon: '♻️', title: 'Recicla 2 materiales hoy',     type: 'inorganico-reciclable',  goal: 2,  xp: 25  },
+            { id: 'c_scan5',      icon: '📷', title: 'Realiza 5 escaneos hoy',       type: 'any',                    goal: 5,  xp: 40  },
+        ];
+
+        function getTodayKey() {
+            return new Date().toDateString();
+        }
+
+        function loadChallenges() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('novaChallenges') || '{}');
+                const today = getTodayKey();
+                if (saved.date !== today) {
+                    // New day — reset progress
+                    return { date: today, progress: { c_organic3: 0, c_recycle2: 0, c_scan5: 0 } };
+                }
+                return saved;
+            } catch(e) {
+                return { date: getTodayKey(), progress: {} };
+            }
+        }
+
+        function saveChallenges(data) {
+            try { localStorage.setItem('novaChallenges', JSON.stringify(data)); } catch(e) {}
+        }
+
+        function updateChallengeProgress(type) {
+            const data = loadChallenges();
+            let bonusXP = 0;
+
+            CHALLENGE_DEFS.forEach(ch => {
+                if (data.progress[ch.id] >= ch.goal) return; // already done
+                const matches = ch.type === 'any' || ch.type === type;
+                if (!matches) return;
+                data.progress[ch.id] = (data.progress[ch.id] || 0) + 1;
+                if (data.progress[ch.id] === ch.goal) {
+                    bonusXP += ch.xp;
+                    showAchievement('⭐', '¡Reto completado!', `${ch.title} · +${ch.xp} XP extra`);
+                }
+            });
+
+            saveChallenges(data);
+            renderChallenges();
+
+            if (bonusXP > 0) {
+                gameData.currentExp += bonusXP;
+                gameData.totalPoints += bonusXP;
+                while (gameData.currentExp >= gameData.maxExp) levelUp();
+                updateGameUI();
+                saveGameData();
+            }
+        }
+
+        function renderChallenges() {
+            const list  = document.getElementById('challengesList');
+            const timer = document.getElementById('challengeTimer');
+            if (!list) return;
+
+            // Countdown to midnight
+            const now       = new Date();
+            const midnight  = new Date(now); midnight.setHours(24, 0, 0, 0);
+            const secsLeft  = Math.floor((midnight - now) / 1000);
+            const hh = Math.floor(secsLeft / 3600);
+            const mm = Math.floor((secsLeft % 3600) / 60);
+            if (timer) timer.textContent = `Reinicia en ${hh}h ${mm}m`;
+
+            const data = loadChallenges();
+
+            list.innerHTML = CHALLENGE_DEFS.map(ch => {
+                const prog = data.progress[ch.id] || 0;
+                const done = prog >= ch.goal;
+                const pct  = Math.min(100, Math.round(prog / ch.goal * 100));
+                return `<div class="challenge-item ${done ? 'done' : ''}">
+                    <div class="challenge-icon">${ch.icon}</div>
+                    <div class="challenge-body">
+                        <div class="challenge-title">${ch.title}</div>
+                        <div class="challenge-progress-bar">
+                            <div class="challenge-progress-fill" style="width:${pct}%"></div>
+                        </div>
+                    </div>
+                    <span class="challenge-reward">${done ? '✓' : '+'+ch.xp+' XP'}</span>
+                </div>`;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // Re-render timer every minute
+        setInterval(renderChallenges, 60000);
+
         // Inicializar
         window.onload = async () => {
             // Detect performance tier FIRST — everything adapts to it
@@ -7471,6 +7672,8 @@ out body;`;
             initMemoryCleanup();
             // Feature 11: swipe gestures
             initSwipeGesture();
+            // Fix 4: daily challenges
+            renderChallenges();
             // Init new visual features
             spawnNameScreenParticles();
             initCustomCursor();
