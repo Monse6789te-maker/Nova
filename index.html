@@ -4494,6 +4494,486 @@
             animation: shine-text 5s linear infinite;
         }
 
+
+
+        /* ╔══════════════════════════════════════════════════════════════╗
+           ║  MEJORAS VISUALES v2 — Deeper polish, micro-details         ║
+           ╚══════════════════════════════════════════════════════════════╝ */
+
+        /* ═══ 1. NOISE TEXTURE OVERLAY — profundidad táctil en toda la app ═══ */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
+            pointer-events: none;
+            opacity: 0.022;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 128px 128px;
+        }
+
+        /* ═══ 2. CONTENEDOR PRINCIPAL — padding más refinado ═══ */
+        .container { padding: 28px 22px 90px; }
+
+        /* ═══ 3. HEADER — subtítulo mejorado, espaciado, eyebrow  ═══ */
+        .header { padding: 44px 4px 38px; gap: 0; }
+        .header > p {
+            font-size: 0.88em;
+            letter-spacing: 0.15px;
+            line-height: 1.6;
+            color: var(--t3);
+            max-width: 280px;
+        }
+
+        /* ═══ 4. LOGO — brillo interno y sombra exterior más rica ═══ */
+        .logo-icon {
+            background: radial-gradient(circle at 35% 30%, rgba(61,186,122,0.18), #000 70%);
+            box-shadow:
+                0 0 0 6px var(--g-6),
+                0 0 0 12px var(--g-3),
+                0 12px 40px rgba(0,0,0,0.6),
+                var(--green-glow);
+        }
+        .logo-icon:hover {
+            box-shadow:
+                0 0 0 8px var(--g-10),
+                0 0 0 16px var(--g-4),
+                0 16px 50px rgba(0,0,0,0.65),
+                0 0 40px rgba(61,186,122,0.35);
+            transform: translateY(-4px) scale(1.04);
+        }
+        .logo-icon { transition: box-shadow 0.4s var(--ease), transform 0.4s var(--ease), border-color 0.5s; }
+
+        /* ═══ 5. GLASS CARDS — noise texture interna + shine superior ═══ */
+        .glass-card {
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 0%, var(--g-4) 0%, transparent 60%),
+                var(--bg-card);
+        }
+        .glass-card::before {
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255,255,255,0.07) 20%,
+                var(--g-40) 50%,
+                rgba(255,255,255,0.07) 80%,
+                transparent 100%);
+        }
+        /* Subtle corner glow */
+        .glass-card::after {
+            content: '';
+            position: absolute; bottom: -40px; right: -40px;
+            width: 140px; height: 140px; border-radius: 50%;
+            background: radial-gradient(circle, var(--g-5) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ═══ 6. STATS GRID — separador vertical entre cards ═══ */
+        .stats-grid { gap: 10px; }
+        .stat-card {
+            border-radius: var(--r-xl);
+            background:
+                radial-gradient(ellipse 90% 70% at 10% 0%, var(--g-6) 0%, transparent 55%),
+                var(--bg-card);
+        }
+        /* Colored top border per stat */
+        .stats-grid .stat-card:nth-child(1) { border-top: 2px solid rgba(61,186,122,0.35); }
+        .stats-grid .stat-card:nth-child(2) { border-top: 2px solid rgba(249,115,22,0.35); }
+        .stats-grid .stat-card:nth-child(3) { border-top: 2px solid rgba(34,211,238,0.3); }
+        .stats-grid .stat-card:nth-child(4) { border-top: 2px solid rgba(192,132,252,0.3); }
+
+        /* ═══ 7. STAT HEADER LABEL — uppercase, letter-spaced ═══ */
+        .stat-header > span {
+            font-size: 0.68em;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--t3);
+        }
+
+        /* ═══ 8. PROGRESS BAR — altura mayor, end cap arreglado ═══ */
+        .progress-bar { height: 5px; border-radius: 999px; }
+        .progress-fill { border-radius: 999px; }
+        .progress-text { font-size: 0.68em; margin-top: 6px; }
+
+        /* ═══ 9. IMPACT WIDGET — grid renovado con divisores ═══ */
+        .impact-top-row { margin-bottom: 14px; }
+        .impact-label {
+            font-size: 0.7em; font-weight: 700;
+            letter-spacing: 1.1px; text-transform: uppercase;
+        }
+        .impact-number-wrap { margin-bottom: 4px; }
+        .impact-unit {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4em; font-weight: 700;
+            color: var(--green-1);
+            opacity: 0.75;
+        }
+        .impact-sub { font-size: 0.76em; color: var(--t3); margin-bottom: 22px; }
+        .impact-equiv-row { gap: 10px; }
+        .impact-equiv {
+            border-radius: var(--r-lg);
+            padding: 14px 10px;
+            gap: 6px;
+        }
+        .impact-equiv .eq-icon .icon svg {
+            width: 20px; height: 20px;
+            stroke: var(--green-1); stroke-width: 1.6;
+        }
+        .impact-equiv .eq-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05em; font-weight: 800; color: var(--t1);
+            letter-spacing: -0.5px;
+        }
+        .impact-equiv .eq-label { font-size: 0.68em; color: var(--t3); line-height: 1.3; }
+
+        /* ═══ 10. MAP FAB — mejorado ═══ */
+        .map-fab {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 18px; margin-top: 12px; width: 100%;
+            background: linear-gradient(135deg, rgba(61,186,122,0.1), rgba(34,211,238,0.08));
+            border: 1px solid var(--border-soft);
+            border-radius: var(--r-md);
+            font-family: 'DM Sans', sans-serif; font-size: 0.84em; font-weight: 600;
+            color: var(--t2); cursor: pointer;
+            transition: all 0.2s var(--ease);
+        }
+        .map-fab:hover {
+            background: linear-gradient(135deg, rgba(61,186,122,0.18), rgba(34,211,238,0.14));
+            border-color: var(--border-mid); color: var(--t1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px var(--g-15);
+        }
+        .map-fab svg { width: 16px; height: 16px; stroke: var(--green-1); flex-shrink: 0; }
+
+        /* ═══ 11. SECTION DIVIDER LINE — gradiente más visible ═══ */
+        .section-divider { margin: 8px 0; opacity: 0.7; }
+        .section-divider-line {
+            background: linear-gradient(90deg, transparent, var(--g-20), var(--border-subtle), transparent);
+        }
+        .section-divider-icon {
+            width: 26px; height: 26px;
+            background: var(--bg-raised);
+            border: 1px solid var(--border-soft);
+        }
+        .section-divider-icon svg { width: 11px; height: 11px; stroke: var(--green-1); stroke-width: 2; }
+
+        /* ═══ 12. CHALLENGES SECTION — header más rico ═══ */
+        .challenges-section {
+            border-radius: var(--r-xl);
+            background:
+                radial-gradient(ellipse 60% 50% at 90% 10%, rgba(61,186,122,0.06) 0%, transparent 60%),
+                var(--bg-card);
+        }
+        .challenges-header h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.88em; font-weight: 800;
+            color: var(--t1); letter-spacing: 0.5px;
+        }
+        .challenge-item {
+            background: rgba(255,255,255,0.025);
+        }
+        .challenge-title { color: var(--t2); }
+        .challenge-icon { background: var(--g-8); border-color: var(--border-subtle); }
+
+        /* ═══ 13. ACTIVITY CHART — columnas más altas y visibles ═══ */
+        .activity-section {
+            background:
+                radial-gradient(ellipse 50% 80% at 100% 50%, rgba(34,211,238,0.04) 0%, transparent 60%),
+                var(--bg-card);
+        }
+        .activity-chart-wrap {
+            display: flex; align-items: flex-end; gap: 6px;
+            height: 80px; padding: 8px 0 0;
+        }
+        .activity-bar-col {
+            display: flex; flex-direction: column; align-items: center;
+            flex: 1; gap: 5px;
+        }
+        .activity-bar { width: 100%; }
+        .activity-legend {
+            display: flex; gap: 16px; margin-top: 12px;
+            padding-top: 10px; border-top: 1px solid var(--border-subtle);
+        }
+        .activity-legend-item {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 0.72em; color: var(--t3); font-weight: 600;
+        }
+        .activity-legend-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+        }
+
+        /* ═══ 14. BADGES GRID — más aire entre cards ═══ */
+        .badges-grid { gap: 10px; }
+        .badge-card {
+            border-radius: var(--r-lg);
+            padding: 18px 10px 14px;
+            transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease), filter 0.22s;
+        }
+        .badge-card.unlocked:hover { transform: translateY(-6px) scale(1.04); }
+        .badge-name { font-size: 0.74em; font-weight: 700; line-height: 1.2; margin-top: 2px; }
+        .badge-rarity-label { font-size: 0.58em; font-weight: 800; }
+
+        /* ═══ 15. TABS — pill refinado, fondo y borde suave ═══ */
+        .tabs {
+            background: rgba(0,0,0,0.15);
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            padding: 4px;
+            gap: 2px;
+            backdrop-filter: blur(12px);
+        }
+        .tab {
+            border: none;
+            border-radius: 999px;
+            padding: 9px 18px;
+            font-size: 0.82em;
+            color: var(--t3);
+        }
+        .tab.active { color: #030d03; font-weight: 700; }
+        .tab:hover:not(.active) { background: var(--g-6); color: var(--t2); }
+
+        /* ═══ 16. CONTENT CARD — borde top acento ═══ */
+        .content-card {
+            border-top: 2px solid var(--border-soft);
+            background:
+                radial-gradient(ellipse 70% 40% at 50% 0%, var(--g-5) 0%, transparent 55%),
+                var(--bg-card);
+        }
+
+        /* ═══ 17. RESULT CARD — más impacto visual ═══ */
+        .result {
+            border-radius: var(--r-xl); padding: 24px;
+            position: relative;
+        }
+        .result-info {
+            border-radius: var(--r-md);
+            background: rgba(255,255,255,0.025);
+        }
+        .result.organico .result-info { border-color: var(--g-20); }
+        .result.inorganico-reciclable .result-info { border-color: rgba(34,211,238,0.18); }
+        .result.inorganico-no-reciclable .result-info { border-color: rgba(248,113,113,0.18); }
+        .result h2 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800; font-size: 1.3em; letter-spacing: -0.5px;
+        }
+        .confidence-badge {
+            font-size: 0.72em; font-weight: 700;
+            border-radius: 999px; padding: 3px 12px;
+        }
+
+        /* ═══ 18. GUIDE CARDS — ilustraciones más grandes, mejor padding ═══ */
+        .guide-card { padding: 24px 22px; margin-bottom: 12px; }
+        .guide-illustration {
+            float: right; margin: -4px -4px 8px 16px;
+            opacity: 0.55; transition: opacity 0.3s;
+        }
+        .guide-card:hover .guide-illustration { opacity: 0.8; }
+        .guide-illustration svg { width: 70px; height: 70px; stroke-width: 1.3; }
+        .guide-card h3 { font-size: 1.05em; font-weight: 800; margin-bottom: 12px; }
+        .guide-card p { font-size: 0.84em; line-height: 1.7; }
+
+        /* ═══ 19. HISTORIAL — mini stats con color ═══ */
+        .history-stats-row { gap: 8px; margin-bottom: 16px; }
+        .history-mini-stat {
+            border-radius: var(--r-lg);
+            padding: 14px 10px;
+            transition: transform 0.2s;
+        }
+        .history-mini-stat:hover { transform: translateY(-2px); }
+        .history-mini-stat .hms-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8em; font-weight: 800; color: var(--green-1);
+            line-height: 1;
+        }
+        .history-mini-stat:nth-child(2) .hms-value { color: var(--cyan); }
+        .history-mini-stat:nth-child(3) .hms-value { color: #f87171; }
+        .history-mini-stat .hms-label { font-size: 0.68em; margin-top: 4px; }
+        .history-empty { padding: 56px 20px; }
+        .history-empty .he-icon { opacity: 0.4; }
+
+        /* ═══ 20. INFO MESSAGE — borde izquierdo acento ═══ */
+        .info-message {
+            border-left: 3px solid var(--green-1);
+            border-radius: 0 var(--r-md) var(--r-md) 0;
+            background: linear-gradient(90deg, var(--g-8) 0%, var(--g-4) 100%);
+        }
+
+        /* ═══ 21. QS LAUNCH BUTTON — más visible ═══ */
+        .qs-launch-btn {
+            background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(61,186,122,0.06));
+            border-color: rgba(34,211,238,0.25);
+            color: var(--cyan);
+        }
+        .qs-launch-btn svg { stroke: var(--cyan); }
+        .qs-launch-btn:hover {
+            background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(61,186,122,0.1));
+            border-color: rgba(34,211,238,0.45);
+            box-shadow: 0 0 20px rgba(34,211,238,0.12);
+        }
+
+        /* ═══ 22. DROP ZONE — diseño más atractivo ═══ */
+        .drop-zone {
+            border: 2px dashed var(--border-soft);
+            border-radius: var(--r-xl);
+            padding: 40px 24px;
+            background:
+                radial-gradient(ellipse 60% 50% at 50% 50%, var(--g-4) 0%, transparent 70%),
+                transparent;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            text-align: center; cursor: pointer;
+        }
+        .dz-icon .icon svg { width: 44px; height: 44px; stroke: var(--t3); stroke-width: 1.3; }
+        .dz-text { font-size: 1em; font-weight: 700; color: var(--t2); }
+        .dz-sub { font-size: 0.82em; color: var(--t3); }
+        .dz-badge {
+            font-size: 0.72em; font-weight: 700;
+            background: var(--g-10); border: 1px solid var(--g-20);
+            color: var(--green-1); border-radius: 999px; padding: 3px 12px;
+            margin-top: 4px;
+        }
+
+        /* ═══ 23. BATCH QUEUE — items más claros ═══ */
+        .batch-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px; border-radius: var(--r-md);
+            background: var(--bg-raised); border: 1px solid var(--border-subtle);
+            margin-bottom: 6px; transition: border-color 0.2s;
+            animation: fadeInUp 0.25s ease both;
+        }
+        .batch-item.analyzing { border-color: var(--border-soft); }
+        .batch-item.done.inorganico-reciclable { border-left: 3px solid rgba(34,211,238,0.5); }
+        .batch-item.done.organico { border-left: 3px solid rgba(61,186,122,0.5); }
+        .batch-item.done.inorganico-no-reciclable { border-left: 3px solid rgba(248,113,113,0.4); }
+
+        /* ═══ 24. ONBOARDING MODAL — diapositivas más ricas ═══ */
+        .onboarding-wrap {
+            box-shadow:
+                0 32px 80px rgba(0,0,0,0.75),
+                0 0 0 1px var(--g-15) inset,
+                var(--green-glow);
+        }
+        .ob-icon-ring {
+            box-shadow: 0 0 0 8px var(--g-4), 0 0 40px var(--g-20);
+        }
+        .ob-icon-ring.green { box-shadow: 0 0 0 8px var(--g-4), 0 0 40px var(--g-25); }
+        .ob-icon-ring.cyan  { box-shadow: 0 0 0 8px rgba(34,211,238,0.05), 0 0 40px rgba(34,211,238,0.2); }
+        .ob-icon-ring.amber { box-shadow: 0 0 0 8px rgba(251,191,36,0.05), 0 0 40px rgba(251,191,36,0.18); }
+        .onboarding-slide h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2em; font-weight: 800; letter-spacing: -1.5px;
+            color: var(--t1); margin-bottom: 12px;
+        }
+
+        /* ═══ 25. NAME CARD — fondo más inmersivo ═══ */
+        .name-card {
+            box-shadow:
+                0 48px 100px rgba(0,0,0,0.85),
+                0 0 0 1px var(--g-12) inset,
+                0 0 60px rgba(61,186,122,0.08);
+        }
+        .name-card h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.1em; font-weight: 800; letter-spacing: -1px;
+        }
+        #userNameInput { border-radius: var(--r-md); font-size: 1em; }
+        #userNameInput:focus { box-shadow: 0 0 0 4px var(--g-10), 0 0 20px var(--g-8); }
+
+        /* ═══ 26. TUTORIAL PANEL — steps más claros ═══ */
+        .tut-step-item.active {
+            background: linear-gradient(135deg, rgba(61,186,122,0.1), rgba(61,186,122,0.05));
+        }
+        .tut-step-title { font-size: 0.88em; }
+        .tut-step-desc { font-size: 0.81em; }
+
+        /* ═══ 27. MILESTONE MODAL — más dramático ═══ */
+        .milestone-content {
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 0%, var(--g-10) 0%, transparent 55%),
+                var(--bg-raised);
+            box-shadow:
+                0 32px 80px rgba(0,0,0,0.8),
+                0 0 0 1px var(--g-20) inset,
+                var(--green-glow);
+        }
+        .milestone-icon { font-size: 4em; margin-bottom: 20px; }
+        .milestone-content h2 { font-size: 1.6em; letter-spacing: -0.5px; }
+        .milestone-close {
+            border-radius: var(--r-md);
+            box-shadow: 0 4px 20px var(--g-35);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .milestone-close:hover { transform: translateY(-2px); box-shadow: 0 6px 24px var(--g-50); }
+
+        /* ═══ 28. COMPARADOR — bars con altura y color ═══ */
+        .comparison-bars { gap: 18px; }
+        .bar-container {
+            height: 8px; border-radius: 999px;
+            background: rgba(255,255,255,0.05);
+        }
+        .bar-fill { height: 100%; border-radius: 999px; }
+        .comparison-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05em; font-weight: 800; letter-spacing: -0.5px;
+        }
+        .comparison-message {
+            border-radius: var(--r-lg); gap: 12px; padding: 14px 16px;
+            background: linear-gradient(135deg, var(--g-8), var(--g-4));
+        }
+
+        /* ═══ 29. SHARE BUTTONS — iconos con color ═══ */
+        .share-btn.whatsapp svg { stroke: #25d366; }
+        .share-btn.twitter  svg { stroke: #1d9bf0; }
+        .share-btn.facebook svg { stroke: #1877f2; }
+        .share-btn.copy     svg { stroke: #818cf8; }
+        .share-buttons { gap: 8px; }
+
+        /* ═══ 30. QUICKSCAN OVERLAY — frame mejorado ═══ */
+        .qs-frame {
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.6);
+            border-radius: 4px;
+        }
+        .qs-result-bar {
+            background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
+        }
+        .qs-result-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2em; font-weight: 800; color: var(--t1);
+        }
+        .qs-result-container { font-size: 0.8em; color: var(--t2); margin-top: 3px; }
+
+        /* ═══ 31. DARK MODE v2 — overrides adicionales ═══ */
+        body.dark-mode .glass-card {
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 0%, rgba(120,134,255,0.04) 0%, transparent 60%),
+                var(--bg-card);
+        }
+        body.dark-mode .stats-grid .stat-card:nth-child(1) { border-top-color: rgba(120,134,255,0.35); }
+        body.dark-mode .stats-grid .stat-card:nth-child(2) { border-top-color: rgba(192,132,252,0.3); }
+        body.dark-mode .stats-grid .stat-card:nth-child(3) { border-top-color: rgba(34,211,238,0.3); }
+        body.dark-mode .stats-grid .stat-card:nth-child(4) { border-top-color: rgba(251,191,36,0.25); }
+        body.dark-mode .info-message { border-left-color: var(--green-1); }
+        body.dark-mode .content-card { border-top-color: rgba(120,134,255,0.2); }
+        body.dark-mode .tabs {
+            background: rgba(10,8,30,0.4);
+            border-color: rgba(120,134,255,0.12);
+        }
+        body.dark-mode .milestone-content {
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 0%, rgba(120,134,255,0.1) 0%, transparent 55%),
+                var(--bg-raised);
+        }
+
+        /* ═══ 32. MOBILE — ajustes adicionales responsive ═══ */
+        @media (max-width: 640px) {
+            .header h1 { font-size: clamp(2.2em, 10vw, 3.2em); }
+            .impact-number { font-size: 2.6em; }
+            .container { padding: 20px 16px 90px; }
+            .glass-card { padding: 18px; }
+            .guide-illustration { display: none; }
+            .onboarding-slide { padding: 36px 24px 28px; }
+            .onboarding-slide h2 { font-size: 1.7em; }
+        }
+
 >
     </style>
 </head>
@@ -4772,7 +5252,7 @@
                 <span class="impact-unit">kg CO₂</span>
             </div>
             <div class="impact-sub">kilogramos de CO₂ evitados desde que empezaste</div>
-            <div class="impact-equiv-row">
+            <div class="impact-equiv-row" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
                 <div class="impact-equiv">
                     <span class="eq-icon"><span class="icon"><i data-lucide="tree-pine"></i></span></span>
                     <div class="eq-value" id="impactTV">0</div>
@@ -4870,7 +5350,7 @@
                 
                 <div class="comparison-bar">
                     <div class="comparison-label">Tu Ahorro</div>
-                    <div class="comparison-value" id="userComparison">0.0 kWh</div>
+                    <div class="comparison-value" id="userComparison">0.0 kg CO₂</div>
                     <div class="bar-container">
                         <div class="bar-fill" id="userBar" style="width: 0%;"></div>
                     </div>
@@ -5070,9 +5550,9 @@
 
                 <!-- Mini estadísticas del historial -->
                 <div class="history-stats-row">
-                    <div class="history-mini-stat">
+                    <div class="history-mini-stat" style="cursor:default" title="Residuos orgánicos clasificados">
                         <div class="hms-value" id="histOrgCount">0</div>
-                        <div class="hms-label"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--green-1);vertical-align:middle;flex-shrink:0"></span> Orgánicos</div>
+                        <div class="hms-label"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green-1);vertical-align:middle;margin-right:4px;flex-shrink:0"></span>Orgánicos</div>
                     </div>
                     <div class="history-mini-stat">
                         <div class="hms-value" id="histRecCount">0</div>
