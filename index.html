@@ -4974,6 +4974,591 @@
             .onboarding-slide h2 { font-size: 1.7em; }
         }
 
+
+
+        /* ╔══════════════════════════════════════════════════════════════╗
+           ║  ANIMACIONES v3 — Motion design completo                     ║
+           ╚══════════════════════════════════════════════════════════════╝ */
+
+        /* ── Preferencia de movimiento reducido ── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           1. LOGO — float con spring más natural + wiggle on hover
+        ═══════════════════════════════════════════════════════ */
+        .logo-icon {
+            animation: logo-float 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+        }
+        @keyframes logo-float {
+            0%   { transform: translateY(0px) rotate(0deg); }
+            20%  { transform: translateY(-4px) rotate(0.4deg); }
+            50%  { transform: translateY(-8px) rotate(0deg); }
+            80%  { transform: translateY(-4px) rotate(-0.4deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .logo-icon:hover {
+            animation: logo-wiggle 0.5s cubic-bezier(0.34, 1.6, 0.64, 1) both;
+        }
+        @keyframes logo-wiggle {
+            0%   { transform: scale(1.04) rotate(0deg); }
+            25%  { transform: scale(1.06) rotate(-3deg); }
+            50%  { transform: scale(1.05) rotate(3deg); }
+            75%  { transform: scale(1.04) rotate(-1.5deg); }
+            100% { transform: scale(1.04) rotate(0deg); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           2. RINGS del logo — staggered con easing orgánico
+        ═══════════════════════════════════════════════════════ */
+        .logo-ring-1, .logo-ring-2, .logo-ring-3 {
+            animation: ring-breathe 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .logo-ring-1 { animation-delay: 0s; }
+        .logo-ring-2 { animation-delay: 1.5s; }
+        .logo-ring-3 { animation-delay: 3s; }
+        @keyframes ring-breathe {
+            0%   { transform: translate(-50%,-50%) scale(0.85); opacity: 0; }
+            15%  { opacity: 0.55; }
+            70%  { opacity: 0.12; transform: translate(-50%,-50%) scale(1.1); }
+            100% { transform: translate(-50%,-50%) scale(1.28); opacity: 0; }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           3. HEADER H1 — aparición con blur desde abajo
+        ═══════════════════════════════════════════════════════ */
+        .header h1 {
+            animation: h1-reveal 1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both,
+                       shine-text 5s linear 1.2s infinite;
+        }
+        @keyframes h1-reveal {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+                filter: blur(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           4. STAT CARDS — entrada en cascada mejorada
+        ═══════════════════════════════════════════════════════ */
+        .stats-grid .stat-card:nth-child(1) { animation: stat-enter 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
+        .stats-grid .stat-card:nth-child(2) { animation: stat-enter 0.6s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
+        .stats-grid .stat-card:nth-child(3) { animation: stat-enter 0.6s cubic-bezier(0.22,1,0.36,1) 0.3s both; }
+        .stats-grid .stat-card:nth-child(4) { animation: stat-enter 0.6s cubic-bezier(0.22,1,0.36,1) 0.4s both; }
+        @keyframes stat-enter {
+            from { opacity: 0; transform: translateY(24px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        /* Hover — spring con bounce */
+        .stat-card {
+            transition: transform 0.35s cubic-bezier(0.34, 1.5, 0.64, 1),
+                        box-shadow 0.3s var(--ease),
+                        border-color 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px) scale(1.025); }
+        .stat-card:active { transform: translateY(-1px) scale(1.01); transition-duration: 0.1s; }
+
+        /* ═══════════════════════════════════════════════════════
+           5. BOTÓN CÁMARA — press físico con muelle
+        ═══════════════════════════════════════════════════════ */
+        .camera-btn-large {
+            transition: transform 0.25s cubic-bezier(0.34, 1.6, 0.64, 1),
+                        box-shadow 0.25s var(--ease);
+        }
+        .camera-btn-large:hover { transform: translateY(-3px) scale(1.02); }
+        .camera-btn-large:active {
+            transform: translateY(1px) scale(0.98);
+            transition-duration: 0.08s;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           6. SCAN LINE — easing sinusoidal + glow trail
+        ═══════════════════════════════════════════════════════ */
+        @keyframes scanDown {
+            0%   { top: -2px; opacity: 0; }
+            4%   { opacity: 1; }
+            50%  { opacity: 0.9; }
+            96%  { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .scan-line {
+            height: 3px;
+            animation: scanDown 2s ease-in-out infinite;
+            box-shadow: 0 0 12px 2px rgba(61,186,122,0.5),
+                        0 0 24px 4px rgba(61,186,122,0.2);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           7. DETECTION OVERLAY — entrada más fluida
+        ═══════════════════════════════════════════════════════ */
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(14px) scale(0.98); filter: blur(4px); }
+            to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+        .detection-overlay.active { animation: slideUpFade 0.35s cubic-bezier(0.22,1,0.36,1); }
+
+        /* ═══════════════════════════════════════════════════════
+           8. DETECTION TYPE PILL — pop cuando cambia de categoría
+        ═══════════════════════════════════════════════════════ */
+        .detection-type {
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+            animation: none;
+        }
+        .detection-type.just-changed {
+            animation: pill-pop 0.45s cubic-bezier(0.34, 1.6, 0.64, 1);
+        }
+        @keyframes pill-pop {
+            0%   { transform: scale(0.7); opacity: 0; }
+            60%  { transform: scale(1.12); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           9. GLASS CARDS — hover con lift suave + tilt corregido
+        ═══════════════════════════════════════════════════════ */
+        .glass-card {
+            transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1),
+                        box-shadow 0.35s var(--ease),
+                        border-color 0.3s;
+        }
+        .glass-card:hover { transform: translateY(-3px); }
+
+        /* ═══════════════════════════════════════════════════════
+           10. IMPACT WIDGET — número con conteo animado + pulsación
+        ═══════════════════════════════════════════════════════ */
+        .impact-live-dot {
+            position: relative;
+        }
+        .impact-live-dot::before {
+            animation: live-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes live-pulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(61,186,122,0.7); transform: scale(1); }
+            40%     { box-shadow: 0 0 0 5px rgba(61,186,122,0); transform: scale(1.15); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           11. ACHIEVEMENT TOAST — entrada elástica desde abajo
+        ═══════════════════════════════════════════════════════ */
+        .achievement-toast.show {
+            animation: toast-spring-in 0.55s cubic-bezier(0.34, 1.5, 0.64, 1) both;
+        }
+        @keyframes toast-spring-in {
+            0%   { transform: translateX(-50%) translateY(80px) scale(0.85); opacity: 0; }
+            60%  { transform: translateX(-50%) translateY(-6px) scale(1.02); }
+            100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+        }
+        .achievement-icon {
+            animation: icon-bounce 0.6s cubic-bezier(0.34, 1.6, 0.64, 1) 0.2s both;
+        }
+        @keyframes icon-bounce {
+            from { transform: scale(0) rotate(-15deg); }
+            to   { transform: scale(1) rotate(0deg); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           12. BADGE CARDS — pop al desbloquearse + shimmer hover
+        ═══════════════════════════════════════════════════════ */
+        @keyframes badge-pop {
+            0%   { transform: scale(0.6) rotate(-8deg); opacity: 0; filter: blur(4px); }
+            55%  { transform: scale(1.15) rotate(2deg); opacity: 1; filter: blur(0); }
+            75%  { transform: scale(0.97) rotate(-1deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .badge-card.unlocked.pop {
+            animation: badge-pop 0.65s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+        }
+        /* Shimmer sweep on hover */
+        .badge-card.unlocked::before {
+            content: '';
+            position: absolute; inset: 0; border-radius: inherit;
+            background: linear-gradient(
+                105deg,
+                transparent 25%,
+                rgba(255,255,255,0.12) 50%,
+                transparent 75%
+            );
+            background-size: 200% 100%;
+            background-position: 200% 0;
+            transition: background-position 0.5s ease;
+            pointer-events: none;
+        }
+        .badge-card.unlocked:hover::before {
+            background-position: -100% 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           13. HISTORY ITEMS — fadeInUp escalonado
+        ═══════════════════════════════════════════════════════ */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .history-item {
+            transition: transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1),
+                        background 0.2s,
+                        border-color 0.2s;
+        }
+        .history-item:hover { transform: translateX(5px); }
+
+        /* ═══════════════════════════════════════════════════════
+           14. CHALLENGES — progress fill con animación suave
+        ═══════════════════════════════════════════════════════ */
+        .challenge-progress-fill {
+            transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative; overflow: hidden;
+        }
+        .challenge-progress-fill::after {
+            content: '';
+            position: absolute; top: 0; right: 0; bottom: 0; width: 30px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35));
+            animation: fill-shimmer 2s ease-in-out infinite;
+        }
+        @keyframes fill-shimmer {
+            0%   { opacity: 0; transform: translateX(30px); }
+            50%  { opacity: 1; }
+            100% { opacity: 0; transform: translateX(-60px); }
+        }
+        .challenge-item.done .challenge-reward {
+            animation: reward-pop 0.5s cubic-bezier(0.34, 1.6, 0.64, 1) both;
+        }
+        @keyframes reward-pop {
+            from { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+            to   { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           15. TABS — transición de sección más cinemática
+        ═══════════════════════════════════════════════════════ */
+        @keyframes slide-from-right {
+            from { opacity: 0; transform: translateX(28px); filter: blur(3px); }
+            to   { opacity: 1; transform: translateX(0); filter: blur(0); }
+        }
+        @keyframes slide-from-left {
+            from { opacity: 0; transform: translateX(-28px); filter: blur(3px); }
+            to   { opacity: 1; transform: translateX(0); filter: blur(0); }
+        }
+        .content-section.slide-in-right {
+            animation: slide-from-right 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        .content-section.slide-in-left {
+            animation: slide-from-left 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           16. SHARE BUTTONS — bounce escalonado al aparecer + hover elástico
+        ═══════════════════════════════════════════════════════ */
+        .share-btn {
+            transition: transform 0.3s cubic-bezier(0.34, 1.6, 0.64, 1),
+                        box-shadow 0.25s var(--ease),
+                        background 0.2s,
+                        border-color 0.2s;
+        }
+        .share-btn:hover { transform: translateY(-4px) scale(1.04); }
+        .share-btn:active { transform: translateY(-1px) scale(0.98); transition-duration: 0.08s; }
+        .share-buttons .share-btn:nth-child(1) { animation: share-enter 0.5s cubic-bezier(0.34,1.5,0.64,1) 0.05s both; }
+        .share-buttons .share-btn:nth-child(2) { animation: share-enter 0.5s cubic-bezier(0.34,1.5,0.64,1) 0.12s both; }
+        .share-buttons .share-btn:nth-child(3) { animation: share-enter 0.5s cubic-bezier(0.34,1.5,0.64,1) 0.19s both; }
+        .share-buttons .share-btn:nth-child(4) { animation: share-enter 0.5s cubic-bezier(0.34,1.5,0.64,1) 0.26s both; }
+        @keyframes share-enter {
+            from { opacity: 0; transform: translateY(16px) scale(0.9); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           17. GUIDE CARDS — entrada escalonada desde la izquierda
+        ═══════════════════════════════════════════════════════ */
+        .guide-card {
+            transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1),
+                        box-shadow 0.3s var(--ease);
+            will-change: transform;
+        }
+        .guide-card:hover { transform: translateY(-3px) scale(1.01); }
+        .guide-card:active { transform: scale(0.99); transition-duration: 0.1s; }
+        #guideSection .guide-card:nth-child(1) { animation: guide-enter 0.55s cubic-bezier(0.22,1,0.36,1) 0.05s both; }
+        #guideSection .guide-card:nth-child(2) { animation: guide-enter 0.55s cubic-bezier(0.22,1,0.36,1) 0.15s both; }
+        #guideSection .guide-card:nth-child(3) { animation: guide-enter 0.55s cubic-bezier(0.22,1,0.36,1) 0.25s both; }
+        @keyframes guide-enter {
+            from { opacity: 0; transform: translateX(-20px) scale(0.97); }
+            to   { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           18. FLOATING POINTS — trayectoria curva
+        ═══════════════════════════════════════════════════════ */
+        @keyframes pts-rise {
+            0%   { opacity: 1; transform: translateY(0) translateX(0) scale(1); }
+            30%  { opacity: 1; transform: translateY(-20px) translateX(8px) scale(1.2); }
+            70%  { opacity: 0.6; transform: translateY(-46px) translateX(-4px) scale(1.05); }
+            100% { opacity: 0; transform: translateY(-70px) translateX(0) scale(0.7); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           19. MILESTONE MODAL — zoom dramático de entrada
+        ═══════════════════════════════════════════════════════ */
+        .milestone-modal.active .milestone-content {
+            animation: milestone-enter 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+        }
+        @keyframes milestone-enter {
+            from {
+                opacity: 0;
+                transform: scale(0.6) translateY(40px);
+                filter: blur(8px);
+            }
+            60% {
+                transform: scale(1.04) translateY(-4px);
+                filter: blur(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .milestone-icon {
+            animation: milestone-icon-spin 0.8s cubic-bezier(0.34, 1.6, 0.64, 1) 0.3s both;
+        }
+        @keyframes milestone-icon-spin {
+            from { transform: scale(0) rotate(-180deg); opacity: 0; }
+            to   { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           20. ONBOARDING SLIDES — transición parallax
+        ═══════════════════════════════════════════════════════ */
+        .onboarding-slides {
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .onboarding-wrap {
+            animation: ob-wrap-enter 0.7s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+        }
+        @keyframes ob-wrap-enter {
+            from { opacity: 0; transform: translateY(60px) scale(0.92); filter: blur(6px); }
+            to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+        .ob-btn-next {
+            transition: transform 0.3s cubic-bezier(0.34, 1.6, 0.64, 1),
+                        box-shadow 0.25s var(--ease);
+        }
+        .ob-btn-next:hover { transform: translateY(-3px) scale(1.04); }
+        .ob-btn-next:active { transform: scale(0.97); transition-duration: 0.08s; }
+
+        /* ═══════════════════════════════════════════════════════
+           21. CONFETTI — caída más orgánica y variada
+        ═══════════════════════════════════════════════════════ */
+        @keyframes confettifall {
+            0%   { transform: translateY(-20px) rotate(0deg) scale(1); opacity: 1; }
+            20%  { transform: translateY(20vh) rotate(120deg) scale(0.9) translateX(10px); }
+            50%  { transform: translateY(55vh) rotate(260deg) scale(1.05) translateX(-8px); }
+            80%  { transform: translateY(85vh) rotate(400deg) scale(0.85) translateX(6px); opacity: 0.6; }
+            100% { transform: translateY(110vh) rotate(520deg) scale(0.6); opacity: 0; }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           22. BOTTOM NAV ITEMS — tap feedback con spring
+        ═══════════════════════════════════════════════════════ */
+        .bnav-item {
+            transition: transform 0.25s cubic-bezier(0.34, 1.6, 0.64, 1),
+                        background 0.2s;
+        }
+        .bnav-item:active { transform: scale(0.88); transition-duration: 0.08s; }
+        .bnav-item.active svg {
+            animation: nav-icon-active 0.4s cubic-bezier(0.34, 1.6, 0.64, 1) both;
+        }
+        @keyframes nav-icon-active {
+            from { transform: scale(0.7) translateY(4px); opacity: 0.5; }
+            to   { transform: scale(1.1) translateY(0); opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           23. TOGGLE TEMA — rotación del sol/luna
+        ═══════════════════════════════════════════════════════ */
+        .theme-pill-dot {
+            transition: transform 0.4s cubic-bezier(0.34, 1.5, 0.64, 1);
+        }
+        #themePillIcon {
+            transition: transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.3s;
+        }
+        body:not(.dark-mode) #themePillIcon { transform: rotate(0deg) scale(1); }
+        body.dark-mode #themePillIcon { transform: rotate(200deg) scale(0.9); }
+
+        /* ═══════════════════════════════════════════════════════
+           24. NAME SCREEN INPUT — shake on error, focus glow
+        ═══════════════════════════════════════════════════════ */
+        @keyframes input-shake {
+            0%,100% { transform: translateX(0); }
+            15%     { transform: translateX(-7px); }
+            30%     { transform: translateX(7px); }
+            45%     { transform: translateX(-5px); }
+            60%     { transform: translateX(5px); }
+            75%     { transform: translateX(-3px); }
+            90%     { transform: translateX(3px); }
+        }
+        .name-submit-btn {
+            transition: transform 0.3s cubic-bezier(0.34, 1.6, 0.64, 1),
+                        box-shadow 0.25s var(--ease);
+        }
+        .name-submit-btn:hover { transform: translateY(-3px) scale(1.02); }
+        .name-submit-btn:active { transform: scale(0.97); transition-duration: 0.08s; }
+
+        /* ═══════════════════════════════════════════════════════
+           25. DRAG & DROP — highlight con wave animado
+        ═══════════════════════════════════════════════════════ */
+        .drop-zone.drag-over::after {
+            content: '';
+            position: absolute; inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(ellipse 70% 60% at 50% 50%,
+                rgba(61,186,122,0.1) 0%, transparent 70%);
+            animation: dz-wave 1.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .drop-zone { position: relative; overflow: hidden; }
+        @keyframes dz-wave {
+            0%,100% { transform: scale(1); opacity: 0.8; }
+            50%      { transform: scale(1.06); opacity: 0.4; }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           26. SCROLL REVEAL — más profundidad y blur
+        ═══════════════════════════════════════════════════════ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px) scale(0.97);
+            filter: blur(4px);
+            transition:
+                opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                filter 0.5s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           27. LEVEL TIER BADGE — entrada con glow
+        ═══════════════════════════════════════════════════════ */
+        .level-tier-badge {
+            animation: tier-badge-enter 0.6s cubic-bezier(0.34, 1.5, 0.64, 1) 0.5s both;
+        }
+        @keyframes tier-badge-enter {
+            from { opacity: 0; transform: scale(0.7) translateY(8px); filter: blur(4px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           28. MAP MODAL — slide desde abajo
+        ═══════════════════════════════════════════════════════ */
+        .map-modal.active .map-wrap {
+            animation: map-slide-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes map-slide-up {
+            from { opacity: 0; transform: translateY(60px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .map-filter-btn {
+            transition: transform 0.25s cubic-bezier(0.34, 1.5, 0.64, 1),
+                        background 0.18s,
+                        border-color 0.18s,
+                        color 0.18s;
+        }
+        .map-filter-btn:hover  { transform: scale(1.06); }
+        .map-filter-btn:active { transform: scale(0.94); transition-duration: 0.08s; }
+        .map-filter-btn.active { animation: filter-active 0.35s cubic-bezier(0.34,1.6,0.64,1) both; }
+        @keyframes filter-active {
+            from { transform: scale(0.85); }
+            to   { transform: scale(1); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           29. CAM CTRL BUTTONS — spin on flip + flash on snapshot
+        ═══════════════════════════════════════════════════════ */
+        .cam-ctrl-btn {
+            transition: transform 0.3s cubic-bezier(0.34, 1.5, 0.64, 1),
+                        background 0.2s, border-color 0.2s;
+        }
+        .cam-ctrl-btn:hover { transform: scale(1.14) rotate(5deg); }
+        .cam-ctrl-btn:active { transform: scale(0.88); transition-duration: 0.08s; }
+        #flipCamBtn.flipping {
+            animation: flip-spin 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes flip-spin {
+            from { transform: scale(0.8) rotate(-180deg); }
+            to   { transform: scale(1) rotate(0deg); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           30. QUICKSCAN MODAL — entrada fullscreen con zoom
+        ═══════════════════════════════════════════════════════ */
+        .quickscan-modal.active {
+            animation: qs-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes qs-enter {
+            from { opacity: 0; transform: scale(1.06); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        .qs-result-bar {
+            animation: qs-bar-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes qs-bar-rise {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           31. DOUBT BANNER — shake para llamar atención
+        ═══════════════════════════════════════════════════════ */
+        .doubt-banner {
+            animation: doubt-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both,
+                       doubt-attention 4s cubic-bezier(0.36, 0.07, 0.19, 0.97) 1s both;
+        }
+        @keyframes doubt-enter {
+            from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes doubt-attention {
+            0%,100% { transform: translateX(0); }
+            10%,30% { transform: translateX(-4px); }
+            20%,40% { transform: translateX(4px); }
+            50%     { transform: translateX(0); }
+        }
+        .doubt-btn {
+            transition: transform 0.3s cubic-bezier(0.34, 1.6, 0.64, 1),
+                        box-shadow 0.2s, background 0.2s;
+        }
+        .doubt-btn:hover { transform: translateY(-4px) scale(1.05); }
+        .doubt-btn:active { transform: scale(0.94); transition-duration: 0.08s; }
+
+        /* ═══════════════════════════════════════════════════════
+           32. TUTORIAL PANEL — slide-in desde la derecha con spring
+        ═══════════════════════════════════════════════════════ */
+        .tut-panel {
+            transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+        .tut-step-item {
+            transition: background 0.25s, border-color 0.25s,
+                        transform 0.25s cubic-bezier(0.34, 1.5, 0.64, 1),
+                        opacity 0.2s;
+        }
+        .tut-step-item.active { transform: translateX(3px); }
+        .tut-mini-btn-next {
+            transition: transform 0.3s cubic-bezier(0.34, 1.6, 0.64, 1), box-shadow 0.2s;
+        }
+        .tut-mini-btn-next:hover { transform: scale(1.05); }
+        .tut-mini-btn-next:active { transform: scale(0.95); transition-duration: 0.08s; }
+
 >
     </style>
 </head>
@@ -6062,8 +6647,14 @@
             // Type label + class
             const typeLabels = { organico: 'Orgánico', 'inorganico-reciclable': 'Reciclable', 'inorganico-no-reciclable': 'No Reciclable' };
             const typeClasses = { organico: 'organico', 'inorganico-reciclable': 'reciclable', 'inorganico-no-reciclable': 'no-reciclable' };
+            const newType = typeClasses[info.tipo] || '';
+            if (!typeEl.className.includes(newType)) {
+                typeEl.classList.remove('just-changed');
+                void typeEl.offsetWidth; // reflow
+                typeEl.classList.add('just-changed');
+            }
             typeEl.textContent = typeLabels[info.tipo] || info.tipo;
-            typeEl.className   = 'detection-type ' + (typeClasses[info.tipo] || '');
+            typeEl.className   = 'detection-type ' + newType + ' just-changed';
             overlay.classList.add('active');
 
             // Color border on video
@@ -7160,10 +7751,15 @@
                     userName = name;
                     saveUserName(name);
                 } else if (input && !skip) {
-                    // Shake if empty
+                    // Shake animation
                     input.style.animation = 'none';
                     input.style.borderColor = 'rgba(248,113,113,0.6)';
-                    setTimeout(() => { input.style.borderColor = ''; }, 1200);
+                    void input.offsetWidth;
+                    input.style.animation = 'input-shake 0.5s cubic-bezier(0.36,0.07,0.19,0.97) both';
+                    setTimeout(() => {
+                        input.style.borderColor = '';
+                        input.style.animation = '';
+                    }, 600);
                     return;
                 }
             } else {
@@ -9324,7 +9920,11 @@ out body;`;
             if (stream) stream.getTracks().forEach(t => t.stop());
 
             const btn = document.getElementById('flipCamBtn');
-            if (btn) { btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; }
+            if (btn) {
+                btn.classList.add('flipping');
+                btn.style.pointerEvents = 'none';
+                setTimeout(() => btn.classList.remove('flipping'), 500);
+            }
 
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
