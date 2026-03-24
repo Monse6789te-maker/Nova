@@ -266,7 +266,7 @@
         }
         .logo-icon-placeholder { font-size: 2.8em; filter: drop-shadow(0 0 12px var(--g-90)); display:flex; align-items:center; justify-content:center; }
         .logo-icon-placeholder svg { width: 48px; height: 48px; stroke: var(--green-1); stroke-width: 1.5; filter: drop-shadow(0 0 12px var(--g-90)); }
-        .logo-icon img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 20px; }
+        .logo-icon img { display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 20px; }
         .header p {
             color: var(--t2);
             font-size: 0.92em;
@@ -577,6 +577,18 @@
             color: var(--t2);
             background: var(--g-5);
         }
+        /* Active tab — text over the green sliding indicator */
+        .tab.active {
+            color: #030d03;
+            border-color: transparent;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        /* Fallback when no JS indicator: show green bg */
+        .tab.active:not([style]) {
+            background: var(--green-1);
+        }
         /* ── CONTENT CARD + SECTIONS ── */
         .content-card { padding: 24px; margin-bottom: 14px; }
         .content-section h2 {
@@ -701,6 +713,36 @@
         body.dark-mode .result.organico { background: rgba(0,30,12,0.5); }
         body.dark-mode .result.inorganico-reciclable { background: rgba(0,20,30,0.5); }
         body.dark-mode .result.inorganico-no-reciclable { background: rgba(30,5,5,0.5); }
+
+        /* Result card base styles */
+        .result {
+            display: none;
+            border-radius: var(--r-lg);
+            padding: 18px;
+            margin-top: 16px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-raised);
+            animation: slideUpFade 0.35s ease;
+        }
+        .result.organico {
+            border-color: var(--g-30);
+            background: linear-gradient(135deg, rgba(5,22,8,0.85) 0%, rgba(8,28,10,0.85) 100%);
+        }
+        .result.inorganico-reciclable {
+            border-color: rgba(34,211,238,0.28);
+            background: linear-gradient(135deg, rgba(0,18,26,0.85) 0%, rgba(0,24,34,0.85) 100%);
+        }
+        .result.inorganico-no-reciclable {
+            border-color: rgba(248,113,113,0.28);
+            background: linear-gradient(135deg, rgba(26,4,4,0.85) 0%, rgba(32,6,6,0.85) 100%);
+        }
+        .result-icon {
+            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+        }
+        .result.organico            .result-icon { background: var(--g-15); border: 1px solid var(--g-30); }
+        .result.inorganico-reciclable .result-icon { background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.28); }
+        .result.inorganico-no-reciclable .result-icon { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.28); }
         .result-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
         .confidence-badge {
             display: inline-block; padding: 3px 10px;
@@ -790,6 +832,19 @@
             min-width: 280px;
         }
         .achievement-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .achievement-content {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .achievement-icon {
+            font-size: 1.6em; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px;
+        }
+        .achievement-text h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9em; font-weight: 700; color: var(--t1); margin-bottom: 2px;
+        }
+        .achievement-text p { font-size: 0.78em; color: var(--t2); }
         /* ── MILESTONE MODAL ── */
         .milestone-modal {
             position: fixed; inset: 0;
@@ -995,6 +1050,134 @@
         @keyframes fadeIn { from{opacity:0}to{opacity:1} }
         @keyframes slideUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
         @keyframes countUp { 0%{opacity:0.4;transform:scale(0.95)}100%{opacity:1;transform:scale(1)} }
+        /* ══════════════════════════════════════════════════════
+           NUEVAS FEATURES — CSS
+        ══════════════════════════════════════════════════════ */
+
+        /* ── PWA Install Banner ── */
+        .pwa-install-banner {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 14px; margin-bottom: 12px;
+            background: linear-gradient(135deg, rgba(61,186,122,0.12), rgba(61,186,122,0.06));
+            border: 1px solid var(--border-soft);
+            border-radius: var(--r-md);
+            font-size: 0.82em; color: var(--t2); font-weight: 500;
+            animation: slideUpFade 0.4s ease;
+        }
+        .pwa-install-banner .icon { flex-shrink: 0; }
+        .pwa-install-banner .icon svg, .pwa-install-banner > svg { stroke: var(--green-1); width: 16px; height: 16px; }
+        .pwa-install-btn {
+            padding: 6px 14px; border: none;
+            background: linear-gradient(135deg, var(--green-1), var(--green-2));
+            color: #030d03; border-radius: var(--r-sm);
+            font-family: "DM Sans", sans-serif; font-size: 0.82em; font-weight: 700;
+            cursor: pointer; flex-shrink: 0; transition: transform 0.15s;
+        }
+        .pwa-install-btn:hover { transform: translateY(-1px); }
+        .pwa-dismiss-btn {
+            width: 24px; height: 24px; background: transparent;
+            border: none; cursor: pointer; color: var(--t3); flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+        }
+        .pwa-dismiss-btn svg { width: 14px; height: 14px; stroke: currentColor; }
+        .pwa-dismiss-btn:hover { color: var(--t1); background: rgba(255,255,255,0.05); }
+
+        /* ── Modo Duda banner ── */
+        .doubt-banner {
+            padding: 14px 16px; margin-bottom: 12px;
+            background: rgba(251,191,36,0.08);
+            border: 1px solid rgba(251,191,36,0.25);
+            border-radius: var(--r-md);
+            animation: slideUpFade 0.35s ease;
+        }
+        .doubt-label {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.82em; font-weight: 600; color: #fbbf24;
+            margin-bottom: 12px;
+        }
+        .doubt-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+        .doubt-btn {
+            padding: 10px 6px; border: 1px solid;
+            border-radius: var(--r-sm); font-family: "DM Sans", sans-serif;
+            font-size: 0.8em; font-weight: 700; cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s; text-align: center;
+        }
+        .doubt-btn:hover { transform: translateY(-2px); }
+        .doubt-btn.organic  { background: var(--g-10); border-color: var(--g-30); color: var(--green-1); }
+        .doubt-btn.recycle  { background: rgba(34,211,238,0.1); border-color: rgba(34,211,238,0.3); color: var(--cyan); }
+        .doubt-btn.waste    { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.3); color: #f87171; }
+
+        /* ── Botones en fila ── */
+        .rt-btn-row { display: flex; flex-direction: column; gap: 8px; }
+
+        /* ── Camera controls overlay ── */
+        .cam-controls {
+            position: absolute; top: 12px; right: 12px;
+            display: flex; flex-direction: column; gap: 8px; z-index: 15;
+        }
+        .cam-ctrl-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(0,0,0,0.55); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.18);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.18s; color: #fff;
+        }
+        .cam-ctrl-btn:hover {
+            background: rgba(61,186,122,0.35); border-color: rgba(61,186,122,0.6);
+            transform: scale(1.08);
+        }
+        .cam-ctrl-btn svg { stroke: #fff; display: block; }
+
+        /* ── Snapshot Preview ── */
+        .snapshot-preview {
+            position: absolute; inset: 0; z-index: 20;
+            background: rgba(0,0,0,0.88); display: flex;
+            align-items: center; justify-content: center;
+            border-radius: var(--r-lg); animation: fadeIn 0.25s ease;
+        }
+        .snapshot-preview img {
+            max-width: 100%; max-height: 100%; object-fit: contain;
+            border-radius: var(--r-md); border: 2px solid var(--border-mid);
+        }
+        .snapshot-close {
+            position: absolute; top: 12px; right: 12px;
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .snapshot-close svg { stroke: #fff; width: 14px; height: 14px; stroke-width: 2.5; }
+
+        /* ── Confidence History Panel ── */
+        .conf-history-panel {
+            margin-top: 14px; padding: 14px 16px;
+            background: var(--bg-raised); border: 1px solid var(--border-subtle);
+            border-radius: var(--r-md); animation: slideUpFade 0.35s ease;
+        }
+        .conf-history-title {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.8em; font-weight: 700; color: var(--t2);
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+        }
+        .conf-history-title .icon svg { width: 15px; height: 15px; stroke: var(--t3); }
+        .conf-history-list { display: flex; flex-direction: column; gap: 6px; }
+        .conf-history-item { display: flex; align-items: center; gap: 10px; font-size: 0.8em; }
+        .conf-history-name {
+            flex: 1; color: var(--t1); font-weight: 600;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .conf-history-bar-wrap {
+            width: 100px; height: 6px; background: var(--g-10);
+            border-radius: 3px; overflow: hidden; flex-shrink: 0;
+        }
+        .conf-history-bar { height: 100%; border-radius: 3px; transition: width 0.6s var(--ease); }
+        .conf-history-bar.organico { background: var(--green-1); }
+        .conf-history-bar.inorganico-reciclable { background: var(--cyan); }
+        .conf-history-bar.inorganico-no-reciclable { background: #f87171; }
+        .conf-history-pct {
+            width: 38px; text-align: right; color: var(--t2); font-weight: 600; flex-shrink: 0;
+        }
+
         /* ── OFFLINE BADGE ── */
         .offline-badge {
             display: none;
@@ -2356,6 +2539,15 @@
             font-family: 'DM Sans', sans-serif; font-size: 0.78em; font-weight: 600;
             color: var(--t2);
         }
+        @media (max-width: 480px) {
+            .sync-bar {
+                left: 18px;
+                transform: none;
+                padding: 5px 10px 5px 8px;
+            }
+            .sync-bar #syncLabel { display: none; }
+            .theme-toggle-wrap { top: 18px; right: 18px; }
+        }
         .sync-bar:hover { border-color: var(--border-mid); }
         .sync-bar.synced { border-color: var(--border-soft); color: var(--green-1); }
         .sync-avatar {
@@ -3118,6 +3310,12 @@
             padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         /* hide top tabs on mobile */
+        @media (max-width: 640px) {
+            .bottom-nav { display: flex; }
+            .tabs { display: none; }
+            .swipe-hint { display: block; }
+            .container { padding-bottom: 80px; }
+        }
 
         .bnav-item {
             flex: 1; display: flex; flex-direction: column;
@@ -3129,6 +3327,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         .bnav-item svg { width: 20px; height: 20px; stroke: var(--t3); stroke-width: 2; transition: stroke 0.2s, transform 0.2s; }
+        .bnav-item span { font-size: 0.65em; color: var(--t3); font-weight: 600; transition: color 0.2s; }
         .bnav-item.active svg { stroke: var(--green-1); transform: scale(1.1); }
         .bnav-item.active span { color: var(--green-1); }
         /* Active indicator dot */
@@ -3816,6 +4015,485 @@
         body.perf-low .challenge-item { transition: none !important; }
         body.perf-low .challenge-item:hover { transform: none !important; }
 
+        /* ╔══════════════════════════════════════════════════════════════╗
+           ║  MEJORAS VISUALES — Depth, Glow, Motion, Polish             ║
+           ╚══════════════════════════════════════════════════════════════╝ */
+
+        /* ── 1. HEADER H1 — gradiente animado ── */
+        .header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.6em, 7vw, 4em);
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg,
+                var(--green-3) 0%,
+                var(--green-1) 30%,
+                #ffffff 55%,
+                var(--green-1) 80%,
+                var(--green-3) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shine-text 5s linear infinite;
+        }
+        @keyframes shine-text {
+            0%   { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* ── 2. HEADER EYEBROW — capsule pill ── */
+        .header-eyebrow {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.72em; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--green-1);
+            background: var(--g-8);
+            border: 1px solid var(--g-25);
+            border-radius: 999px;
+            padding: 5px 14px;
+            margin-bottom: 12px;
+        }
+        .header-eyebrow .icon svg { width: 13px; height: 13px; stroke: var(--green-1); }
+
+        /* ── 3. GLASS CARD — stronger depth layers ── */
+        .glass-card {
+            box-shadow:
+                0 1px 0 0 rgba(255,255,255,0.04) inset,
+                0 -1px 0 0 rgba(0,0,0,0.15) inset,
+                0 4px 24px rgba(0,0,0,0.28);
+        }
+        .glass-card:hover {
+            box-shadow:
+                0 1px 0 0 rgba(255,255,255,0.06) inset,
+                0 -1px 0 0 rgba(0,0,0,0.15) inset,
+                0 12px 40px rgba(0,0,0,0.4),
+                var(--green-glow-sm);
+        }
+
+        /* ── 4. STAT CARDS — número grande con gradiente de color ── */
+        .stat-card { transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease); }
+        .stat-card:hover { transform: translateY(-4px) scale(1.02); }
+        .stat-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.4em;
+            font-weight: 800;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, var(--t1) 0%, var(--green-3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        /* Colored stat icon background per card */
+        .stat-icon.nivel  { background: rgba(61,186,122,0.14);  border-radius: 10px; }
+        .stat-icon.racha  { background: rgba(249,115,22,0.14);  border-radius: 10px; }
+        .stat-icon.escaneos { background: rgba(34,211,238,0.12); border-radius: 10px; }
+        .stat-icon.co2    { background: rgba(192,132,252,0.12); border-radius: 10px; }
+        .stat-icon.nivel svg    { stroke: var(--green-1) !important; }
+        .stat-icon.racha svg    { stroke: #f97316 !important; }
+        .stat-icon.escaneos svg { stroke: var(--cyan) !important; }
+        .stat-icon.co2 svg      { stroke: var(--purple) !important; }
+
+        /* ── 5. PROGRESS BAR — shimmer animado ── */
+        .progress-fill {
+            position: relative; overflow: hidden;
+            background: linear-gradient(90deg, var(--green-2), var(--green-1), var(--green-3));
+            background-size: 200% 100%;
+            animation: progress-shimmer 2.5s ease-in-out infinite;
+        }
+        @keyframes progress-shimmer {
+            0%   { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+
+        /* ── 6. CAMERA BUTTON — glow pulsante ── */
+        .camera-btn-large {
+            position: relative; overflow: hidden;
+            box-shadow: 0 4px 20px var(--g-35), 0 0 0 0 var(--g-30);
+            animation: btn-pulse-glow 3s ease-in-out infinite;
+        }
+        @keyframes btn-pulse-glow {
+            0%,100% { box-shadow: 0 4px 20px var(--g-35), 0 0 0 0 var(--g-15); }
+            50%      { box-shadow: 0 6px 28px var(--g-50), 0 0 0 6px var(--g-6); }
+        }
+        .camera-btn-large.stop { animation: none; }
+        /* Shimmer sweep on button */
+        .camera-btn-large::after {
+            content: '';
+            position: absolute; top: 0; left: -100%;
+            width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            animation: btn-shimmer 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes btn-shimmer {
+            0%   { left: -80%; }
+            60%  { left: 120%; }
+            100% { left: 120%; }
+        }
+
+        /* ── 7. IMPACT WIDGET — aurora interior ── */
+        .impact-widget {
+            position: relative;
+            overflow: hidden;
+        }
+        .impact-widget::before {
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(61,186,122,0.6) 50%,
+                transparent 100%);
+        }
+        /* Animated aurora blob */
+        .impact-widget::after {
+            content: '';
+            position: absolute; top: -80px; right: -80px;
+            width: 260px; height: 260px; border-radius: 50%;
+            background: radial-gradient(circle,
+                rgba(61,186,122,0.1) 0%,
+                rgba(34,211,238,0.06) 40%,
+                transparent 70%);
+            animation: aurora-drift 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes aurora-drift {
+            0%,100% { transform: translate(0,0) scale(1); }
+            33%      { transform: translate(-20px,15px) scale(1.1); }
+            66%      { transform: translate(15px,-10px) scale(0.95); }
+        }
+        .impact-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.2em;
+            font-weight: 800;
+            letter-spacing: -3px;
+            background: linear-gradient(135deg, var(--green-3), var(--green-1), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        /* ── 8. IMPACT EQUIV CARDS — glassmorphism mini cards ── */
+        .impact-equiv {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--r-md);
+            padding: 12px 8px;
+            text-align: center;
+            transition: background 0.2s, transform 0.2s;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .impact-equiv:hover {
+            background: var(--g-8);
+            border-color: var(--border-soft);
+            transform: translateY(-2px);
+        }
+
+        /* ── 9. CHALLENGE ITEMS — left accent animated bar ── */
+        .challenge-item {
+            position: relative;
+            overflow: hidden;
+        }
+        .challenge-item::before {
+            content: '';
+            position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+            background: linear-gradient(180deg, var(--green-1), var(--green-2));
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.3s var(--ease);
+            border-radius: 0 2px 2px 0;
+        }
+        .challenge-item:hover::before,
+        .challenge-item.done::before { transform: scaleY(1); }
+        .challenge-item.done::before {
+            background: linear-gradient(180deg, var(--green-1), var(--green-3));
+        }
+        .challenge-progress-bar {
+            background: var(--g-10);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .challenge-icon {
+            display: flex; align-items: center; justify-content: center;
+            background: var(--g-10);
+            border: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        .challenge-item:hover .challenge-icon { transform: scale(1.1) rotate(-5deg); }
+        .challenge-item.done .challenge-icon {
+            background: var(--g-20);
+            border-color: var(--border-soft);
+        }
+
+        /* ── 10. BADGE CARDS — holographic shimmer mejorado ── */
+        .badge-card.unlocked::after {
+            content: '';
+            position: absolute; inset: 0; border-radius: inherit;
+            background: linear-gradient(
+                135deg,
+                rgba(255,255,255,0.12) 0%,
+                transparent 40%,
+                rgba(255,255,255,0.06) 60%,
+                transparent 100%
+            );
+            pointer-events: none;
+        }
+        .badge-card.rarity-legendary {
+            animation: legendary-pulse 3s ease-in-out infinite,
+                       holo-shift 6s ease-in-out infinite;
+        }
+        @keyframes holo-shift {
+            0%,100% { filter: hue-rotate(0deg) brightness(1); }
+            33%      { filter: hue-rotate(20deg) brightness(1.05); }
+            66%      { filter: hue-rotate(-15deg) brightness(1.02); }
+        }
+
+        /* ── 11. DETECTION OVERLAY — blur glass bottom ── */
+        .detection-overlay {
+            background: linear-gradient(
+                to top,
+                rgba(2,8,2,0.96) 0%,
+                rgba(2,8,2,0.7) 60%,
+                transparent 100%
+            );
+            backdrop-filter: blur(2px);
+            padding: 20px 18px 16px;
+        }
+        .detection-label {
+            font-size: 1.3em;
+            text-shadow: 0 0 20px rgba(61,186,122,0.4);
+        }
+
+        /* ── 12. SCAN LINE — multicolor ── */
+        .scan-line {
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(34,211,238,0.4) 20%,
+                var(--green-1) 50%,
+                rgba(34,211,238,0.4) 80%,
+                transparent 100%);
+            box-shadow: 0 0 8px rgba(61,186,122,0.6);
+        }
+
+        /* ── 13. HISTORY ITEMS — hover lift suave ── */
+        .history-item {
+            transition: transform 0.2s var(--ease), background 0.2s, border-color 0.2s;
+        }
+        .history-item:hover {
+            transform: translateX(4px);
+            border-left-width: 4px;
+        }
+
+        /* ── 14. GUIDE CARDS — top accent line ── */
+        .guide-card::after {
+            content: '';
+            position: absolute; top: 0; left: 12%; right: 12%; height: 1px;
+            border-radius: 1px;
+        }
+        .guide-card.organic::after  { background: linear-gradient(90deg, transparent, rgba(61,186,122,0.5), transparent); }
+        .guide-card.recycle::after  { background: linear-gradient(90deg, transparent, rgba(34,211,238,0.5), transparent); }
+        .guide-card.waste::after    { background: linear-gradient(90deg, transparent, rgba(248,113,113,0.4), transparent); }
+
+        /* ── 15. BOTTOM NAV — indicator dot animado ── */
+        .bnav-item.active::after {
+            width: 20px; height: 3px;
+            border-radius: 999px;
+            bottom: 4px;
+            animation: nav-dot-in 0.3s var(--ease) both;
+        }
+        @keyframes nav-dot-in {
+            from { width: 4px; opacity: 0; }
+            to   { width: 20px; opacity: 1; }
+        }
+
+        /* ── 16. TABS INDICATOR — más visible ── */
+        .tab-indicator {
+            background: linear-gradient(135deg, var(--green-1), var(--green-2)) !important;
+            opacity: 0.95;
+            box-shadow: 0 2px 18px var(--g-50) !important;
+        }
+
+        /* ── 17. SECTION DIVIDERS — pulse suave ── */
+        .section-divider-icon {
+            animation: divider-pulse 4s ease-in-out infinite;
+        }
+        @keyframes divider-pulse {
+            0%,100% { box-shadow: none; }
+            50%      { box-shadow: 0 0 10px var(--g-20); }
+        }
+
+        /* ── 18. ACHIEVEMENT TOAST — borde arcoiris animado ── */
+        .achievement-toast.show {
+            background: linear-gradient(var(--bg-raised), var(--bg-raised)) padding-box,
+                        linear-gradient(135deg, var(--green-1), var(--cyan), var(--green-2)) border-box;
+            border: 1px solid transparent;
+        }
+
+        /* ── 19. FLOATING POINTS — más espectacular ── */
+        .pts-float {
+            font-size: 1.3em;
+            text-shadow:
+                0 0 10px currentColor,
+                0 0 24px currentColor;
+        }
+
+        /* ── 20. THUMBNAIL DROP ZONE — hover animado ── */
+        .drop-zone {
+            transition: background 0.25s, border-color 0.25s, transform 0.2s;
+        }
+        .drop-zone:hover, .drop-zone.drag-over {
+            border-color: var(--green-1);
+            background: var(--g-6);
+            transform: scale(1.01);
+        }
+        .drop-zone.drag-over {
+            box-shadow: 0 0 0 3px var(--g-20), 0 0 30px var(--g-15);
+        }
+
+        /* ── 21. RESULT CARD — top shimmer line ── */
+        .result::before {
+            content: '';
+            position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+            border-radius: 1px; pointer-events: none;
+        }
+        .result.organico::before {
+            background: linear-gradient(90deg, transparent, rgba(61,186,122,0.7), transparent);
+        }
+        .result.inorganico-reciclable::before {
+            background: linear-gradient(90deg, transparent, rgba(34,211,238,0.6), transparent);
+        }
+        .result.inorganico-no-reciclable::before {
+            background: linear-gradient(90deg, transparent, rgba(248,113,113,0.5), transparent);
+        }
+
+        /* ── 22. SYNC BAR — dot pulsante más visible ── */
+        .sync-bar.synced .sync-dot {
+            box-shadow: 0 0 0 3px rgba(61,186,122,0.2);
+        }
+
+        /* ── 23. MODEL STATUS — colores semánticos ── */
+        .model-status.loading {
+            color: #fbbf24;
+            background: rgba(251,191,36,0.08);
+            border: 1px solid rgba(251,191,36,0.2);
+        }
+        .model-status.cached,
+        .model-status.online {
+            color: var(--green-1);
+            background: var(--g-8);
+            border: 1px solid var(--g-20);
+        }
+        .model-status-dot {
+            width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+            display: inline-block; margin-right: 4px;
+        }
+        .model-status.loading .model-status-dot {
+            background: #fbbf24;
+            animation: pip-blink 0.8s ease-in-out infinite;
+        }
+        .model-status.cached .model-status-dot,
+        .model-status.online .model-status-dot {
+            background: var(--green-1);
+            box-shadow: 0 0 5px var(--green-1);
+        }
+
+        /* ── 24. LOGO RING animation — más suave ── */
+        .logo-ring-1, .logo-ring-2, .logo-ring-3 {
+            position: absolute; border-radius: 50%;
+            border: 1px solid var(--g-12);
+            pointer-events: none; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            animation: logo-ring-out 4s ease-out infinite;
+        }
+        .logo-ring-1 { width: 120px; height: 120px; animation-delay: 0s; }
+        .logo-ring-2 { width: 150px; height: 150px; animation-delay: 1.2s; }
+        .logo-ring-3 { width: 182px; height: 182px; animation-delay: 2.4s; }
+        @keyframes logo-ring-out {
+            0%   { opacity: 0.6; transform: translate(-50%,-50%) scale(0.8); }
+            80%  { opacity: 0.08; transform: translate(-50%,-50%) scale(1.15); }
+            100% { opacity: 0; transform: translate(-50%,-50%) scale(1.25); }
+        }
+
+        /* ── 25. SCROLL REVEAL — scale desde abajo ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(18px) scale(0.98);
+            transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* ── 26. ACTIVITY BARS — glow on high value ── */
+        .activity-bar {
+            background: linear-gradient(180deg, var(--green-3), var(--green-2));
+            border-radius: 4px 4px 2px 2px;
+            transition: height 0.5s var(--ease), box-shadow 0.3s;
+            min-height: 4px;
+            cursor: default;
+        }
+        .activity-bar:not(.empty):hover {
+            box-shadow: 0 0 10px var(--g-50);
+            filter: brightness(1.15);
+        }
+        .activity-bar.empty {
+            background: var(--g-8);
+            border: 1px dashed var(--g-15);
+        }
+
+        /* ── 27. GUIDE ILLUSTRATION — animated stroke ── */
+        .guide-illustration svg {
+            transition: filter 0.3s;
+        }
+        .guide-card:hover .guide-illustration svg {
+            filter: drop-shadow(0 0 12px currentColor);
+        }
+
+        /* ── 28. BOTTOM NAV — glassmorphism reforzado ── */
+        .bottom-nav {
+            background: rgba(3,8,3,0.88);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            box-shadow: 0 -1px 0 rgba(61,186,122,0.08), 0 -8px 32px rgba(0,0,0,0.3);
+        }
+
+        /* ── 29. SHARE BUTTONS — micro interacciones ── */
+        .share-btn::before {
+            content: '';
+            position: absolute; inset: 0; border-radius: inherit;
+            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.06), transparent 60%);
+            pointer-events: none;
+        }
+        .share-btn { position: relative; overflow: hidden; }
+
+        /* ── 30. DARK MODE — mejoras colores ── */
+        body.dark-mode .stat-value {
+            background: linear-gradient(135deg, #e8e8ff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.dark-mode .impact-number {
+            background: linear-gradient(135deg, #a5b4fc, #7c86ff, #fff);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.dark-mode .camera-btn-large {
+            animation: btn-pulse-glow-dark 3s ease-in-out infinite;
+        }
+        @keyframes btn-pulse-glow-dark {
+            0%,100% { box-shadow: 0 4px 20px rgba(120,134,255,0.35), 0 0 0 0 rgba(120,134,255,0.15); }
+            50%      { box-shadow: 0 6px 28px rgba(120,134,255,0.5),  0 0 0 6px rgba(120,134,255,0.06); }
+        }
+        body.dark-mode .header h1 {
+            background: linear-gradient(135deg, #a5b4fc 0%, #7c86ff 35%, #fff 55%, #7c86ff 80%, #a5b4fc 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine-text 5s linear infinite;
+        }
+
 >
     </style>
 </head>
@@ -4096,17 +4774,17 @@
             <div class="impact-sub">kilogramos de CO₂ evitados desde que empezaste</div>
             <div class="impact-equiv-row">
                 <div class="impact-equiv">
-                    <span class="eq-icon"><span class="icon"><i data-lucide="tv"></i></span></span>
-                    <div class="eq-value" id="impactTV">0h</div>
+                    <span class="eq-icon"><span class="icon"><i data-lucide="tree-pine"></i></span></span>
+                    <div class="eq-value" id="impactTV">0</div>
                     <div class="eq-label">árboles jóvenes</div>
                 </div>
                 <div class="impact-equiv">
-                    <span class="eq-icon"><span class="icon"><i data-lucide="lightbulb"></i></span></span>
-                    <div class="eq-value" id="impactBulb">0h</div>
+                    <span class="eq-icon"><span class="icon"><i data-lucide="car"></i></span></span>
+                    <div class="eq-value" id="impactBulb">0 km</div>
                     <div class="eq-label">km sin contaminar</div>
                 </div>
                 <div class="impact-equiv">
-                    <span class="eq-icon"><span class="icon"><i data-lucide="tree-pine"></i></span></span>
+                    <span class="eq-icon"><span class="icon"><i data-lucide="wind"></i></span></span>
                     <div class="eq-value" id="impactTree">0</div>
                     <div class="eq-label">días de aire limpio</div>
                 </div>
@@ -4200,7 +4878,7 @@
             </div>
             
             <div class="comparison-message" id="comparisonMessage">
-                <div class="icon"><span class="icon"><i data-lucide="rocket"></i></span></div>
+                <div class="icon"><i data-lucide="rocket"></i></div>
                 <div class="text">Escanea tu primer residuo y empieza a ver tu huella ambiental positiva en tiempo real</div>
             </div>
         </div>
@@ -4260,7 +4938,7 @@
         <div class="content-card glass-card reveal">
             <!-- Real Time Section -->
             <div class="content-section active" id="realtimeSection">
-                <h2 style="margin-bottom: 15px; color: var(--text-dark);">Detección en Tiempo Real</h2>
+                <h2 style="margin-bottom: 15px; color: var(--t1);">Detección en Tiempo Real</h2>
                 <div class="info-message">
                     <span class="icon"><i data-lucide="zap"></i></span>
                     <span>La IA identifica residuos en tiempo real · Cada reciclaje correcto reduce tu huella de carbono</span>
@@ -4271,15 +4949,39 @@
                     Modo Escaneo Rápido (pantalla completa)
                 </button>
 
-                <button class="camera-btn-large" id="startRealtimeBtn" onclick="startRealtime()" aria-label="Iniciar detección en tiempo real">
-                    <span class="icon"><i data-lucide="camera"></i></span>
-                    <span>Iniciar Detección en Tiempo Real</span>
-                </button>
+                <!-- PWA Install Banner -->
+                <div class="pwa-install-banner" id="pwaInstallBanner" style="display:none">
+                    <span class="icon"><i data-lucide="download"></i></span>
+                    <span>Instala Nova en tu dispositivo para usarla sin internet</span>
+                    <button class="pwa-install-btn" id="pwaInstallBtn" onclick="triggerPwaInstall()">Instalar</button>
+                    <button class="pwa-dismiss-btn" onclick="dismissPwaBanner()" aria-label="Cerrar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6L6 18M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
+                    </button>
+                </div>
 
-                <button class="camera-btn-large stop" id="stopRealtimeBtn" onclick="stopRealtime()" aria-label="Detener detección" style="display: none;">
-                    <span class="icon"><i data-lucide="square"></i></span>
-                    <span>Detener Detección</span>
-                </button>
+                <!-- Modo duda: aparece cuando confianza es baja (40-60%) -->
+                <div class="doubt-banner" id="doubtBanner" style="display:none">
+                    <div class="doubt-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" width="16" height="16"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r=".5" fill="#fbbf24" stroke-width="2"/></svg>
+                        IA con baja confianza — ¿Qué tipo de residuo es?
+                    </div>
+                    <div class="doubt-options">
+                        <button class="doubt-btn organic" onclick="resolveDoubt('organico')">🌱 Orgánico</button>
+                        <button class="doubt-btn recycle" onclick="resolveDoubt('inorganico-reciclable')">♻️ Reciclable</button>
+                        <button class="doubt-btn waste"   onclick="resolveDoubt('inorganico-no-reciclable')">🗑️ No Reciclable</button>
+                    </div>
+                </div>
+
+                <div class="rt-btn-row">
+                    <button class="camera-btn-large" id="startRealtimeBtn" onclick="startRealtime()" aria-label="Iniciar detección en tiempo real">
+                        <span class="icon"><i data-lucide="camera"></i></span>
+                        <span>Iniciar Detección en Tiempo Real</span>
+                    </button>
+                    <button class="camera-btn-large stop" id="stopRealtimeBtn" onclick="stopRealtime()" aria-label="Detener detección" style="display: none;">
+                        <span class="icon"><i data-lucide="square"></i></span>
+                        <span>Detener Detección</span>
+                    </button>
+                </div>
 
                 <div class="media-container" id="realtimeContainer" style="display: none; margin-top: 20px;">
                     <div class="detection-burst" id="detectionBurst"></div>
@@ -4287,11 +4989,39 @@
                     <div class="scan-line"></div>
                     <div class="detection-grid"></div>
                     <video id="videoPreview" autoplay playsinline></video>
+
+                    <!-- Snapshot preview overlay -->
+                    <div class="snapshot-preview" id="snapshotPreview" style="display:none">
+                        <img id="snapshotImg" alt="Captura">
+                        <button class="snapshot-close" onclick="closeSnapshot()" aria-label="Cerrar captura">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6L6 18M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Camera controls (flip + snapshot) -->
+                    <div class="cam-controls">
+                        <button class="cam-ctrl-btn" id="flipCamBtn" onclick="flipCamera()" aria-label="Cambiar cámara" title="Cambiar cámara">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <button class="cam-ctrl-btn" id="snapshotBtn" onclick="takeSnapshot()" aria-label="Tomar captura" title="Guardar captura">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="13" r="4" stroke-width="2"/></svg>
+                        </button>
+                    </div>
+
                     <div class="detection-overlay" id="detectionOverlay">
                         <div class="detection-label" id="detectionLabel">Detectando...</div>
                         <div class="detection-confidence" id="detectionConfidence">Confianza: 0%</div>
                         <span class="detection-type" id="detectionType">---</span>
                     </div>
+                </div>
+
+                <!-- Historial de confianza por objeto -->
+                <div class="conf-history-panel" id="confHistoryPanel" style="display:none">
+                    <div class="conf-history-title">
+                        <span class="icon"><i data-lucide="bar-chart-2"></i></span>
+                        Historial de confianza — últimas detecciones
+                    </div>
+                    <div class="conf-history-list" id="confHistoryList"></div>
                 </div>
 
                 <div class="result" id="resultRealtime"></div>
@@ -4673,8 +5403,8 @@
             if (realtimeStarting || isDetecting) return; // prevent double-start
             realtimeStarting = true;
             const videoConstraints = [
-                { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
-                { facingMode: 'user',        width: { ideal: 1280 }, height: { ideal: 720 } },
+                { facingMode: currentFacingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
+                { facingMode: currentFacingMode === 'environment' ? 'user' : 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
                 true   // cualquier cámara disponible
             ];
 
@@ -4734,19 +5464,24 @@
 
         function stopRealtime() {
             isDetecting = false;
-            
-            if (detectionInterval) {
-                clearTimeout(detectionInterval);
-            }
-            
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-            
+
+            if (detectionInterval) clearTimeout(detectionInterval);
+
+            if (stream) stream.getTracks().forEach(track => track.stop());
+
             const video = document.getElementById('videoPreview');
             video.style.display = 'none';
+            video.style.transform = ''; // reset mirror from front camera
             video.classList.remove('organico', 'reciclable', 'no-reciclable');
-            
+
+            currentFacingMode = 'environment'; // reset to rear cam for next session
+            closeSnapshot();
+            hideDoubtBanner();
+            predictionCache.clear();
+
+            const confPanel = document.getElementById('confHistoryPanel');
+            if (confPanel) confPanel.style.display = 'none';
+
             document.getElementById('realtimeContainer').style.display = 'none';
             document.getElementById('startRealtimeBtn').style.display = 'flex';
             document.getElementById('stopRealtimeBtn').style.display = 'none';
@@ -4788,19 +5523,39 @@
                         }
                     }
 
-                    const CONFIDENCE_THRESHOLD = 60; // raised from 50 to reduce false positives
+                    const CONFIDENCE_THRESHOLD = 60;
+                    const DOUBT_THRESHOLD_LOW  = 40; // below this: too uncertain
+                    const DOUBT_THRESHOLD_HIGH = 60; // above this: confident
 
                     if (bestMatch && parseFloat(bestMatch.confidence) >= CONFIDENCE_THRESHOLD) {
-                        updateRealtimeOverlay(bestMatch.name, bestMatch.info, bestMatch.confidence);
-                    } else {
-                        // Show best prediction name even if unclassified
-                        const topName = predictions[0].className.split(',')[0].trim();
+                        // Check cache first to avoid redundant re-renders
+                        const cacheKey = bestMatch.name + '_' + bestMatch.info.tipo;
+                        const cached = getCachedPrediction(cacheKey);
+                        if (!cached) {
+                            setCachedPrediction(cacheKey, bestMatch);
+                            updateRealtimeOverlay(bestMatch.name, bestMatch.info, bestMatch.confidence);
+                            addToConfHistory(bestMatch.name, bestMatch.info.tipo, bestMatch.confidence);
+                        }
+                        hideDoubtBanner();
+                    } else if (bestMatch && parseFloat(bestMatch.confidence) >= DOUBT_THRESHOLD_LOW) {
+                        // MODO DUDA: confianza baja pero detectable
+                        const topName = predictions[0].className.split(",")[0].trim();
                         const topConf = (predictions[0].probability * 100).toFixed(1);
-                        document.getElementById('detectionLabel').textContent = topName;
-                        document.getElementById('detectionConfidence').textContent = `Confianza: ${topConf}% — analizando...`;
-                        document.getElementById('detectionType').textContent = 'Identificando...';
-                        document.getElementById('detectionType').className = 'detection-type';
-                        document.getElementById('detectionOverlay').classList.add('active');
+                        document.getElementById("detectionLabel").textContent = bestMatch.name.charAt(0).toUpperCase() + bestMatch.name.slice(1);
+                        document.getElementById("detectionConfidence").textContent = `Confianza: ${bestMatch.confidence}% — baja seguridad`;
+                        document.getElementById("detectionType").textContent = "¿Ayúdame a clasificar?";
+                        document.getElementById("detectionType").className = "detection-type";
+                        document.getElementById("detectionOverlay").classList.add("active");
+                        showDoubtBanner(bestMatch.name, parseFloat(bestMatch.confidence));
+                    } else {
+                        const topName = predictions[0].className.split(",")[0].trim();
+                        const topConf = (predictions[0].probability * 100).toFixed(1);
+                        document.getElementById("detectionLabel").textContent = topName;
+                        document.getElementById("detectionConfidence").textContent = `Confianza: ${topConf}% — analizando...`;
+                        document.getElementById("detectionType").textContent = "Identificando...";
+                        document.getElementById("detectionType").className = "detection-type";
+                        document.getElementById("detectionOverlay").classList.add("active");
+                        hideDoubtBanner();
                     }
                 }
             } catch (error) {
@@ -5390,6 +6145,7 @@
             document.getElementById('milestoneMessage').textContent = milestone.message;
             
             const tvHours = (milestone.threshold * 2).toFixed(0);
+            const treesVal = (milestone.threshold / 10).toFixed(1);
             document.getElementById('milestoneEquivalence').textContent = `Equivalente a ${tvHours} horas · ${treesVal} árboles jóvenes`;
             
             document.getElementById('milestoneModal').classList.add('active');
@@ -7983,6 +8739,246 @@ out body;`;
                 .replace(/'/g, '&#39;');
         }
 
+        // ════════════════════════════════════════════════════════
+        // NUEVA FEATURE — CACHÉ DE PREDICCIONES (evita re-clasificar)
+        // ════════════════════════════════════════════════════════
+        const predictionCache = new Map(); // key: objectName+tipo -> {result, ts}
+        const CACHE_TTL = 3000; // 3 segundos de validez
+
+        function getCachedPrediction(key) {
+            const entry = predictionCache.get(key);
+            if (!entry) return null;
+            if (Date.now() - entry.ts > CACHE_TTL) { predictionCache.delete(key); return null; }
+            return entry.result;
+        }
+        function setCachedPrediction(key, result) {
+            predictionCache.set(key, { result, ts: Date.now() });
+            // Limitar a 20 entradas
+            if (predictionCache.size > 20) {
+                const firstKey = predictionCache.keys().next().value;
+                predictionCache.delete(firstKey);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // NUEVA FEATURE — HISTORIAL DE CONFIANZA POR OBJETO
+        // ════════════════════════════════════════════════════════
+        const confHistory = []; // {name, tipo, confidence, ts}
+        const CONF_HISTORY_MAX = 8;
+
+        function addToConfHistory(name, tipo, confidence) {
+            // Evitar duplicados consecutivos del mismo objeto
+            if (confHistory.length > 0 && confHistory[0].name === name) {
+                confHistory[0].confidence = confidence; // actualizar confianza
+            } else {
+                confHistory.unshift({ name, tipo, confidence: parseFloat(confidence), ts: Date.now() });
+                if (confHistory.length > CONF_HISTORY_MAX) confHistory.pop();
+            }
+            renderConfHistory();
+        }
+
+        function renderConfHistory() {
+            const panel = document.getElementById('confHistoryPanel');
+            const list  = document.getElementById('confHistoryList');
+            if (!panel || !list || confHistory.length === 0) return;
+            panel.style.display = 'block';
+            list.innerHTML = confHistory.map(item => {
+                const pct = Math.min(100, Math.round(item.confidence));
+                const barColor = item.tipo;
+                return `<div class="conf-history-item">
+                    <div class="conf-history-name">${item.name.charAt(0).toUpperCase() + item.name.slice(1)}</div>
+                    <div class="conf-history-bar-wrap">
+                        <div class="conf-history-bar ${barColor}" style="width:${pct}%"></div>
+                    </div>
+                    <div class="conf-history-pct">${pct}%</div>
+                </div>`;
+            }).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // ════════════════════════════════════════════════════════
+        // NUEVA FEATURE — MODO DUDA (confianza 40-60%)
+        // ════════════════════════════════════════════════════════
+        let doubtPendingName = '';
+        let doubtPendingConf = 0;
+
+        function showDoubtBanner(name, confidence) {
+            doubtPendingName = name;
+            doubtPendingConf = confidence;
+            const banner = document.getElementById('doubtBanner');
+            if (banner) banner.style.display = 'block';
+        }
+
+        function hideDoubtBanner() {
+            const banner = document.getElementById('doubtBanner');
+            if (banner) banner.style.display = 'none';
+        }
+
+        function resolveDoubt(tipo) {
+            hideDoubtBanner();
+            if (!doubtPendingName) return;
+            const info = clasificacionMejorada[doubtPendingName] || {
+                tipo, contenedor: tipo === 'organico' ? 'Verde (Orgánico)' :
+                    tipo === 'inorganico-reciclable' ? 'Azul (Reciclable)' : 'Gris (No Reciclable)',
+                ejemplos: doubtPendingName, energia: '0.3 kWh', dato: 'Clasificado manualmente por el usuario.'
+            };
+            // Override tipo with user choice
+            info.tipo = tipo;
+            const pts = 12; // menos puntos por corrección manual
+            addPoints(pts, tipo, doubtPendingName);
+            addToConfHistory(doubtPendingName, tipo, doubtPendingConf);
+            showAchievement('🧠', 'Aprendizaje manual', `¡Gracias! Nova mejora con tu corrección`);
+            doubtPendingName = '';
+        }
+
+        // ════════════════════════════════════════════════════════
+        // NUEVA FEATURE — FLIP DE CÁMARA (trasera ↔ frontal)
+        // ════════════════════════════════════════════════════════
+        let currentFacingMode = 'environment'; // start with rear camera
+
+        async function flipCamera() {
+            if (!isDetecting) return;
+            currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+
+            // Stop current stream
+            if (stream) stream.getTracks().forEach(t => t.stop());
+
+            const btn = document.getElementById('flipCamBtn');
+            if (btn) { btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; }
+
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: currentFacingMode, width: { ideal: 1280 }, height: { ideal: 720 } }
+                });
+                const video = document.getElementById('videoPreview');
+                video.srcObject = stream;
+                // Mirror front camera for natural feel
+                video.style.transform = currentFacingMode === 'user' ? 'scaleX(-1)' : '';
+            } catch(e) {
+                // Revert if failed
+                currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+                showAchievement('⚡', 'Sin segunda cámara', 'Este dispositivo solo tiene una cámara disponible');
+            } finally {
+                if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
+            }
+        }
+
+        // ════════════════════════════════════════════════════════
+        // NUEVA FEATURE — SNAPSHOT (captura del frame actual)
+        // ════════════════════════════════════════════════════════
+        function takeSnapshot() {
+            const video = document.getElementById('videoPreview');
+            if (!video || !isDetecting) return;
+
+            const canvas = document.createElement('canvas');
+            canvas.width  = video.videoWidth  || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+
+            // Mirror if front camera
+            if (currentFacingMode === 'user') {
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+            }
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+            const img = document.getElementById('snapshotImg');
+            const preview = document.getElementById('snapshotPreview');
+            if (img && preview) {
+                img.src = dataUrl;
+                preview.style.display = 'flex';
+            }
+
+            // Flash effect
+            const flash = document.createElement('div');
+            flash.style.cssText = `position:absolute;inset:0;background:#fff;opacity:0.7;border-radius:var(--r-lg);pointer-events:none;z-index:25;animation:fadeIn 0.05s ease`;
+            const container = document.getElementById('realtimeContainer');
+            if (container) {
+                container.appendChild(flash);
+                setTimeout(() => flash.remove(), 200);
+            }
+
+            // Offer download
+            const a = document.createElement('a');
+            a.href     = dataUrl;
+            a.download = `nova-captura-${Date.now()}.jpg`;
+            a.click();
+            showAchievement('📸', 'Captura guardada', 'La foto fue descargada en tu dispositivo');
+        }
+
+        function closeSnapshot() {
+            const preview = document.getElementById('snapshotPreview');
+            if (preview) preview.style.display = 'none';
+        }
+
+        // ════════════════════════════════════════════════════════
+        // NUEVA FEATURE — PWA INSTALL BANNER (aparece en 2da visita)
+        // ════════════════════════════════════════════════════════
+        let deferredPwaPrompt = null;
+
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault();
+            deferredPwaPrompt = e;
+            // Show banner after 2nd visit or 30s on page
+            try {
+                const visits = parseInt(localStorage.getItem('novaVisitCount') || '0') + 1;
+                localStorage.setItem('novaVisitCount', visits);
+                const dismissed = localStorage.getItem('novaPwaDismissed');
+                if (!dismissed && visits >= 2) {
+                    setTimeout(() => {
+                        const banner = document.getElementById('pwaInstallBanner');
+                        if (banner && deferredPwaPrompt) banner.style.display = 'flex';
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }, 8000);
+                }
+            } catch(e) {}
+        });
+
+        async function triggerPwaInstall() {
+            if (!deferredPwaPrompt) return;
+            deferredPwaPrompt.prompt();
+            const { outcome } = await deferredPwaPrompt.userChoice;
+            deferredPwaPrompt = null;
+            dismissPwaBanner();
+            if (outcome === 'accepted') {
+                showAchievement('📲', '¡Nova instalada!', 'Ya puedes usarla sin internet desde tu pantalla de inicio');
+            }
+        }
+
+        function dismissPwaBanner() {
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) banner.style.display = 'none';
+            try { localStorage.setItem('novaPwaDismissed', '1'); } catch(e) {}
+        }
+
+        // ════════════════════════════════════════════════════════
+        // MEJORA — Integrar caché + duda + historial en detectRealtime
+        // Patch sobre la función original updateRealtimeOverlay
+        // ════════════════════════════════════════════════════════
+        const _origUpdateRealtimeOverlay = window.updateRealtimeOverlay;
+
+        // Patch detectRealtime para incluir caché, modo duda e historial
+        const _origDetectRealtime = window.detectRealtime;
+
+        // ════════════════════════════════════════════════════════
+        // NUEVA FEATURE — ONBOARDING CORTO EN REVISITAS
+        // Si el usuario ya visitó antes, saltar al slide 3 (resumen)
+        // ════════════════════════════════════════════════════════
+        function checkReturningUser() {
+            try {
+                const visits = parseInt(localStorage.getItem('novaVisitCount') || '1');
+                const welcomed = localStorage.getItem('novaWelcomeShown');
+                if (visits > 1 && welcomed) {
+                    // Skip to last slide on return visits
+                    const modal = document.getElementById('welcomeModal');
+                    if (modal && modal.classList.contains('active')) {
+                        setTimeout(() => goToSlide(2), 100);
+                    }
+                }
+            } catch(e) {}
+        }
+
         // Inicializar
         window.onload = async () => {
             // Detect performance tier FIRST — everything adapts to it
@@ -7992,6 +8988,7 @@ out body;`;
             loadGameData();
             loadModel();
             checkWelcome();
+            checkReturningUser();
             checkTutorial();
             updateComparison();
 
